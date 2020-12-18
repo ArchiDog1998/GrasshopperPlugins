@@ -113,6 +113,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="WinFormPlus.cs" />
+    <Compile Include="WPF\ISearchItem.cs" />
     <Compile Include="WPF\LangWindow.cs" />
   </ItemGroup>
   <ItemGroup>

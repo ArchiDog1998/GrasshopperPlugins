@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Grasshopper.Kernel;
 using ArchiTed_Grasshopper;
+using ArchiTed_Grasshopper.WPF;
 
 namespace InfoGlasses.WPF
 {
-    public class ExceptionProxy
+    public class ExceptionProxy: ISearchItem
     {
         public string FullName { get; }
         public string Category { get; }
