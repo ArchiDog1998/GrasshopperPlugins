@@ -1,0 +1,192 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5B04E8DF-20D2-479A-B8CE-9B650440DB03}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ArchiTed_Grasshopper</RootNamespace>
+    <AssemblyName>ArchiTed_Grasshopper</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="GH_IO, Version=7.0.20314.3001, Culture=neutral, PublicKeyToken=6a29997d2e6b4f97, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\RhGhSDK 6.12.19029.6381\GH_IO.dll</HintPath>
+    </Reference>
+    <Reference Include="Grasshopper, Version=7.0.20314.3001, Culture=neutral, PublicKeyToken=dda4f5ec2cd80803, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\RhGhSDK 6.12.19029.6381\Grasshopper.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="RhinoCommon, Version=7.0.20314.3001, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\RhGhSDK 6.12.19029.6381\RhinoCommon.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="WinformControls\HighLightRect.cs" />
+    <Compile Include="WinformControls\NickNameOrNameTextBox.cs" />
+    <Compile Include="WinformControls\RenderItem.cs" />
+    <Compile Include="WinformControls\SwicthButtonIcon.cs" />
+    <Compile Include="WinformControls\CheckBoxParam.cs" />
+    <Compile Include="WinformControls\ColourSwatchParam.cs" />
+    <Compile Include="WinformControls\ControlItem.cs" />
+    <Compile Include="WinformControls\IButton.cs" />
+    <Compile Include="WinformControls\IButtonIcon.cs" />
+    <Compile Include="WinformControls\IButtonString.cs" />
+    <Compile Include="WinformControls\IControlState.cs" />
+    <Compile Include="WinformControls\InputBoxBalloon.cs" />
+    <Compile Include="WinformControls\InputBoxBase.cs" />
+    <Compile Include="WinformControls\InputBoxDouble.cs" />
+    <Compile Include="WinformControls\InputBoxDoubleParam.cs" />
+    <Compile Include="WinformControls\InputBoxInt.cs" />
+    <Compile Include="WinformControls\InputBoxIntParam.cs" />
+    <Compile Include="WinformControls\InputBoxString.cs" />
+    <Compile Include="WinformControls\InputBoxStringParam.cs" />
+    <Compile Include="WinformControls\ITargetParam.cs" />
+    <Compile Include="WinformControls\INeedWidth.cs" />
+    <Compile Include="WinformControls\MenuWPFControl.cs" />
+    <Compile Include="WinformControls\CheckBox.cs" />
+    <Compile Include="WinformControls\ColourSwatch.cs" />
+    <Compile Include="WinformControls\IRespond.cs" />
+    <Compile Include="WinformControls\IRenderable.cs" />
+    <Compile Include="WinformControls\MenuControl.cs" />
+    <Compile Include="WinformControls\SwitchButtonBase.cs" />
+    <Compile Include="WinformControls\SwitchButtonString.cs" />
+    <Compile Include="WinformControls\WinformControlHelper.cs" />
+    <Compile Include="WinformControls\TextBoxRenderSet.cs" />
+    <Compile Include="WinformControls\ClickButtonBase.cs" />
+    <Compile Include="WinformControls\ButtonRenderSet.cs" />
+    <Compile Include="WinformControls\TextBox.cs" />
+    <Compile Include="WinformControls\TipsSet.cs" />
+    <Compile Include="WinformControls\Renderable.cs" />
+    <Compile Include="WinformControls\ClickButtonIcon.cs" />
+    <Compile Include="WinformControls\Iconable.cs" />
+    <Compile Include="WinformControls\ClickButtonName.cs" />
+    <Compile Include="Component\ControllableComponent.cs" />
+    <Compile Include="CanvasRenderEngine.cs" />
+    <Compile Include="ColorExtension.cs" />
+    <Compile Include="Component\ControllableComponentAttribute.cs" />
+    <Compile Include="Component\LanguagableComponent.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="WinFormPlus.cs" />
+    <Compile Include="WPF\LangWindow.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+    <None Include="Resources\AlipayLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BilibiliLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ContractIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DonateIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DonateQRcode.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\GithubLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HelpLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\InfoGlasses_QQGroup_QRcode.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\LanguageIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Parameterization_QQGroup_QRcode.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PayPalLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\QQLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\WechatLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\YotubeLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DonateWechatQRcode.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ResetLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ColorIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DistanceIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SizeIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TextCurve.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BrightZoneOfRhino_QQGroup_QRcode.jpg" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>Copy "$(TargetPath)" "C:\Users\教学专用\AppData\Roaming\Grasshopper\Libraries\$(ProjectName).dll"</PostBuildEvent>
+  </PropertyGroup>
+</Project>

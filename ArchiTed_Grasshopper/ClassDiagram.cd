@@ -1,0 +1,480 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Comment CommentText="For Component">
+    <Position X="11.524" Y="17.935" Height="0.75" Width="1.7" />
+  </Comment>
+  <Comment CommentText="For Parameter">
+    <Position X="11.815" Y="24.239" Height="0.75" Width="1.7" />
+  </Comment>
+  <Class Name="ArchiTed_Grasshopper.CanvasRenderEngine">
+    <Position X="0.5" Y="0.5" Width="3" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="ArchiTed_Grasshopper.CanvasRenderEngine.InflateMode">
+        <TypeIdentifier>
+          <NewMemberFileName>CanvasRenderEngine.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AABAAAACAAAAAAQACACIQAAAIAAIAICAIAAAAAAABAA=</HashCode>
+      <FileName>CanvasRenderEngine.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.ColorExtension">
+    <Position X="1" Y="14.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAACQAAAAAAAAAAAAAAAAQAAEAAAAAA=</HashCode>
+      <FileName>ColorExtension.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.ControllableComponent">
+    <Position X="4.75" Y="26.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAIMAAQAAAAEAAAAAAAAAQFQABAAAAIEAAAgAAAAABA=</HashCode>
+      <FileName>Component\ControllableComponent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.ControllableComponentAttribute">
+    <Position X="1.25" Y="26.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAACAAAAAAAEAAAAAAAAQAAAAAAAIAhAAAAAAAEA=</HashCode>
+      <FileName>Component\ControllableComponentAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.LanguagableComponent">
+    <Position X="8" Y="25.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAIAAACAAEACgAgAAAQAAAEgSBEAAAAGAAgBIAEAAAA=</HashCode>
+      <FileName>Component\LanguagableComponent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinFormPlus">
+    <Position X="0.75" Y="6" Width="2.75" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Struct Name="ArchiTed_Grasshopper.WinFormPlus.ItemSet&lt;T&gt;">
+        <TypeIdentifier>
+          <NewMemberFileName>WinFormPlus.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Enum Name="ArchiTed_Grasshopper.WinFormPlus.ItemIconType">
+        <TypeIdentifier>
+          <NewMemberFileName>WinFormPlus.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AQCAA0AAAABAAABAQgAACQCABAEAAAAAIAAAAAAAgAA=</HashCode>
+      <FileName>WinFormPlus.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.Properties.Resources">
+    <Position X="4" Y="8.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>CAAIAAAgAQAAAAAASAAJEACAAYAQAQAAAAMIDYAAgIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.ClickButtonName&lt;T&gt;">
+    <Position X="31.75" Y="17.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAAEAAAAAAQAAAAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>WinformControls\ClickButtonName.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.Iconable">
+    <Position X="35.5" Y="12.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAACAAAAAACAAQCIAAAAAAAAAAQAAAAEAAAA=</HashCode>
+      <FileName>WinformControls\Iconable.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.ClickButtonIcon&lt;T&gt;">
+    <Position X="34" Y="17.5" Width="1.75" />
+    <AssociationLine Name="IconSet" Type="ArchiTed_Grasshopper.WinformControls.Iconable" FixedToPoint="true">
+      <Path>
+        <Point X="35.75" Y="18.438" />
+        <Point X="36.5" Y="18.438" />
+        <Point X="36.5" Y="15.911" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAABAAAAEAAAA=</HashCode>
+      <FileName>WinformControls\ClickButtonIcon.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="IconSet" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.Renderable">
+    <Position X="16.75" Y="8.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAEAAAAAAAAAgAAAAAAAAAAABAAAAAAAgA=</HashCode>
+      <FileName>WinformControls\Renderable.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.ClickButtonBase&lt;T&gt;">
+    <Position X="30" Y="11.25" Width="2.25" />
+    <InheritanceLine Type="ArchiTed_Grasshopper.WinformControls.MenuWPFControl&lt;T, Twpf&gt;" FixedToPoint="true">
+      <Path>
+        <Point X="30.875" Y="10.175" />
+        <Point X="30.875" Y="10.875" />
+        <Point X="30.984" Y="10.875" />
+        <Point X="30.984" Y="11.25" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAgEAABAAAAAAAAAAAAAAAgAAAAEQAEA=</HashCode>
+      <FileName>WinformControls\ClickButtonBase.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="RenderSet" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.TextBox">
+    <Position X="14.75" Y="16.75" Width="1.75" />
+    <AssociationLine Name="RenderSet" Type="ArchiTed_Grasshopper.WinformControls.TextBoxRenderSet" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="15.094" Y="16.75" />
+        <Point X="15.094" Y="16.375" />
+        <Point X="14.625" Y="16.375" />
+        <Point X="14.625" Y="11.709" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAAAAAAAAAAAIABARACEEACA=</HashCode>
+      <FileName>WinformControls\TextBox.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="RenderSet" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.CheckBox">
+    <Position X="29.5" Y="17.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>WinformControls\CheckBox.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.MenuControl&lt;T&gt;">
+    <Position X="24.25" Y="8.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAGA=</HashCode>
+      <FileName>WinformControls\MenuControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.ColourSwatch">
+    <Position X="20.5" Y="17.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAgAAAAAAAAAAAAAAAAAAABAAAAAAAEA=</HashCode>
+      <FileName>WinformControls\ColourSwatch.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.MenuWPFControl&lt;T, Twpf&gt;">
+    <Position X="29.75" Y="8.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>WinformControls\MenuWPFControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.InputBoxString">
+    <Position X="24.75" Y="17.25" Width="1.5" />
+    <InheritanceLine Type="ArchiTed_Grasshopper.WinformControls.InputBoxBase&lt;T&gt;" FixedToPoint="true">
+      <Path>
+        <Point X="25.375" Y="14.588" />
+        <Point X="25.375" Y="16.875" />
+        <Point X="25.625" Y="16.875" />
+        <Point X="25.625" Y="17.25" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAIAAAAgAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>WinformControls\InputBoxString.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.InputBoxBalloon">
+    <Position X="27.25" Y="12.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>WinformControls\InputBoxBalloon.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.InputBoxDouble">
+    <Position X="23" Y="17.25" Width="1.5" />
+    <InheritanceLine Type="ArchiTed_Grasshopper.WinformControls.InputBoxBase&lt;T&gt;" ManuallyRouted="true" FixedToPoint="true">
+      <Path>
+        <Point X="25.375" Y="14.588" />
+        <Point X="25.375" Y="15.64" />
+        <Point X="23.688" Y="15.64" />
+        <Point X="23.688" Y="17.25" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAIBAAAgAAEAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>WinformControls\InputBoxDouble.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.InputBoxInt">
+    <Position X="26.75" Y="17.25" Width="1.5" />
+    <InheritanceLine Type="ArchiTed_Grasshopper.WinformControls.InputBoxBase&lt;T&gt;" FixedToPoint="true">
+      <Path>
+        <Point X="25.375" Y="14.588" />
+        <Point X="25.375" Y="16.875" />
+        <Point X="27.625" Y="16.875" />
+        <Point X="27.625" Y="17.25" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAIBAAAgAAEAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>WinformControls\InputBoxInt.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.ControlItem&lt;T&gt;">
+    <Position X="20" Y="8.75" Width="2.5" />
+    <InheritanceLine Type="ArchiTed_Grasshopper.WinformControls.Renderable" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="18.5" Y="9.952" />
+        <Point X="18.875" Y="9.952" />
+        <Point X="18.875" Y="10.121" />
+        <Point X="20" Y="10.121" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAgAACAJAAAMgEAEDAAKAAAoAACAAAIAgCAQCgAgGA=</HashCode>
+      <FileName>WinformControls\ControlItem.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.ColourSwatchParam">
+    <Position X="20.25" Y="23" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAkAAAAAAAGAAAAAAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>WinformControls\ColourSwatchParam.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.WinformControlHelper">
+    <Position X="4.25" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAREAAAIAAAAAAABAEAAAQAAAAAgAAgAQAAABA=</HashCode>
+      <FileName>WinformControls\WinformControlHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.InputBoxBase&lt;T&gt;">
+    <Position X="24.25" Y="11.75" Width="2.25" />
+    <InheritanceLine Type="ArchiTed_Grasshopper.WinformControls.MenuControl&lt;T&gt;" FixedFromPoint="true">
+      <Path>
+        <Point X="25.25" Y="11.079" />
+        <Point X="25.25" Y="11.375" />
+        <Point X="25.375" Y="11.375" />
+        <Point X="25.375" Y="11.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAAAAAAAAAAAAEAIAAAAAAAIIhAAAAAAAAA=</HashCode>
+      <FileName>WinformControls\InputBoxBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.InputBoxDoubleParam">
+    <Position X="22.75" Y="23" Width="2" />
+    <InheritanceLine Type="ArchiTed_Grasshopper.WinformControls.InputBoxDouble" FixedToPoint="true">
+      <Path>
+        <Point X="23.75" Y="19.896" />
+        <Point X="23.75" Y="22.625" />
+        <Point X="23.5" Y="22.625" />
+        <Point X="23.5" Y="23" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAkAAAAAAACAAAAAAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>WinformControls\InputBoxDoubleParam.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.InputBoxIntParam">
+    <Position X="27" Y="23" Width="1.75" />
+    <InheritanceLine Type="ArchiTed_Grasshopper.WinformControls.InputBoxInt" FixedToPoint="true">
+      <Path>
+        <Point X="27.5" Y="19.896" />
+        <Point X="27.5" Y="22.625" />
+        <Point X="27.75" Y="22.625" />
+        <Point X="27.75" Y="23" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAkAAAAAAACAAAAAAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>WinformControls\InputBoxIntParam.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.InputBoxStringParam">
+    <Position X="25" Y="23" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAkAAAAAAACAAAAAAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>WinformControls\InputBoxStringParam.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.CheckBoxParam">
+    <Position X="29.5" Y="23" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAkAAAAAAAGAAAAAAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>WinformControls\CheckBoxParam.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.SwitchButtonBase&lt;T&gt;">
+    <Position X="38" Y="11.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAgAAAAAAAAAAAAAAAAAACAAAQAEAAEA=</HashCode>
+      <FileName>WinformControls\SwitchButtonBase.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="RenderSet" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.SwicthButtonIcon&lt;T&gt;">
+    <Position X="37.5" Y="17.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAABAAAAEAAAA=</HashCode>
+      <FileName>WinformControls\SwicthButtonIcon.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.SwitchButtonString&lt;T&gt;">
+    <Position X="40" Y="17.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAEAAAAAAQAAAAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>WinformControls\SwitchButtonString.cs</FileName>
+      <NewMemberFileName>WinformControls\SwitchBUttonString.cs</NewMemberFileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.HighLightRect">
+    <Position X="17.75" Y="16.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAEAAAAAAAAAAAAAAAAAAAAAAAAIABAAgAAAAAA=</HashCode>
+      <FileName>WinformControls\HighLightRect.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.RenderItem">
+    <Position X="16.75" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEAAAAAAAAACAAAAAAAAAIAAAAAAACAAA=</HashCode>
+      <FileName>WinformControls\RenderItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArchiTed_Grasshopper.WinformControls.NickNameOrNameTextBox">
+    <Position X="14.75" Y="21" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>WinformControls\NickNameOrNameTextBox.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="ArchiTed_Grasshopper.WinformControls.TipsSet">
+    <Position X="22" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAIAAAAAA=</HashCode>
+      <FileName>WinformControls\TipsSet.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ArchiTed_Grasshopper.WinformControls.ButtonRenderSet">
+    <Position X="33" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhAAGAAA=</HashCode>
+      <FileName>WinformControls\ButtonRenderSet.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ArchiTed_Grasshopper.WinformControls.TextBoxRenderSet">
+    <Position X="13.75" Y="9" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAIgAAAAAAACAAAAAgAAAAABABKAAA=</HashCode>
+      <FileName>WinformControls\TextBoxRenderSet.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="InflateMode" />
+    </ShowAsAssociation>
+  </Struct>
+  <Interface Name="ArchiTed_Grasshopper.WinformControls.IRespond">
+    <Position X="46.25" Y="13.75" Width="2.5" />
+    <InheritanceLine Type="ArchiTed_Grasshopper.WinformControls.IRenderable" ManuallyRouted="true">
+      <Path>
+        <Point X="47.5" Y="11.805" />
+        <Point X="47.5" Y="12.485" />
+        <Point X="47.5" Y="12.485" />
+        <Point X="47.5" Y="13.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAAEDAACAAAAAACAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>WinformControls\IRespond.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ArchiTed_Grasshopper.WinformControls.IRenderable">
+    <Position X="46.75" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>WinformControls\IRenderable.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ArchiTed_Grasshopper.WinformControls.ITargetParam&lt;T&gt;">
+    <Position X="51.75" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAAAACAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>WinformControls\ITargetParam.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ArchiTed_Grasshopper.WinformControls.IControlState&lt;T&gt;">
+    <Position X="49.75" Y="14" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAgAAAA=</HashCode>
+      <FileName>WinformControls\IControlState.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ArchiTed_Grasshopper.WinformControls.INeedWidth">
+    <Position X="56.25" Y="14.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>WinformControls\INeedWidth.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ArchiTed_Grasshopper.WinformControls.IButtonString">
+    <Position X="47.5" Y="19.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>WinformControls\IButtonString.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ArchiTed_Grasshopper.WinformControls.IButton" Collapsed="true">
+    <Position X="46.75" Y="17.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>WinformControls\IButton.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ArchiTed_Grasshopper.WinformControls.IButtonIcon">
+    <Position X="45.75" Y="19.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>WinformControls\IButtonIcon.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="ArchiTed_Grasshopper.WinformControls.InflateMode">
+    <Position X="13.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAgAAAAIAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>WinformControls\TextBoxRenderSet.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -1,0 +1,262 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Whale</RootNamespace>
+    <AssemblyName>Whale</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FFMpegSharp, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\FFMpegSharp.2.1.0\lib\net45\FFMpegSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="GH_IO">
+      <HintPath>..\..\..\Software\Install\Mcneel\Rhino7\Plug-ins\Grasshopper\GH_IO.dll</HintPath>
+    </Reference>
+    <Reference Include="Grasshopper">
+      <HintPath>..\..\..\Software\Install\Mcneel\Rhino7\Plug-ins\Grasshopper\Grasshopper.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="RhinoCommon">
+      <HintPath>..\..\..\Software\Install\Mcneel\Rhino7\System\RhinoCommon.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Animation\GroupLocker.cs" />
+    <Compile Include="Animation\CameraController.cs" />
+    <Compile Include="Animation\Event.cs" />
+    <Compile Include="Animation\EventOperation.cs" />
+    <Compile Include="Animation\MeshIO.cs" />
+    <Compile Include="Display\CurveDisplay.cs" />
+    <Compile Include="Display\CustomMaterial.cs" />
+    <Compile Include="Display\MeshOutLines.cs" />
+    <Compile Include="Display\MeshSharpEdge.cs" />
+    <Compile Include="Display\PointDisplay.cs" />
+    <Compile Include="Display\Tag3D.cs" />
+    <Compile Include="Display\TextCurve.cs" />
+    <Compile Include="Light\SpotLight.cs" />
+    <Compile Include="Light\SunLight.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Rect\GridRects.cs" />
+    <Compile Include="Rect\HorizontalRects.cs" />
+    <Compile Include="Rect\IrregularRects.cs" />
+    <Compile Include="Rect\RectSolution.cs" />
+    <Compile Include="Rect\VerticalRects.cs" />
+    <Compile Include="Animation\Controls.cs" />
+    <Compile Include="Animation\AdvancedOptions.xaml.cs">
+      <DependentUpon>AdvancedOptions.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Animation\Frame.cs" />
+    <Compile Include="WhalesInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FFMPEG\bin\presets\ffprobe.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="FFMPEG\bin\presets\libvpx-1080p.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libvpx-1080p50_60.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libvpx-360p.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libvpx-720p.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libvpx-720p50_60.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libvpx-ultrafast.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-baseline.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-fast.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-faster.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-faster_firstpass.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-fast_firstpass.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-ipod320.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-ipod640.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-lossless_fast.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-lossless_max.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-lossless_medium.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-lossless_slow.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-lossless_slower.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-lossless_ultrafast.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-main.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-medium.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-medium_firstpass.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-placebo.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-placebo_firstpass.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-slow.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-slower.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-slower_firstpass.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-slow_firstpass.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-superfast.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-superfast_firstpass.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-ultrafast.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-ultrafast_firstpass.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-veryfast.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-veryfast_firstpass.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-veryslow.ffpreset" />
+    <None Include="FFMPEG\bin\presets\libx264-veryslow_firstpass.ffpreset" />
+    <None Include="packages.config" />
+    <None Include="Resources\Whales.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Whales_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BasicSettings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TimeLine.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PlaySettings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DispalySettings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\FrameToTime.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CombineTimeDomain.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\EventOperation.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CameraController.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MeshIO.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\GroupLocker.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TextCurve.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CustomMaterial.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MeshSharpEdge.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PointDisplay.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DrawCurve.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Tag3D.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SunManu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SpotLight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\EventCurve.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\IrregularRect.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HorizontalRect.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\VerticalRect.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\GridRect.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MeshOutLine.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Animation\AdvancedOptions.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="FFMPEG\bin\x64\ffmpeg.exe" />
+    <Content Include="FFMPEG\bin\x64\ffprobe.exe" />
+    <Content Include="FFMPEG\bin\x86\ffmpeg.exe" />
+    <Content Include="FFMPEG\bin\x86\ffprobe.exe" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ArchiTed_Grasshopper\ArchiTed_Grasshopper.csproj">
+      <Project>{5b04e8df-20d2-479a-b8ce-9b650440db03}</Project>
+      <Name>ArchiTed_Grasshopper</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>Copy "$(TargetPath)" "C:\Users\Administrator\AppData\Roaming\Grasshopper\Libraries\$(ProjectName).gha"
+Erase "$(TargetPath)"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <FallbackCulture>en-US</FallbackCulture>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <StartProgram>E:\Software\Install\Mcneel\Rhino6\System\Rhino.exe</StartProgram>
+    <StartArguments>
+    </StartArguments>
+    <StartAction>Program</StartAction>
+  </PropertyGroup>
+</Project>
