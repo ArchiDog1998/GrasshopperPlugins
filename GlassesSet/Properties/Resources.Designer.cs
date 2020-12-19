@@ -153,6 +153,16 @@ namespace InfoGlasses.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap InputLogo {
+            get {
+                object obj = ResourceManager.GetObject("InputLogo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap IntervalIcon {
             get {
                 object obj = ResourceManager.GetObject("IntervalIcon", resourceCulture);
