@@ -42,16 +42,25 @@
     <Reference Include="FFMpegSharp, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\FFMpegSharp.2.1.0\lib\net45\FFMpegSharp.dll</HintPath>
     </Reference>
-    <Reference Include="GH_IO">
-      <HintPath>..\..\..\Software\Install\Mcneel\Rhino7\Plug-ins\Grasshopper\GH_IO.dll</HintPath>
+    <Reference Include="GH_IO, Version=7.1.20343.9491, Culture=neutral, PublicKeyToken=6a29997d2e6b4f97, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\GH_IO.dll</HintPath>
     </Reference>
-    <Reference Include="Grasshopper">
-      <HintPath>..\..\..\Software\Install\Mcneel\Rhino7\Plug-ins\Grasshopper\Grasshopper.dll</HintPath>
+    <Reference Include="Grasshopper, Version=7.1.20343.9491, Culture=neutral, PublicKeyToken=dda4f5ec2cd80803, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Grasshopper.dll</HintPath>
+    </Reference>
+    <Reference Include="MaterialDesignColors">
+      <HintPath>..\MaterialDesignColors.dll</HintPath>
+    </Reference>
+    <Reference Include="MaterialDesignThemes.Wpf">
+      <HintPath>..\MaterialDesignThemes.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="RhinoCommon">
-      <HintPath>..\..\..\Software\Install\Mcneel\Rhino7\System\RhinoCommon.dll</HintPath>
+    <Reference Include="RhinoCommon, Version=7.1.20343.9491, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\RhinoCommon.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
