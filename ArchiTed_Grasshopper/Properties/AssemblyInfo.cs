@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
 [assembly: AssemblyTitle("ArchiTed_Grasshopper")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Grasshopper basic assembly from qiushui.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("犀牛之光Radino")]
+[assembly: AssemblyCompany("犀光 RadiRhino")]
 [assembly: AssemblyProduct("ArchiTed_Grasshopper")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyCopyright("Copyright ©  2020 秋水")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

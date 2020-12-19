@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("GlassesSets")]
 [assembly: AssemblyDescription("Show the components' advances information.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("犀牛之光 Radino")]
-[assembly: AssemblyProduct("InfoGlasses")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyCompany("犀光 RadiRhino")]
+[assembly: AssemblyProduct("Showcase Tools")]
+[assembly: AssemblyCopyright("Copyright ©  2020 秋水")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

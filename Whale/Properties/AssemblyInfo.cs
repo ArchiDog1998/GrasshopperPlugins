@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Whales")]
 [assembly: AssemblyDescription("For Animation.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("犀牛之光")]
+[assembly: AssemblyCompany("犀光 RadiRhino")]
 [assembly: AssemblyProduct("Whales")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyCopyright("Copyright ©  2020 秋水")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
