@@ -17,6 +17,7 @@ namespace InfoGlasses
 {
     public class InfoGlassesComponent : LanguagableComponent
     {
+        #region Values
         #region Basic Component Info
         public override GH_Exposure Exposure => GH_Exposure.primary;
         protected override Bitmap Icon => Properties.Resources.InfoGlasses;
@@ -123,6 +124,7 @@ namespace InfoGlasses
         }
 
         private bool Run = true;
+        #endregion
         #endregion
 
         /// <summary>
@@ -234,10 +236,17 @@ namespace InfoGlasses
             GetTransLation(new string[] { "Adjust color.", "调整颜色。" }), ArchiTed_Grasshopper.Properties.Resources.ColorIcon, true, sets);
         }
 
+        protected override void AppendHelpMenuItems(ToolStripMenuItem menu)
+        {
+            WinFormPlus.AddURLItem(menu, "插件介绍视频（黄同学制作）", "点击以到B站查看黄同学制作的插件介绍视频。", WinFormPlus.ItemIconType.Bilibili, "https://www.bilibili.com/video/BV11y4y1z7VS");
+            WinFormPlus.AddURLItem(menu, "插件介绍文章（开发者：秋水）", "单击即可跳转至参数化凯同学的微信公众号了解该运算器的基本操作", WinFormPlus.ItemIconType.Wechat,
+                        "https://mp.weixin.qq.com/s?__biz=MzU3NDc4MjI3NQ==&mid=2247483964&idx=1&sn=9c1fe846520b57afdca9c25f4b91277c&chksm=fd2c6c10ca5be5065038705521eeb77578ea09c9a29d147b48a74d7deb83b080a1a4a817f96a&mpshare=1&scene=1&srcid=1025v9SZiJtnV5tcmCpqgBNc&sharer_sharetime=1603621384950&sharer_shareid=b1dc247fd3ccb65500d435199339c711&key=790d61d00982c950cb9020ba69f98cf7e300d07e3c4d1b7a079ead9ed6e790b91f1f901c6be2654222f4a9b849a7efcf5a8e968f47632c997f65f47f7e8215518fc889e540d2347a70648b42484afc09421ff209bfe4dc6a5da2beb71cf599cf451c7cb97bf81ebcdb5a702124ba5628123cc181bb2bae1f9ab262fb7707b348&ascene=1&uin=MTM1MzY5MzQ0OA%3D%3D&devicetype=Windows+10+x64&version=6300002f&lang=zh_CN&exportkey=A4zfRKU1KHDq4mkPUYIuZxY%3D&pass_ticket=xa6OBhggzPS9hmUCt7guGoazp5hqvioaGdM0jYD121qy7KgK7fU2s3hilWZvTEa5&wx_header=0");
+
+            base.AppendHelpMenuItems(menu);
+        }
         protected override void ResponseToLanguageChanged(object sender, EventArgs e)
         {
             string[] input = new string[] { GetTransLation(new string[] { "Run", "启动" }), GetTransLation(new string[] { "R", "启动" }), GetTransLation(new string[] { "Run", "启动" }) };
-            //string[] output = new string[] { GetTransLation(new string[] { "Plug-in use", "插件使用" }), GetTransLation(new string[] { "Pu", "插件" }), GetTransLation(new string[] { "Plug-in use", "插件使用" }) };
 
             ChangeComponentAtt(this, new string[] {GetTransLation(new string[] { "InfoGlasses", "信息眼镜" }), GetTransLation(new string[] { "Info", "信息" }),
                 GetTransLation(new string[] { "To show the components' advances information.Right click to have advanced options", "显示电池的高级信息。右键可以获得更多选项。" }) },
@@ -245,12 +254,6 @@ namespace InfoGlasses
 
             this.ExpireSolution(true);
         }
-
-        //public override void ChangeParamsLayout()
-        //{
-        //    RectangleF rect =  this.Params.Output[0].Attributes.Bounds;
-        //    this.Params.Output[0].Attributes.Bounds = new RectangleF(rect.X + 3 * (24 + 6), rect.Y, rect.Width, rect.Height);
-        //}
 
         #region Calculate
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)

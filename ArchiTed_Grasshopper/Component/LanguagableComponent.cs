@@ -155,7 +155,12 @@ namespace ArchiTed_Grasshopper
             WinFormPlus.AddMessageBoxItem(menu, GetTransLation(new string[] { "Parameterization QQ Group", "参数化交流 QQ群" }),
                 GetTransLation(new string[] { "Click to contact us in Parameterization QQ Group!", "点击以加入参数化交流 QQ群。" }), Properties.Resources.QQLogo, Properties.Resources.Parameterization_QQGroup_QRcode);
         }
-        protected virtual void AppendHelpMenuItems(ToolStripMenuItem menu) { }
+        protected virtual void AppendHelpMenuItems(ToolStripMenuItem menu) 
+        {
+            GH_DocumentObject.Menu_AppendSeparator(menu.DropDown);
+            WinFormPlus.AddURLItem(menu, GetTransLation(new string[] { "See Source Code", "查看源代码" }), GetTransLation(new string[] { "Click to the GitHub to see source code.", "点击以到GitHub查看源代码。" }),
+                WinFormPlus.ItemIconType.GitHub, "https://github.com/ArchiDog1998/GrasshopperPlugins");
+        }
         #endregion
 
         #region ChangeAttribute
