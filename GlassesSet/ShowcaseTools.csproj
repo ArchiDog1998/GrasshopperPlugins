@@ -76,6 +76,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ParamGlassesComponent.cs" />
+    <Compile Include="WinformControls\CheckBoxParam.cs" />
+    <Compile Include="WinformControls\ColourSwatchParam.cs" />
+    <Compile Include="WinformControls\InputBoxDoubleParam.cs" />
+    <Compile Include="WinformControls\InputBoxIntParam.cs" />
+    <Compile Include="WinformControls\InputBoxStringParam.cs" />
     <Compile Include="WPF\ExceptionWindow.xaml.cs">
       <DependentUpon>ExceptionWindow.xaml</DependentUpon>
     </Compile>

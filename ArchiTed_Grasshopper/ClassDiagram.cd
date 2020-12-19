@@ -26,7 +26,7 @@
   <Class Name="ArchiTed_Grasshopper.ColorExtension">
     <Position X="1" Y="14.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAACQAAAAAAAAAAAAAAAAQAAEAAAAAA=</HashCode>
+      <HashCode>EAAAAAAAAAAAAAACQAAAAACAAAAAAAAAAQAAEAAAABA=</HashCode>
       <FileName>ColorExtension.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -69,14 +69,14 @@
       </Enum>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AQCAA0AAAABAAABAQgAACQCABAEAAAAAIAAAAAAAgAA=</HashCode>
+      <HashCode>AQCAA0AAAABAAABAQgAACQCABAEAAAAAIAAAgAAAgAA=</HashCode>
       <FileName>WinFormPlus.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ArchiTed_Grasshopper.Properties.Resources">
     <Position X="4" Y="8.25" Width="2.75" />
     <TypeIdentifier>
-      <HashCode>CAAIAAAgAQAAAAAASAAJEACAAYAQAQAAAAMIDYAAgIA=</HashCode>
+      <HashCode>CAAIAAAgAQAAAAAASAAJEACAAYAQAQCAAAMIDYAAgIA=</HashCode>
     </TypeIdentifier>
   </Class>
   <Class Name="ArchiTed_Grasshopper.WinformControls.ClickButtonName&lt;T&gt;">
@@ -253,14 +253,6 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="ArchiTed_Grasshopper.WinformControls.ColourSwatchParam">
-    <Position X="20.25" Y="23" Width="1.75" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAIAAAAkAAAAAAAGAAAAAAAAAIAAAAAAAAAAA=</HashCode>
-      <FileName>WinformControls\ColourSwatchParam.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
   <Class Name="ArchiTed_Grasshopper.WinformControls.WinformControlHelper">
     <Position X="4.25" Y="0.5" Width="2.5" />
     <TypeIdentifier>
@@ -281,54 +273,6 @@
     <TypeIdentifier>
       <HashCode>BAAAAAAAAAAAAAAAAAAAAEAIAAAAAAAIIhAAAAAAAAA=</HashCode>
       <FileName>WinformControls\InputBoxBase.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="ArchiTed_Grasshopper.WinformControls.InputBoxDoubleParam">
-    <Position X="22.75" Y="23" Width="2" />
-    <InheritanceLine Type="ArchiTed_Grasshopper.WinformControls.InputBoxDouble" FixedToPoint="true">
-      <Path>
-        <Point X="23.75" Y="19.896" />
-        <Point X="23.75" Y="22.625" />
-        <Point X="23.5" Y="22.625" />
-        <Point X="23.5" Y="23" />
-      </Path>
-    </InheritanceLine>
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAIAAAAkAAAAAAACAAAAAAAAAIAAAAAAAAAAA=</HashCode>
-      <FileName>WinformControls\InputBoxDoubleParam.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="ArchiTed_Grasshopper.WinformControls.InputBoxIntParam">
-    <Position X="27" Y="23" Width="1.75" />
-    <InheritanceLine Type="ArchiTed_Grasshopper.WinformControls.InputBoxInt" FixedToPoint="true">
-      <Path>
-        <Point X="27.5" Y="19.896" />
-        <Point X="27.5" Y="22.625" />
-        <Point X="27.75" Y="22.625" />
-        <Point X="27.75" Y="23" />
-      </Path>
-    </InheritanceLine>
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAIAAAAkAAAAAAACAAAAAAAAAIAAAAAAAAAAA=</HashCode>
-      <FileName>WinformControls\InputBoxIntParam.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="ArchiTed_Grasshopper.WinformControls.InputBoxStringParam">
-    <Position X="25" Y="23" Width="1.75" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAIAAAAkAAAAAAACAAAAAAAAAIAAAAAAAAAAA=</HashCode>
-      <FileName>WinformControls\InputBoxStringParam.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="ArchiTed_Grasshopper.WinformControls.CheckBoxParam">
-    <Position X="29.5" Y="23" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAIAAAAkAAAAAAAGAAAAAAAAAIAAAAAAAAAAA=</HashCode>
-      <FileName>WinformControls\CheckBoxParam.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>

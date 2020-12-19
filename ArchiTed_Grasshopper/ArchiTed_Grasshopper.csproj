@@ -66,8 +66,6 @@
     <Compile Include="WinformControls\NickNameOrNameTextBox.cs" />
     <Compile Include="WinformControls\RenderItem.cs" />
     <Compile Include="WinformControls\SwicthButtonIcon.cs" />
-    <Compile Include="WinformControls\CheckBoxParam.cs" />
-    <Compile Include="WinformControls\ColourSwatchParam.cs" />
     <Compile Include="WinformControls\ControlItem.cs" />
     <Compile Include="WinformControls\IButton.cs" />
     <Compile Include="WinformControls\IButtonIcon.cs" />
@@ -76,11 +74,8 @@
     <Compile Include="WinformControls\InputBoxBalloon.cs" />
     <Compile Include="WinformControls\InputBoxBase.cs" />
     <Compile Include="WinformControls\InputBoxDouble.cs" />
-    <Compile Include="WinformControls\InputBoxDoubleParam.cs" />
     <Compile Include="WinformControls\InputBoxInt.cs" />
-    <Compile Include="WinformControls\InputBoxIntParam.cs" />
     <Compile Include="WinformControls\InputBoxString.cs" />
-    <Compile Include="WinformControls\InputBoxStringParam.cs" />
     <Compile Include="WinformControls\ITargetParam.cs" />
     <Compile Include="WinformControls\INeedWidth.cs" />
     <Compile Include="WinformControls\MenuWPFControl.cs" />
