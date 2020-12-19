@@ -39,7 +39,7 @@ namespace InfoGlasses
         public Color selectedColor;
         public Color emptyColor;
 
-        public List<ParamTypeInfo> allParamType = null;
+        public List<ParamTypeInfo_OBSOLETE> allParamType = null;
         public List<IGH_DocumentObject> allDocObjs = new List<IGH_DocumentObject>();
 
         private bool IsFirst = true;
@@ -50,7 +50,7 @@ namespace InfoGlasses
             public new WireGlassesComponent_OBSOLETE Owner;
             RectangleF labelRect;
             RectangleF legendRect;
-            List<ParamTypeInfo> showedInfo = new List<ParamTypeInfo>();
+            List<ParamTypeInfo_OBSOLETE> showedInfo = new List<ParamTypeInfo_OBSOLETE>();
 
             public WireGlassesComponentAttributes(WireGlassesComponent_OBSOLETE owner) : base(owner)
             {
@@ -82,7 +82,7 @@ namespace InfoGlasses
                 base.Render(canvas, graphics, channel);
                 if(channel == GH_CanvasChannel.Wires)
                 {
-                    showedInfo = new List<ParamTypeInfo>();
+                    showedInfo = new List<ParamTypeInfo_OBSOLETE>();
 
                     foreach (var item in Owner.allDocObjs)
                     {
@@ -165,7 +165,7 @@ namespace InfoGlasses
                     {
                         foreach (IGH_Param source2 in sources)
                         {
-                            ParamTypeInfo info = FindOrCreateInfo(source2);
+                            ParamTypeInfo_OBSOLETE info = FindOrCreateInfo(source2);
 
                             Color color = Owner.GetColor(info);
                             GH_WireType type = GH_Painter.DetermineWireType(source2.VolatileData);
@@ -184,7 +184,7 @@ namespace InfoGlasses
                     }
                     foreach (IGH_Param source3 in sources)
                     {
-                        ParamTypeInfo info = FindOrCreateInfo(source3);
+                        ParamTypeInfo_OBSOLETE info = FindOrCreateInfo(source3);
 
                         Color color = Owner.GetColor(info);
                         DrawConnection(param.Attributes.InputGrip, source3.Attributes.OutputGrip, GH_WireDirection.left, GH_WireDirection.right, param.Attributes.Selected, source3.Attributes.Selected, GH_WireType.generic, color, canvas, graphics);
@@ -204,7 +204,7 @@ namespace InfoGlasses
                     case GH_ParamWireDisplay.faint:
                         foreach (IGH_Param source4 in sources)
                         {
-                            ParamTypeInfo info = FindOrCreateInfo(source4);
+                            ParamTypeInfo_OBSOLETE info = FindOrCreateInfo(source4);
 
                             Color color = Owner.GetColor(info);
                             DrawConnection(param.Attributes.InputGrip, source4.Attributes.OutputGrip, GH_WireDirection.left, GH_WireDirection.right, param.Attributes.Selected, source4.Attributes.Selected, GH_WireType.faint, color, canvas, graphics);
@@ -249,7 +249,7 @@ namespace InfoGlasses
                 }
             }
 
-            private ParamTypeInfo FindOrCreateInfo(IGH_Param param)
+            private ParamTypeInfo_OBSOLETE FindOrCreateInfo(IGH_Param param)
             {
                 string typeFullName = param.Type.FullName;
 
@@ -297,7 +297,7 @@ namespace InfoGlasses
                         return info;
                     }
                 }
-                ParamTypeInfo newInfo = new ParamTypeInfo(param);
+                ParamTypeInfo_OBSOLETE newInfo = new ParamTypeInfo_OBSOLETE(param);
                 Owner.allParamType.Add(newInfo);
                 showedInfo.Add(newInfo);
                 return newInfo;
@@ -663,7 +663,7 @@ namespace InfoGlasses
                 
             }
 
-            private void DrawOneLegend(Graphics graphics, PointF pivot, ParamTypeInfo info, float size, float mult)
+            private void DrawOneLegend(Graphics graphics, PointF pivot, ParamTypeInfo_OBSOLETE info, float size, float mult)
             {
 
                 float height = size * mult;
@@ -962,7 +962,7 @@ namespace InfoGlasses
 
         private void GetProxy()
         {
-            allParamType = new List<ParamTypeInfo>();
+            allParamType = new List<ParamTypeInfo_OBSOLETE>();
             foreach (IGH_ObjectProxy item in Grasshopper.Instances.ComponentServer.ObjectProxies)
             {
                 Type type = item.Type;
@@ -973,7 +973,7 @@ namespace InfoGlasses
                     //if (IsGenericSubclassOf(type, typeof(GH_Param<>)))
                     if (typeof(IGH_Param).IsAssignableFrom(type))
                     {
-                        ParamTypeInfo info = new ParamTypeInfo(item);
+                        ParamTypeInfo_OBSOLETE info = new ParamTypeInfo_OBSOLETE(item);
                         if (info.HasInput) continue;
                         //if (info.IsPlugin) continue;
                         bool addFlag = true;
@@ -1080,12 +1080,12 @@ namespace InfoGlasses
             get { return new Guid("3e579f72-106a-4544-bebc-f3a673bc8c98"); }
         }
 
-        public Color GetColor(ParamTypeInfo info)
+        public Color GetColor(ParamTypeInfo_OBSOLETE info)
         {
             return GetValue(info.TypeFullName.ToString(), defaultColor);
         }
 
-        internal void SetColor(ParamTypeInfo info, Color color)
+        internal void SetColor(ParamTypeInfo_OBSOLETE info, Color color)
         {
             SetValue(info.TypeFullName.ToString(), color);
         }
@@ -1305,7 +1305,7 @@ namespace InfoGlasses
         }
     }
 
-    public class ParamTypeInfo
+    public class ParamTypeInfo_OBSOLETE
     {
         public Bitmap Icon { get; set; }
         public BitmapSource IconSource { get; set; }
@@ -1323,18 +1323,6 @@ namespace InfoGlasses
         public bool IsPlugin { get; set; }
 
         public bool HasInput { get; set; }
-
-        public ParamTypeInfo(IGH_ObjectProxy proxy)
-        {
-
-            IGH_Param param = ((IGH_Param)proxy.CreateInstance());
-            CreateAttribute(param);
-        }
-
-        public ParamTypeInfo(IGH_Param param)
-        {
-            CreateAttribute(param);
-        }
 
         private void CreateAttribute(IGH_Param param)
         {
@@ -1369,6 +1357,20 @@ namespace InfoGlasses
             else
                 this.AssemblyIconSource = CanvasRenderEngine.BitmapToBitmapImage(new Bitmap(16, 16));
         }
+
+        public ParamTypeInfo_OBSOLETE(IGH_ObjectProxy proxy)
+        {
+
+            IGH_Param param = ((IGH_Param)proxy.CreateInstance());
+            CreateAttribute(param);
+        }
+
+        public ParamTypeInfo_OBSOLETE(IGH_Param param)
+        {
+            CreateAttribute(param);
+        }
+
+
 
 
     }

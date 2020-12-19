@@ -44,7 +44,7 @@ namespace InfoGlasses
 
         //    //return stack;
         //}
-        private void CreateAll(List<ParamTypeInfo> infos)
+        private void CreateAll(List<ParamTypeInfo_OBSOLETE> infos)
         {
             var result = infos.GroupBy((x) => { return x.AssemblyName; }).ToList();
             result.Sort((y, z) => { return y.Key.CompareTo(z.Key); });
@@ -102,7 +102,7 @@ namespace InfoGlasses
 
         
 
-        private TreeViewItem CreateObj(ParamTypeInfo info)
+        private TreeViewItem CreateObj(ParamTypeInfo_OBSOLETE info)
         {
             TreeViewItem item = new TreeViewItem();
             Border colorbord = new Border();
@@ -140,7 +140,7 @@ namespace InfoGlasses
 
         
 
-        private StackPanel CreateTitle(ParamTypeInfo info, out Border colorbord)
+        private StackPanel CreateTitle(ParamTypeInfo_OBSOLETE info, out Border colorbord)
         {
             StackPanel stack = new StackPanel();
             stack.Orientation = Orientation.Horizontal;
@@ -172,7 +172,7 @@ namespace InfoGlasses
             return stack;
         }
 
-        private Border CreateColorPicker(ParamTypeInfo info, Border colorbord)
+        private Border CreateColorPicker(ParamTypeInfo_OBSOLETE info, Border colorbord)
         {
             #region
             StackPanel stack1 = new StackPanel();
@@ -282,7 +282,7 @@ namespace InfoGlasses
             return wholeBorder;
         }
 
-        private void RespondToColorChanged(Border colorBorder, System.Drawing.Color color, ParamTypeInfo info, Border wholeBorder, Label buttonName, Border colorbord)
+        private void RespondToColorChanged(Border colorBorder, System.Drawing.Color color, ParamTypeInfo_OBSOLETE info, Border wholeBorder, Label buttonName, Border colorbord)
         {
             colorBorder.Background = new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B));
             Owner.SetColor(info, color);
