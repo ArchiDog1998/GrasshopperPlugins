@@ -18,6 +18,7 @@ namespace InfoGlasses.WinformControls
     class WireConnectRenderItem : RenderItem
     {
         #region Stastic Properties
+        #region Wire Properties
         /// <summary>
         /// the wire width in the case of connected component is selected.
         /// </summary>
@@ -71,6 +72,48 @@ namespace InfoGlasses.WinformControls
         public static List<ParamTypeInfo> LegendParamInfo { get; internal set; }
         #endregion
 
+
+        #region Label Properties
+        private bool _showlabel = false;
+        public bool ShowLabel
+        {
+            get { return _showlabel; }
+            internal set { _showlabel = value; }
+        }
+
+        private float _fontSize = 5;
+        public float FontSize
+        {
+            get { return _fontSize; }
+            internal set { _fontSize = value; }
+        }
+
+        private Color _backgroundColor = Color.FromArgb(200, 245, 245, 245);
+        public Color BackgroundColor
+        {
+            get { return _backgroundColor; }
+            internal set { _backgroundColor = value; }
+        }
+
+        private Color _textColor = Color.FromArgb(200, Color.Black);
+        public Color TextColor
+        {
+            get { return _textColor; }
+            internal set { _textColor = value; }
+        }
+
+        private Color _boundaryColor = Color.FromArgb(200, 30, 30, 30);
+        public Color BoundaryColor
+        {
+            get { return _boundaryColor; }
+            internal set { _boundaryColor = value; }
+        }
+
+
+        #endregion
+
+        #endregion
+
         public WireConnectRenderItem(IGH_Param target, Func<bool> showFunc = null, bool renderLittleZoom = false)
             : base(target, showFunc, renderLittleZoom)
         {
@@ -115,7 +158,7 @@ namespace InfoGlasses.WinformControls
         {
             IEnumerable<IGH_Param> sources = param.Sources;
             GH_ParamWireDisplay style = param.WireDisplay;
-            //Font font = new Font(GH_FontServer.StandardBold.FontFamily, Owner.GetValue("LabelSize", 5));
+            Font font = new Font(GH_FontServer.StandardBold.FontFamily, FontSize);
 
             if (!param.Attributes.HasInputGrip)
             {
@@ -154,14 +197,14 @@ namespace InfoGlasses.WinformControls
                         GH_WireType type = GH_Painter.DetermineWireType(source2.VolatileData);
                         DrawConnection(param.Attributes.InputGrip, source2.Attributes.OutputGrip, GH_WireDirection.left, GH_WireDirection.right, param.Attributes.Selected, source2.Attributes.Selected, type, color, canvas, graphics);
 
-                        //if (Owner.GetValue("ShowLabel", false))
-                        //{
-                        //    PointF pivot = new PointF((source2.Attributes.OutputGrip.X + param.Attributes.InputGrip.X) / 2, (source2.Attributes.OutputGrip.Y + param.Attributes.InputGrip.Y) / 2);
-                        //    string str = info.Name;
-                        //    PointF loc = new PointF(pivot.X, pivot.Y + graphics.MeasureString(str, font).Height / 2);
-                        //    CanvasRenderEngine.DrawTextBox_Obsolete(graphics, loc, Owner.GetValue("BackgroundColor", Color.FromArgb(200, 245, 245, 245)), Owner.GetValue("BoundaryColor", Color.FromArgb(200, 30, 30, 30)), str, font, Owner.GetValue("TextColor", Color.FromArgb(200, Color.Black)));
+                        if (ShowLabel)
+                        {
+                            PointF pivot = new PointF((source2.Attributes.OutputGrip.X + param.Attributes.InputGrip.X) / 2, (source2.Attributes.OutputGrip.Y + param.Attributes.InputGrip.Y) / 2);
+                            string str = info.Name;
+                            PointF loc = new PointF(pivot.X, pivot.Y + graphics.MeasureString(str, font).Height / 2);
+                            CanvasRenderEngine.DrawTextBox_Obsolete(graphics, loc, BackgroundColor, BoundaryColor, str, font, TextColor);
 
-                        //}
+                        }
                     }
                     return;
                 }
@@ -172,13 +215,13 @@ namespace InfoGlasses.WinformControls
                     Color color = info.ShowColor;
                     DrawConnection(param.Attributes.InputGrip, source3.Attributes.OutputGrip, GH_WireDirection.left, GH_WireDirection.right, param.Attributes.Selected, source3.Attributes.Selected, GH_WireType.generic, color, canvas, graphics);
 
-                    //if (Owner.GetValue("ShowLabel", false))
-                    //{
-                    //    PointF pivot = new PointF((source3.Attributes.OutputGrip.X + param.Attributes.InputGrip.X) / 2, (source3.Attributes.OutputGrip.Y + param.Attributes.InputGrip.Y) / 2);
-                    //    string str = info.Name;
-                    //    PointF loc = new PointF(pivot.X, pivot.Y + graphics.MeasureString(str, font).Height / 2);
-                    //    CanvasRenderEngine.DrawTextBox_Obsolete(graphics, loc, Owner.GetValue("BackgroundColor", Color.FromArgb(200, 245, 245, 245)), Owner.GetValue("BoundaryColor", Color.FromArgb(200, 30, 30, 30)), str, font, Owner.GetValue("TextColor", Color.FromArgb(200, Color.Black)));
-                    //}
+                    if (ShowLabel)
+                    {
+                        PointF pivot = new PointF((source3.Attributes.OutputGrip.X + param.Attributes.InputGrip.X) / 2, (source3.Attributes.OutputGrip.Y + param.Attributes.InputGrip.Y) / 2);
+                        string str = info.Name;
+                        PointF loc = new PointF(pivot.X, pivot.Y + graphics.MeasureString(str, font).Height / 2);
+                        CanvasRenderEngine.DrawTextBox_Obsolete(graphics, loc, BackgroundColor, BoundaryColor, str, font, TextColor);
+                    }
                 }
                 return;
             }
@@ -192,15 +235,14 @@ namespace InfoGlasses.WinformControls
                         Color color = info.ShowColor;
                         DrawConnection(param.Attributes.InputGrip, source4.Attributes.OutputGrip, GH_WireDirection.left, GH_WireDirection.right, param.Attributes.Selected, source4.Attributes.Selected, GH_WireType.faint, color, canvas, graphics);
 
-                        //if (Owner.GetValue("ShowLabel", false))
-                        //{
-                        //    PointF pivot = new PointF((source4.Attributes.OutputGrip.X + param.Attributes.InputGrip.X) / 2, (source4.Attributes.OutputGrip.Y + param.Attributes.InputGrip.Y) / 2);
-                        //    string str = info.Name;
-                        //    PointF loc = new PointF(pivot.X, pivot.Y + graphics.MeasureString(str, font).Height / 2);
-                        //    CanvasRenderEngine.DrawTextBox_Obsolete(graphics, loc, Color.FromArgb(50, Owner.GetValue("BackgroundColor", Color.FromArgb(200, 245, 245, 245))),
-                        //       Color.FromArgb(50, Owner.GetValue("BoundaryColor", Color.FromArgb(200, 30, 30, 30))), str, font, Owner.GetValue("TextColor", Color.FromArgb(200, Color.Black)));
+                        if (ShowLabel)
+                        {
+                            PointF pivot = new PointF((source4.Attributes.OutputGrip.X + param.Attributes.InputGrip.X) / 2, (source4.Attributes.OutputGrip.Y + param.Attributes.InputGrip.Y) / 2);
+                            string str = info.Name;
+                            PointF loc = new PointF(pivot.X, pivot.Y + graphics.MeasureString(str, font).Height / 2);
+                            CanvasRenderEngine.DrawTextBox_Obsolete(graphics, loc, BackgroundColor, BoundaryColor, str, font, TextColor);
 
-                        //}
+                        }
                     }
                     break;
                  case GH_ParamWireDisplay.hidden:

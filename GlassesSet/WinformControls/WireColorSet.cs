@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace InfoGlasses.WinformControls
 {
+    /// <summary>
+    /// Set the wire default colors.
+    /// </summary>
     internal struct WireColorSet
     {
         public Color DefaultColor { get; }
