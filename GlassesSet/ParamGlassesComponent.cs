@@ -36,6 +36,10 @@ namespace InfoGlasses
         private readonly bool _showLegendDefault = false;
         public bool IsShowLegend => GetValue(_showLegend, _showLegendDefault);
 
+        private readonly string _showControl = "showControl";
+        private readonly bool _showControlDefault = false;
+        public bool IsShowControl => GetValue(_showControl, _showControlDefault);
+
         #endregion
 
         /// <summary>
@@ -75,7 +79,17 @@ namespace InfoGlasses
                     //return menu;
                 });
 
-            this.Controls = new IRespond[] { LabelButton, LegendButton };
+            ClickButtonIcon<LangWindow> ControlButton = new ClickButtonIcon<LangWindow>(_showControl, this, funcs(2), true, Properties.Resources.InputLogo, _showControlDefault,
+                tips: new string[] { "Click to choose whether to show the wire's legend.", "点击以选择是否要显示连线的图例。" },
+                createMenu: () =>
+                {
+                    return null;
+                    //ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true }
+
+                    //return menu;
+                });
+
+            this.Controls = new IRespond[] { LabelButton, LegendButton, ControlButton};
 
         }
 
