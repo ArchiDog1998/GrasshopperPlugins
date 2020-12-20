@@ -525,6 +525,12 @@ namespace InfoGlasses.WPF
             }
         }
 
+        protected override void OnClosed(EventArgs e)
+        {
+            LanguagableComponent.LanguageChanged -= WindowLanguageChanged;
+            base.OnClosed(e);
+        }
+
         #endregion
 
 
