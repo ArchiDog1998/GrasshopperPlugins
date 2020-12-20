@@ -439,12 +439,9 @@ namespace Whale.Animation
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            int inputFrame = 0;
-            DA.GetData("Current Frame", ref inputFrame);
 
 
-
-            //Timeline
+            #region TimeLine
             List<double> inputNumbers = new List<double> { 0 };
             for (int i = 2; i < this.Params.Input.Count; i++)
             {
@@ -456,10 +453,11 @@ namespace Whale.Animation
                 ComputeInterval(inputNumbers);
             for (int n = 0; n < TimeDomain.Count; n++)
                 DA.SetData(n + 2,TimeDomain[n]);
+            #endregion
 
+            int inputFrame = FindFrameObject(DA);
             MaintainViewPort(PictWidth, PictHeight, this.ViewportReduce);
 
-            FindFrameObject();
             if(IsInputASlider && !DA.GetData("Work File Path", ref FilePath))
             {
                 this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Please Input a File Path!");
@@ -578,12 +576,12 @@ namespace Whale.Animation
             }
         }
 
-        protected void FindFrameObject()
+        protected int FindFrameObject(IGH_DataAccess DA)
         {
             if (this.Params.Input[0].SourceCount == 0)
             {
                 this.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Please input a NumberSlider or a VrayTimeLine to Input Frame.");
-                return;
+                return int.MinValue;
             }
 
             FrameObject = this.Params.Input[0].Sources[0].Attributes.GetTopLevel.DocObject;
@@ -605,6 +603,8 @@ namespace Whale.Animation
 
                 frameSlider.NickName = "Frames";
 
+                frameSlider.Expression = "X * " + this.FrameTimeLast.ToString() + " + " + (this.TimeInFrame * FrameTimeLast).ToString();
+
                 this.SliderWidth = (float)(this.MaxTime * SliderMultiple) + 20;
                 this.SliderWidth = SliderWidth > 120 ? SliderWidth : 120;
 
@@ -624,6 +624,8 @@ namespace Whale.Animation
                 frameSlider.Attributes.PerformLayout();
 
                 this.Params.Input[1].Optional = false;
+
+                return (int)frameSlider.Slider.Value;
             }
                 
             else if (FrameObject.GetType().ToString() == "VRayForGrasshopper.VRayTimelineComponent")
@@ -640,13 +642,17 @@ namespace Whale.Animation
                 this.Params.Input[1].Optional = true;
 
                 this.Save = false;
+
+                int inputFrame = 0;
+                DA.GetData("Current Frame", ref inputFrame);
+                return inputFrame;
             }
                 
             else
             {
                 this.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Only NumberSlider and VrayTimeLine are allowed for Input Frame!");
                 FrameObject = null;
-                return;
+                return int.MinValue;
             }
                 
             
