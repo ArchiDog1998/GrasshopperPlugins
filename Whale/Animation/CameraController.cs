@@ -78,9 +78,6 @@ namespace Whale.Animation
             Point3d uv = new Point3d();
             Rhino.Display.RhinoViewport viewPort = null;
 
-
-
-
             DA.GetData("Run", ref run);
             DA.GetData("CameraLocation", ref location);
             DA.GetData("CameraTarget", ref target);
