@@ -132,6 +132,7 @@ namespace InfoGlasses
 
         private bool Run = true;
         #endregion
+
         #endregion
 
         /// <summary>
@@ -147,10 +148,17 @@ namespace InfoGlasses
             //this.Window = new ExceptionWindow(this);
 
             int width = 24;
+            Func<RectangleF, RectangleF> changeInput;
+            var inputFuncs = WinformControlHelper.GetInnerRectLeftFunc(1, 1, new SizeF(width, width), out changeInput);
+            this.ChangeInputLayout = changeInput;
 
-            var funcs = WinformControlHelper.GetInnerRectRightFunc(1, 3, new SizeF(width, width));
+            Func<RectangleF, RectangleF> changeOutput;
+            var outputFuncs = WinformControlHelper.GetInnerRectRightFunc(1, 2, new SizeF(width, width), out changeOutput);
+            this.ChangeOutputLayout = changeOutput;
 
-            ClickButtonIcon<LangWindow> CateButton = new ClickButtonIcon<LangWindow>(_cateSetName, this, funcs(0), true, Properties.Resources.Category, _cateDefaultValue, 
+            //var funcs = WinformControlHelper.GetInnerRectLeftFunc(1, 3, new SizeF(width, width));
+
+            ClickButtonIcon<LangWindow> CateButton = new ClickButtonIcon<LangWindow>(_cateSetName, this, inputFuncs(0), true, Properties.Resources.Category, _cateDefaultValue, 
                 tips: new string[] { "Click to choose whether to show the component's category.", "点击以选择是否要显示运算器的类别位置。" }, 
                 createMenu:()=> 
                 {
@@ -164,7 +172,7 @@ namespace InfoGlasses
 
                     return menu;
                 });
-            ClickButtonIcon<LangWindow> AssemButton = new ClickButtonIcon<LangWindow>(_assemSetName, this, funcs(1), true, Properties.Resources.Assembly, _assemDefaultValue,
+            ClickButtonIcon<LangWindow> AssemButton = new ClickButtonIcon<LangWindow>(_assemSetName, this, outputFuncs(0), true, Properties.Resources.Assembly, _assemDefaultValue,
                 tips: new string[] { "Click to choose whether to show the component's assembly.", "点击以选择是否要显示运算器的类库位置。" }, 
                 createMenu:()=>
                 {
@@ -188,7 +196,7 @@ namespace InfoGlasses
                         ArchiTed_Grasshopper.Properties.Resources.DistanceIcon, !this.IsAutoAssem, _assemBoxHeightDefault, 0, 64, _assemBoxHeight);
                     return menu;
                 });
-            ClickButtonIcon<LangWindow> pluginBUtton = new ClickButtonIcon<LangWindow>(_showPlugin, this, funcs(2), true, Properties.Resources.PlugInIcon, _showPluginDefault,
+            ClickButtonIcon<LangWindow> pluginBUtton = new ClickButtonIcon<LangWindow>(_showPlugin, this, outputFuncs(1), true, Properties.Resources.PlugInIcon, _showPluginDefault,
                tips: new string[] { "Click to choose whether to show if the componet is plugin.", "点击以选择是否要显示运算器是否是插件。" },
                createMenu: () =>
                {

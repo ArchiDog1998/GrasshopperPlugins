@@ -64,7 +64,7 @@ namespace InfoGlasses
 
             int width = 24;
 
-            var funcs = WinformControlHelper.GetInnerRectRightFunc(1, 3, new SizeF(width, width));
+            var funcs = WinformControlHelper.GetInnerRectRightFunc(1, 3, new SizeF(width, width), out _);
 
             ClickButtonIcon<LangWindow> LabelButton = new ClickButtonIcon<LangWindow>(_showLabel, this, funcs(0), true, Properties.Resources.LabelIcon, _showLabelDefault,
                tips: new string[] { "Click to choose whether to show the wire's label.", "点击以选择是否要显示连线的名称。" },

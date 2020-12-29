@@ -235,10 +235,16 @@ namespace ArchiTed_Grasshopper.WinformControls
             return datas;
         }
 
-        public static Func<int, Func<RectangleF, RectangleF, RectangleF>> GetInnerRectRightFunc(int row, int column, SizeF size, int width = 3)
+        public static Func<int, Func<RectangleF, RectangleF, RectangleF>> GetInnerRectRightFunc(int row, int column, SizeF size, out Func<RectangleF, RectangleF> changeOutputLayout,
+            int width = 3)
         {
 
             int[,] datas = GetIntArrays(row, column);
+            changeOutputLayout = (x) =>
+            {
+                PointF pivot = new PointF(x.X + (size.Width + 2 * width) * column, x.Y);
+                return new RectangleF(pivot, x.Size);
+            };
 
             return (i) =>
             {
@@ -251,8 +257,33 @@ namespace ArchiTed_Grasshopper.WinformControls
                     return new RectangleF(new PointF(x, y), size);
                 };
             };
-
         }
+
+        public static Func<int, Func<RectangleF, RectangleF, RectangleF>> GetInnerRectLeftFunc(int row, int column, SizeF size, out Func<RectangleF, RectangleF> changeInputLayout,
+            int width = 3)
+        {
+
+            int[,] datas = GetIntArrays(row, column);
+
+            changeInputLayout = (x) =>
+            {
+                PointF pivot = new PointF(x.X - (size.Width + 2 * width) * column, x.Y);
+                return new RectangleF(pivot, x.Size);
+            };
+
+            return (i) =>
+            {
+                return (innerRect, outerRect) =>
+                {
+                    float yDis = innerRect.Height / row;
+                    float y = innerRect.Top + yDis * (datas[i, 0] + 0.5f) - size.Height / 2;
+                    float x = innerRect.Left - width - (size.Width + 2 * width) * datas[i, 1] - size.Width;
+
+                    return new RectangleF(new PointF(x, y), size);
+                };
+            };
+        }
+
         public static Func<int, Func<RectangleF, RectangleF, RectangleF>> GetBoundsBottonFunc(int row, int column, SizeF size, int height = 3)
         {
             int[,] datas = GetIntArrays(row, column);

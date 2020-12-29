@@ -189,13 +189,13 @@ namespace ArchiTed_Grasshopper
             }
 
         }
-        protected static void ChangeComponentAtt(GH_Component Owner, string fullName, string nickName, string description)
+        private static void ChangeComponentAtt(GH_Component Owner, string fullName, string nickName, string description)
         {
             Owner.Name = fullName;
             Owner.NickName = nickName;
             Owner.Description = description;
         }
-        protected static void ChangeParamAtt(IGH_Param Owner, string fullName, string nickName, string description)
+        private static void ChangeParamAtt(IGH_Param Owner, string fullName, string nickName, string description)
         {
             Owner.Name = fullName;
             Owner.NickName = nickName;

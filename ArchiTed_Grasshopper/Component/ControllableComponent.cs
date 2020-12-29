@@ -26,6 +26,10 @@ namespace ArchiTed_Grasshopper
 
         public Type WindowsType { get; }
 
+        public Func<RectangleF, RectangleF> ChangeInputLayout { get; protected set; }
+
+        public Func<RectangleF, RectangleF> ChangeOutputLayout { get; protected set; }
+
         public override void CreateAttributes()
         {
             base.m_attributes = new ControllableComponentAttribute(this);
@@ -46,6 +50,10 @@ namespace ArchiTed_Grasshopper
             else if (windowsType == null)
                 this.WindowsType = typeof(LangWindow);
             else throw new ArgumentOutOfRangeException("Windows Type");
+
+            ChangeInputLayout = (x) => x;
+            ChangeOutputLayout = (x) => x;
+
         }
 
         protected abstract override void RegisterInputParams(GH_Component.GH_InputParamManager pManager);
@@ -57,7 +65,17 @@ namespace ArchiTed_Grasshopper
         public abstract void CreateWindow();
 
         #region Attribute
-        public virtual void ChangeParamsLayout() { }
+        public virtual void ChangeParamsLayout()
+        {
+            foreach (var input in this.Params.Input)
+            {
+                input.Attributes.Bounds = this.ChangeInputLayout(input.Attributes.Bounds);
+            }
+            foreach (var output in this.Params.Output)
+            {
+                output.Attributes.Bounds = this.ChangeOutputLayout(output.Attributes.Bounds);
+            }
+        }
 
         public virtual void BeforeRender(GH_Canvas canvas, Graphics graphics, GH_CanvasChannel channel) { }
 
