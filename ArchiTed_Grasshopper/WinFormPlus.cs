@@ -145,16 +145,23 @@ namespace ArchiTed_Grasshopper
         }
 
         public static void AddColorBoxItem(ToolStripDropDown menu, LanguagableComponent component, string itemName, string itemTip, Bitmap itemIcon, bool enable,
-            Color Default, string valueName)
+            Color @default, string valueName)
         {
             bool flag = true;
             ToolStripMenuItem item = CreateOneItem(itemName, itemTip, itemIcon, enable);
-            GH_DocumentObject.Menu_AppendColourPicker(item.DropDown, component.GetValuePub(valueName, Default), textcolorChange);
+            GH_DocumentObject.Menu_AppendColourPicker(item.DropDown, component.GetValuePub(valueName, @default), textcolorChange);
             void textcolorChange(GH_ColourPicker sender, GH_ColourPickerEventArgs e)
             {
                 component.SetValuePub(valueName, e.Colour, flag);
                 component.ExpireSolution(true);
                 flag = false;
+            }
+            GH_DocumentObject.Menu_AppendItem(item.DropDown, LanguagableComponent.GetTransLation(new string[] { "Reset Color", "重置颜色" }), resetClick, Properties.Resources.ResetLogo,
+               true, false).ToolTipText = LanguagableComponent.GetTransLation(new string[] { "Click to reset colors.", "点击以重置颜色。" });
+            void resetClick(object sender, EventArgs e)
+            {
+                component.SetValuePub(valueName, @default);
+                component.ExpireSolution(true);
             }
             menu.Items.Add(item);
         }
