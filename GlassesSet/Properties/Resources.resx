@@ -190,6 +190,9 @@
   <data name="RightTopIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\RightTopIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="ShowName" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ShowName.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="SizeIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SizeIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
