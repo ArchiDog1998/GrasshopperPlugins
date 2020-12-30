@@ -31,83 +31,89 @@ namespace InfoGlasses
         public override Guid ComponentGuid => new Guid("de131812-96cf-4cef-b9ee-7c7031802751");
         #endregion
 
-        #region NameSets
-        private readonly string _showNickName = "showNickName";
-        private readonly bool _showNickNameDefault = false;
-        public bool IsShowNickName => GetValue(_showNickName, _showNickNameDefault);
-
-        private readonly string _nameBoxDistance = "nameBoxDistance";
-        private readonly int _nameBoxDistanceDefault = 3;
-        public int NameBoxDistance => GetValue(_nameBoxDistance, _nameBoxDistanceDefault);
-
-        private readonly string _nameBoxFontSize = "nameBoxFontSize";
-        private readonly float _nameBoxFontSizeDefault = 8;
+        #region Basic Sets
+        private const string _nameBoxFontSize = "nameBoxFontSize";
+        private const float _nameBoxFontSizeDefault = 8;
         public float NameBoxFontSize => (float)GetValue(_nameBoxFontSize, _nameBoxFontSizeDefault);
 
-        private readonly string _textColor = "TextColor";
+        private const string _textColor = "TextColor";
         private readonly Color _textColorDefault = Color.Black;
         public Color TextColor => GetValue(_textColor, _textColorDefault);
 
-        private readonly string _backgroundColor = "BackGroundColor";
+        private const string _backgroundColor = "BackGroundColor";
         private readonly Color _backgroundColorDefault = Color.WhiteSmoke;
         public Color BackGroundColor => GetValue(_backgroundColor, _backgroundColorDefault);
 
-        private readonly string _boundaryColor = "BoundaryColor";
+        private const string _boundaryColor = "BoundaryColor";
         private readonly Color _boundaryColorDefault = Color.FromArgb(30, 30, 30);
         public Color BoundaryColor => GetValue(_boundaryColor, _boundaryColorDefault);
         #endregion
 
+        #region NameSets
+        private const string _showName = "showName";
+        private const bool _showNameDefault = true;
+        public bool IsShowName => GetValue(_showName, _showNameDefault);
+
+        private const string _showNickName = "showNickName";
+        private const bool _showNickNameDefault = false;
+        public bool IsShowNickName => GetValue(_showNickName, _showNickNameDefault);
+
+        private const string _nameBoxDistance = "nameBoxDistance";
+        private const int _nameBoxDistanceDefault = 3;
+        public int NameBoxDistance => GetValue(_nameBoxDistance, _nameBoxDistanceDefault);
+        #endregion
+
         #region Category Sets
-        private readonly string _cateSetName = "cateSet";
-        private readonly bool _cateDefaultValue = false;
+        private const string _cateSetName = "cateSet";
+        private const bool _cateDefaultValue = false;
         public bool IsShowCategory => GetValue(_cateSetName, _cateDefaultValue);
 
-        private readonly string _fullCategory = "FullName Category";
-        private readonly bool _fullCateDefault = true;
+        private const string _fullCategory = "FullName Category";
+        private const bool _fullCateDefault = true;
         public bool IsShowFullCate => GetValue(_fullCategory, _fullCateDefault);
 
-        private readonly string _mergeCateBox = "Merge Box";
-        private readonly bool _mergeCateDefault = true;
+        private const string _mergeCateBox = "Merge Box";
+        private const bool _mergeCateDefault = true;
         public bool IsMergeCateBox => GetValue(_mergeCateBox, _mergeCateDefault);
         #endregion
 
         #region Assembly Sets
-        private readonly string _assemSetName = "assemSet";
-        private readonly bool _assemDefaultValue = false;
+        private const string _assemSetName = "assemSet";
+        private const bool _assemDefaultValue = false;
         public bool IsShowAssem => GetValue(_assemSetName, _assemDefaultValue);
 
-        private readonly string _autoAssemHeight = "autoHeight";
-        private readonly bool _autoAssemHeightDefault = true;
+        private const string _autoAssemHeight = "autoHeight";
+        private const bool _autoAssemHeightDefault = true;
         public bool IsAutoAssem => GetValue(_autoAssemHeight, _autoAssemHeightDefault);
 
-        private readonly string _avoidProfiler = "avoidPro";
-        private readonly bool _avoidProDefault = false;
+        private const string _avoidProfiler = "avoidPro";
+        private const bool _avoidProDefault = false;
         public bool IsAvoidProfiler => GetValue(_avoidProfiler, _avoidProDefault);
 
-        private readonly string _assemFontSize = "assemFontSize";
-        private readonly float _assemFontSizeDefault = 5;
+        private const string _assemFontSize = "assemFontSize";
+        private const float _assemFontSizeDefault = 5;
         public float AssemFontSize => (float)GetValue(_assemFontSize, _assemFontSizeDefault);
 
-        private readonly string _assemBoxWidth = "assemBoxWidth";
-        private readonly int _assemBoxWidthDefault = 150;
+        private const string _assemBoxWidth = "assemBoxWidth";
+        private const int _assemBoxWidthDefault = 150;
         public int AssemBoxWidth => GetValue(_assemBoxWidth, _assemBoxWidthDefault);
 
-        private readonly string _assemBoxHeight = "assemboxHeight";
-        private readonly int _assemBoxHeightDefault = 0;
+        private const string _assemBoxHeight = "assemboxHeight";
+        private const int _assemBoxHeightDefault = 0;
         public int AssemBoxHeight => GetValue(_assemBoxHeight, _assemBoxHeightDefault);
         #endregion
 
         #region Plugin Sets
-        private readonly string _showPlugin = "showPlugin";
-        private readonly bool _showPluginDefault = false;
+        private const string _showPlugin = "showPlugin";
+        private const bool _showPluginDefault = false;
         public bool IsShowPlugin => GetValue(_showPlugin, _showPluginDefault);
 
-        private readonly string _pluginColor = "pluginColor";
+        private const string _pluginColor = "pluginColor";
         private readonly Color _pluginColorDefault = Color.FromArgb(19, 34, 122);
         public Color PluginHighLightColor => GetValue(_pluginColor, _pluginColorDefault);
 
-        private readonly string _highLightRadius = "highLightRadius";
-        private readonly int _highLightRadiusDefault = 8;
+        private const string _highLightRadius = "highLightRadius";
+        private const int _highLightRadiusDefault = 8;
         public int HighLightRadius => GetValue(_highLightRadius, _highLightRadiusDefault);
         #endregion
 
@@ -145,18 +151,28 @@ namespace InfoGlasses
         {
             LanguageChanged += ResponseToLanguageChanged;
             ResponseToLanguageChanged(this, new EventArgs());
-            //this.Window = new ExceptionWindow(this);
 
             int width = 24;
             Func<RectangleF, RectangleF> changeInput;
-            var inputFuncs = WinformControlHelper.GetInnerRectLeftFunc(1, 1, new SizeF(width, width), out changeInput);
+            var inputFuncs = WinformControlHelper.GetInnerRectLeftFunc(1, 2, new SizeF(width, width), out changeInput);
             this.ChangeInputLayout = changeInput;
 
             Func<RectangleF, RectangleF> changeOutput;
             var outputFuncs = WinformControlHelper.GetInnerRectRightFunc(1, 2, new SizeF(width, width), out changeOutput);
             this.ChangeOutputLayout = changeOutput;
 
-            //var funcs = WinformControlHelper.GetInnerRectLeftFunc(1, 3, new SizeF(width, width));
+            ClickButtonIcon<LangWindow> NameButton = new ClickButtonIcon<LangWindow>(_showName, this, inputFuncs(1), true, Properties.Resources.ShowName, _showNameDefault,
+                tips: new string[] { "Click to choose whether to show the component's name.", "点击以选择是否要显示运算器的名称。" },
+                createMenu: () =>
+                {
+                    ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
+                    WinFormPlus.AddCheckBoxItem(menu, GetTransLation(new string[] { "Show NickName", "展示昵称" }), GetTransLation(new string[] { "When checked, it will show the nickname instead of name of the component.", "当选中时，将会显示运算器的昵称而不是全名。" }),
+                        null, this, _showNickName, _showNickNameDefault);
+                    WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Set Name Distance", "设置命名距离" }), GetTransLation(new string[] { "Set the distance between name box's top and the component's buttom.", "设置名称气泡框到运算器的距离。" }),
+                        ArchiTed_Grasshopper.Properties.Resources.DistanceIcon, true, _nameBoxDistanceDefault, 0, 500, _nameBoxDistance);
+                    return menu;
+                });
+
 
             ClickButtonIcon<LangWindow> CateButton = new ClickButtonIcon<LangWindow>(_cateSetName, this, inputFuncs(0), true, Properties.Resources.Category, _cateDefaultValue, 
                 tips: new string[] { "Click to choose whether to show the component's category.", "点击以选择是否要显示运算器的类别位置。" }, 
@@ -211,7 +227,7 @@ namespace InfoGlasses
                    return menu;
                });
 
-            this.Controls = new IRespond[] { CateButton, AssemButton, pluginBUtton};
+            this.Controls = new IRespond[] { NameButton, CateButton, AssemButton, pluginBUtton};
         }
         protected override void AppendAdditionComponentMenuItems(ToolStripDropDown menu)
         {
@@ -228,10 +244,6 @@ namespace InfoGlasses
 
             GH_DocumentObject.Menu_AppendSeparator(menu);
 
-            WinFormPlus.AddCheckBoxItem(menu, GetTransLation(new string[] { "Show NickName", "展示昵称" }), GetTransLation(new string[] { "When checked, it will show the nickname instead of name of the component.", "当选中时，将会显示运算器的昵称而不是全名。" }),
-                null, this, _showNickName, _showNickNameDefault);
-            WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Set Name Distance", "设置命名距离" }), GetTransLation(new string[] { "Set the distance between name box's top and the component's buttom.", "设置名称气泡框到运算器的距离。" }),
-                ArchiTed_Grasshopper.Properties.Resources.DistanceIcon, true, _nameBoxDistanceDefault, 0, 500, _nameBoxDistance);
             WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Set Name FontSize", "设置命名字体大小" }), GetTransLation(new string[] { "Set the name box's font size.", "设置名称气泡框的字体大小。" }),
                 ArchiTed_Grasshopper.Properties.Resources.TextIcon, true, _nameBoxFontSizeDefault, 4, 50, _nameBoxFontSize);
 
@@ -331,26 +343,28 @@ namespace InfoGlasses
 
                 Font nameFont = new Font(GH_FontServer.Standard.FontFamily, NameBoxFontSize);
                 TextBoxRenderSet nameSet = new TextBoxRenderSet(BackGroundColor, BoundaryColor, nameFont, TextColor);
-                Func<SizeF, RectangleF, RectangleF> layout = (x, y) =>
+                if (this.IsShowName)
                 {
-                 PointF pivot = new PointF(y.Left + y.Width / 2, y.Top - NameBoxDistance);
-                 return CanvasRenderEngine.MiddleDownRect(pivot, x);
-                };
-                this.RenderObjs.Add(new NickNameOrNameTextBox(this.IsShowNickName, obj, layout, nameSet));
-
-
+                    Func<SizeF, RectangleF, RectangleF> layout = (x, y) =>
+                    {
+                        PointF pivot = new PointF(y.Left + y.Width / 2, y.Top - NameBoxDistance);
+                        return CanvasRenderEngine.MiddleDownRect(pivot, x);
+                    };
+                    this.RenderObjs.Add(new NickNameOrNameTextBox(this.IsShowNickName, obj, layout, nameSet));
+                }
 
                 string cate = IsShowFullCate ? obj.Category : Grasshopper.Instances.ComponentServer.GetCategoryShortName(obj.Category);
                 string subcate = obj.SubCategory;
 
                 if (this.IsShowCategory)
                 {
+
                     if (IsMergeCateBox)
                     {
                         string cateName = cate + " - " + subcate;
                         this.RenderObjs.Add(new TextBox(cateName, obj, (x, y) =>
                         {
-                            PointF pivot = new PointF(y.Left + y.Width / 2, y.Top - NameBoxDistance - (x.Height + 3));
+                            PointF pivot = new PointF(y.Left + y.Width / 2, y.Top - NameBoxDistance - ((this.IsShowName ? x.Height : 0) + 3));
                             return CanvasRenderEngine.MiddleDownRect(pivot, x);
                         }, nameSet));
                     }
@@ -358,13 +372,13 @@ namespace InfoGlasses
                     {
                         this.RenderObjs.Add(new TextBox(subcate, obj, (x, y) =>
                         {
-                            PointF pivot = new PointF(y.Left + y.Width / 2, y.Top - NameBoxDistance - (x.Height + 3));
+                            PointF pivot = new PointF(y.Left + y.Width / 2, y.Top - NameBoxDistance - ((this.IsShowName ? x.Height : 0) + 3));
                             return CanvasRenderEngine.MiddleDownRect(pivot, x);
                         }, nameSet));
 
                         this.RenderObjs.Add(new TextBox(cate, obj, (x, y) =>
                         {
-                            PointF pivot = new PointF(y.Left + y.Width / 2, y.Top - NameBoxDistance - (x.Height + 3) * 2);
+                            PointF pivot = new PointF(y.Left + y.Width / 2, y.Top - NameBoxDistance - ((this.IsShowName ? x.Height : 0) + 3) * 2);
                             return CanvasRenderEngine.MiddleDownRect(pivot, x);
                         }, nameSet));
                     }

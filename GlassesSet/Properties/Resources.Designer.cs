@@ -73,29 +73,9 @@ namespace InfoGlasses.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Assembly_Locked {
-            get {
-                object obj = ResourceManager.GetObject("Assembly_Locked", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap Category {
             get {
                 object obj = ResourceManager.GetObject("Category", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap Category_Locked {
-            get {
-                object obj = ResourceManager.GetObject("Category_Locked", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -256,16 +236,6 @@ namespace InfoGlasses.Properties {
         internal static System.Drawing.Bitmap PlugInIcon {
             get {
                 object obj = ResourceManager.GetObject("PlugInIcon", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap PlugInIcon_Locked {
-            get {
-                object obj = ResourceManager.GetObject("PlugInIcon_Locked", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
