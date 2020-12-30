@@ -47,7 +47,7 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// </summary>
         /// <param name="name"> the string that should be shown. </param>
         /// <param name="target"> the GH_DocumentObject that relay on.  </param>
-        /// <param name="layout"> How to define the bounds. </param>
+        /// <param name="layout"> How to define the bounds. size for this label's size, rectangle for target's bounds. </param>
         /// <param name="renderSet"> render settings. </param>
         /// <param name="meansureString"> get the string's bounds. </param>
         /// <param name="showFunc"> whether to show. </param>
