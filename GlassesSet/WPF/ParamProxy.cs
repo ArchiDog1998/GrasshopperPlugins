@@ -17,14 +17,15 @@ namespace InfoGlasses.WPF
 {
     public class ParamProxy : Proxy
     {
-        public Color ShowColor { get; set; }
+        public ParamGlassesComponent Owner { get; }
+        public Color ShowColor => Owner.GetValuePub(this.TypeFullName, Owner.DefaultColor);
         public string TypeFullName { get; }
         public string TypeName{ get; }
 
-        public ParamProxy(IGH_Param param, Color color)
+        public ParamProxy(IGH_Param param, ParamGlassesComponent owner)
             :base(param)
         {
-            this.ShowColor = color;
+            this.Owner = owner;
             this.TypeFullName = param.Type.FullName;
             this.TypeName = param.TypeName;
         }

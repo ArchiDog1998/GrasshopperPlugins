@@ -83,54 +83,54 @@ namespace ArchiTed_Grasshopper
         #endregion
 
         #region GetSet
-        internal void SetValuePub(string name, bool value, bool recordUndo = true)
+        public void SetValuePub(string name, bool value, bool recordUndo = true)
         {
             if (recordUndo)
                 RecordUndoEvent("Bool Value Changed");
             SetValue(name, value);
         }
-        internal void SetValuePub(string name, int value, bool recordUndo = true)
+        public void SetValuePub(string name, int value, bool recordUndo = true)
         {
             if (recordUndo)
                 RecordUndoEvent("Int Value Changed");
             SetValue(name, value);
         }
-        internal void SetValuePub(string name, double value, bool recordUndo = true)
+        public void SetValuePub(string name, double value, bool recordUndo = true)
         {
             if (recordUndo)
                 RecordUndoEvent("Double Value Changed");
             SetValue(name, value);
         }
-        internal void SetValuePub(string name, Color value, bool recordUndo = true)
+        public void SetValuePub(string name, Color value, bool recordUndo = true)
         {
             if (recordUndo)
                 RecordUndoEvent("Color Value Changed");
             SetValue(name, value);
         }
-        internal void SetValuePub(string name, string value, bool recordUndo = true)
+        public void SetValuePub(string name, string value, bool recordUndo = true)
         {
             if (recordUndo)
                 RecordUndoEvent("String Value Changed");
             SetValue(name, value);
         }
 
-        internal bool GetValuePub(string name, bool value)
+        public bool GetValuePub(string name, bool value)
         {
             return GetValue(name, value);
         }
-        internal int GetValuePub(string name, int value)
+        public int GetValuePub(string name, int value)
         {
             return GetValue(name, value);
         }
-        internal double GetValuePub(string name, double value)
+        public double GetValuePub(string name, double value)
         {
             return GetValue(name, value);
         }
-        internal Color GetValuePub(string name, Color value)
+        public Color GetValuePub(string name, Color value)
         {
             return GetValue(name, value);
         }
-        internal string GetValuePub(string name, string value)
+        public string GetValuePub(string name, string value)
         {
             return GetValue(name, value);
         }

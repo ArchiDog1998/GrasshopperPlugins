@@ -5,6 +5,8 @@
     See file LICENSE for detail or copy at http://opensource.org/licenses/MIT
 */
 
+//数值存储以TypeFullName进行存储！
+
 using ArchiTed_Grasshopper;
 using ArchiTed_Grasshopper.WinformControls;
 using ArchiTed_Grasshopper.WPF;
@@ -195,27 +197,7 @@ namespace InfoGlasses
                tips: new string[] { "Click to choose whether to show the wire's label.", "点击以选择是否要显示连线的名称。" },
                createMenu: () =>
                {
-                    ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
-
-                    WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Lebel Font Size", "气泡框中字体大小" }),
-                        GetTransLation(new string[] { "Set Lebel Font Size", "设置气泡框中字体大小" }),
-                        ArchiTed_Grasshopper.Properties.Resources.SizeIcon, true, _labelFontSizeDefault, 3, 20, _labelFontSize);
-
-                   WinFormPlus.ItemSet<Color>[] sets = new WinFormPlus.ItemSet<Color>[] {
-
-                    new WinFormPlus.ItemSet<Color>( GetTransLation(new string[] { "Text Color", "文字颜色" }),GetTransLation(new string[] { "Adjust text color.", "调整文字颜色。" }),
-                    null, true, _labelTextColorDefault, _labelTextColor),
-
-                    new WinFormPlus.ItemSet<Color>( GetTransLation(new string[] { "Background Color", "背景颜色" }), GetTransLation(new string[] { "Adjust background color.", "调整背景颜色。" }),
-                    null, true, _labelDackgroundColorDefault, _labelBackgroundColor),
-
-                    new WinFormPlus.ItemSet<Color>(GetTransLation(new string[] { "Boundary Color", "边框颜色" }),
-                            GetTransLation(new string[] { "Adjust boundary color.", "调整边框颜色。" }), null, true,
-                            _labelBoundaryColorDefault, _labelBoundaryColor),
-                    };
-                   WinFormPlus.AddColorBoxItems(menu, this, GetTransLation(new string[] { "Colors", "颜色" }),
-                   GetTransLation(new string[] { "Adjust color.", "调整颜色。" }), ArchiTed_Grasshopper.Properties.Resources.ColorIcon, true, sets);
-
+                   ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
                    return menu;
                });
 
@@ -306,6 +288,27 @@ namespace InfoGlasses
 
             GH_DocumentObject.Menu_AppendSeparator(menu);
 
+            WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Lebel Font Size", "气泡框中字体大小" }),
+    GetTransLation(new string[] { "Set Lebel Font Size", "设置气泡框中字体大小" }),
+    ArchiTed_Grasshopper.Properties.Resources.SizeIcon, true, _labelFontSizeDefault, 3, 20, _labelFontSize);
+
+            WinFormPlus.ItemSet<Color>[] sets = new WinFormPlus.ItemSet<Color>[] {
+
+                    new WinFormPlus.ItemSet<Color>( GetTransLation(new string[] { "Text Color", "文字颜色" }),GetTransLation(new string[] { "Adjust text color.", "调整文字颜色。" }),
+                    null, true, _labelTextColorDefault, _labelTextColor),
+
+                    new WinFormPlus.ItemSet<Color>( GetTransLation(new string[] { "Background Color", "背景颜色" }), GetTransLation(new string[] { "Adjust background color.", "调整背景颜色。" }),
+                    null, true, _labelDackgroundColorDefault, _labelBackgroundColor),
+
+                    new WinFormPlus.ItemSet<Color>(GetTransLation(new string[] { "Boundary Color", "边框颜色" }),
+                            GetTransLation(new string[] { "Adjust boundary color.", "调整边框颜色。" }), null, true,
+                            _labelBoundaryColorDefault, _labelBoundaryColor),
+                    };
+            WinFormPlus.AddColorBoxItems(menu, this, GetTransLation(new string[] { "Colors", "颜色" }),
+            GetTransLation(new string[] { "Adjust color.", "调整颜色。" }), ArchiTed_Grasshopper.Properties.Resources.ColorIcon, true, sets);
+
+            GH_DocumentObject.Menu_AppendSeparator(menu);
+
             WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Selected Wire Thickness Plus", "选中时连线宽度增值" }),
                 GetTransLation(new string[] { "Set Selected Wire Thickness Plus", "设置选中时连线宽度增值" }),
                 ArchiTed_Grasshopper.Properties.Resources.SizeIcon, true, _selectWireThicknessDefault, 0, 20, _selectWireThickness);
@@ -337,7 +340,7 @@ namespace InfoGlasses
                 GetTransLation(new string[]{ "High", "高精"}),
             }, _accuracyDefault, _accuracy);
 
-            WinFormPlus.ItemSet<Color>[] sets = new WinFormPlus.ItemSet<Color>[]
+            WinFormPlus.ItemSet<Color>[] sets2 = new WinFormPlus.ItemSet<Color>[]
             {
 
                 new WinFormPlus.ItemSet<Color>( GetTransLation(new string[] { "Default Wire Color", "默认连线颜色" }),
@@ -357,7 +360,7 @@ namespace InfoGlasses
                     null, true, _emptyColorDefault, _emptyColor),
             };
             WinFormPlus.AddColorBoxItems(menu, this, GetTransLation(new string[] { "Wire Colors", "连线颜色" }),
-            GetTransLation(new string[] { "Adjust wire color.", "调整连线颜色。" }), ArchiTed_Grasshopper.Properties.Resources.ColorIcon, true, sets);
+            GetTransLation(new string[] { "Adjust wire color.", "调整连线颜色。" }), ArchiTed_Grasshopper.Properties.Resources.ColorIcon, true, sets2);
 
         }
 
@@ -544,7 +547,7 @@ namespace InfoGlasses
                     IGH_DocumentObject obj = proxy.CreateInstance();
                     if (IsPersistentParam(obj.GetType()))
                     {
-                        _allProxy.Add(new ParamProxy((IGH_Param)obj, this.DefaultColor));
+                        _allProxy.Add(new ParamProxy((IGH_Param)obj, this));
                     }
                 }
             }

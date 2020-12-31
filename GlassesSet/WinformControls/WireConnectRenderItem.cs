@@ -245,7 +245,7 @@ namespace InfoGlasses.WinformControls
                     return info;
                 }
             }
-            ParamProxy newInfo = new ParamProxy(param, Owner.DefaultColor);
+            ParamProxy newInfo = new ParamProxy(param, Owner);
             Owner.AllProxy.Add(newInfo);
             Owner.ShowProxy.Add(newInfo);
             return newInfo;
