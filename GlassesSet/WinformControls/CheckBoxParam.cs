@@ -28,13 +28,20 @@ namespace ArchiTed_Grasshopper.WinformControls
 
         public int Width => 20;
 
-        public CheckBoxParam(string valueName, ControllableComponent owner, Func<RectangleF, RectangleF, RectangleF> layout, bool enable,
-            bool @default, string[] tips = null, int tipsRelay = 1000, Func<ToolStripDropDownMenu> createMenu = null, bool isToggle = true,
+        public CheckBoxParam(GH_PersistentParam<GH_Goo<bool>> target, ControllableComponent owner, bool enable,
+            string[] tips = null, int tipsRelay = 1000, Func<ToolStripDropDownMenu> createMenu = null, bool isToggle = true,
             bool renderLittleZoom = false)
-            : base(valueName, owner, layout, enable, @default, tips, tipsRelay, createMenu, isToggle, renderLittleZoom)
+            : base(null, owner, null, enable, ((GH_Goo<bool>)target.VolatileData.AllData(true).ElementAt(0)).Value, tips, tipsRelay, createMenu, isToggle, renderLittleZoom)
         {
-
+            this.Target = target;
+            //Grasshopper.Instances.ActiveCanvas.MouseClick += ActiveCanvas_MouseClick;
         }
+
+        //private void ActiveCanvas_MouseClick(object sender, MouseEventArgs e)
+        //{
+        //    Grasshopper.Instances.ActiveCanvas.PointToClient(e.Location);
+        //    e.Location;
+        //}
 
         public override void Layout(RectangleF innerRect, RectangleF outerRect)
         {

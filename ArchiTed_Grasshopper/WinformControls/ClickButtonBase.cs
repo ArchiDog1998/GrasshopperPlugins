@@ -87,6 +87,7 @@ namespace ArchiTed_Grasshopper.WinformControls
 
         protected override void RespondToMouseDown(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
+
             if (!_isToggle && e.Button == System.Windows.Forms.MouseButtons.Left)
             {
                 SetValue(true);

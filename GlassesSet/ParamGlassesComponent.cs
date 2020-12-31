@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using Grasshopper.GUI.Canvas;
+using Grasshopper.Kernel.Types;
 
 namespace InfoGlasses
 {
@@ -396,9 +397,6 @@ namespace InfoGlasses
                 Grasshopper.Instances.ActiveCanvas.CanvasPostPaintWires += ActiveCanvas_CanvasPostPaintWires;
                 Grasshopper.Instances.ActiveCanvas.DocumentChanged += ActiveCanvas_DocumentChanged;
 
-                //GetProxy();
-                //GetObject();
-
                 //bool read = true;
                 //foreach (var item in allParamType)
                 //{
@@ -437,7 +435,7 @@ namespace InfoGlasses
                 IGH_Param param = obj as IGH_Param;
                 if (param.Attributes.HasInputGrip)
                 {
-                    this.RenderObjs.Add(new WireConnectRenderItem(param, this));
+                    AddOneParam(param);
                 }
             }
             else if(obj is IGH_Component)
@@ -445,7 +443,7 @@ namespace InfoGlasses
                 IGH_Component com = obj as IGH_Component;
                 foreach (IGH_Param param in com.Params.Input)
                 {
-                    this.RenderObjs.Add(new WireConnectRenderItem(param, this));
+                    AddOneParam(param);
                 }
             }
         }
@@ -468,6 +466,18 @@ namespace InfoGlasses
                     this.RenderObjs.Remove(new WireConnectRenderItem(param, this));
                 }
             }
+        }
+
+        private void AddOneParam(IGH_Param param)
+        {
+            this.RenderObjs.Add(new WireConnectRenderItem(param, this));
+            if (!this.IsShowControl) return;
+
+            //强制转换问题！
+            //if(param is GH_PersistentParam<GH_Boolean>)
+            //{
+            //    this.RenderObjs.Add(new CheckBoxParam((GH_PersistentParam<GH_Goo<bool>>)param, this, true));
+            //}
         }
 
         private void SetTranslateColor()
