@@ -77,7 +77,6 @@
   <ItemGroup>
     <Compile Include="ComTypeInfo.cs" />
     <Compile Include="ParamGlassesComponent.cs" />
-    <Compile Include="ParamTypeInfo.cs" />
     <Compile Include="WinformControls\CheckBoxParam.cs" />
     <Compile Include="WinformControls\ColourSwatchParam.cs" />
     <Compile Include="WinformControls\InputBoxDoubleParam.cs" />

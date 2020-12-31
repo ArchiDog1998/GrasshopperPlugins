@@ -326,7 +326,7 @@ namespace InfoGlasses
             {
                 WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "    PolyLine Param", "    多段线参数" }),
                     GetTransLation(new string[] { "Click to set the polyline wire param.", "点击以修改多段线的参数。" }),
-                    null, true, _polywireParamDefault, 0, 1, _polywireParam);
+                    null, true, _polywireParamDefault, 0, 0.5, _polywireParam);
             }
 
             WinFormPlus.AddLoopBoexItem(menu, this, GetTransLation(new string[] { "Accuracy", "数据精度" }), true, new string[]
