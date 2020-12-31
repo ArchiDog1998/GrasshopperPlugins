@@ -123,7 +123,7 @@ namespace ArchiTed_Grasshopper.WinformControls
                     if (!showed)
                     {
                         Point location = new Point(e.ControlLocation.X + 30, e.ControlLocation.Y - 30);
-                        tip.Show(LanguagableComponent.GetTransLation(Tips), sender, location, 15000);
+                        tip.Show(LanguagableComponent.GetTransLation(Tips), sender, location, 10000);
                         showed = true;
                     }
 
