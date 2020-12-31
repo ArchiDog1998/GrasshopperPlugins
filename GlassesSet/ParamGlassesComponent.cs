@@ -10,6 +10,7 @@ using ArchiTed_Grasshopper.WinformControls;
 using ArchiTed_Grasshopper.WPF;
 using Grasshopper.Kernel;
 using InfoGlasses.WPF;
+using InfoGlasses.WinformControls;
 using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
@@ -35,9 +36,61 @@ namespace InfoGlasses
         #endregion
 
         #region Values
+
+        #region Wire Setting
+        private const string _selectWireThickness = "selectWireThickness";
+        private const double _selectWireThicknessDefault = 5;
+        public double SelectWireThickness => GetValue(_selectWireThickness, _selectWireThicknessDefault);
+
+        private const string _wireType = "wireType";
+        private const int _wireTypeDefault = 0;
+        public int WireType => GetValue(_wireType, _wireTypeDefault);
+
+        private const string _accuracy = "accuracy";
+        private const int _accuracyDefault = 0;
+        public int Accuracy => GetValue(_accuracy, _accuracyDefault);
+        #endregion
+
+        #region Default Color
+        private const string _defaultColor = "defaultColor";
+        private readonly Color _defaultColorDefault = Color.FromArgb(150, 0, 0, 0);
+        public Color DefaultColor => GetValue(_defaultColor, _defaultColorDefault);
+
+        private const string _selectedColor = "selectedColor";
+        private readonly Color _selectedColorDefault = Color.FromArgb(125, 210, 40);
+        public Color SelectedColor => GetValue(_selectedColor, _selectedColorDefault);
+
+        private const string _unselectColor = "unselectedColor";
+        private readonly Color _unselectColorDefalut = Color.FromArgb(50, 0, 0, 0);
+        public Color UnselectColor => GetValue(_unselectColor, _unselectColorDefalut);
+
+        private const string _emptyColor = "emptyColor";
+        private readonly Color _emptyColorDefault = Color.FromArgb(180, 255, 60, 0);
+        public Color EmptyColor => GetValue(_emptyColor, _emptyColorDefault);
+        #endregion
+
+        #region Label
         private const string _showLabel = "showLabel";
         private const bool _showLabelDefault = false;
         public bool IsShowLabel => GetValue(_showLabel, _showLabelDefault);
+
+        private const string _labelFontSize = "labelFontSize";
+        private const double _labelFontSizeDefault = 5;
+        public double LabelFontSize => GetValue(_labelFontSize, _labelFontSizeDefault);
+
+        private const string _labelTextColor = "TextColor";
+        private readonly Color _labelTextColorDefault = Color.Black;
+        public Color LabelTextColor => GetValue(_labelTextColor, _labelTextColorDefault);
+
+        private const string _labelBackgroundColor = "BackGroundColor";
+        private readonly Color _labelDackgroundColorDefault = Color.WhiteSmoke;
+        public Color LabelBackGroundColor => GetValue(_labelBackgroundColor, _labelDackgroundColorDefault);
+
+        private const string _labelBoundaryColor = "BoundaryColor";
+        private readonly Color _labelBoundaryColorDefault = Color.FromArgb(30, 30, 30);
+        public Color LabelBoundaryColor => GetValue(_labelBoundaryColor, _labelBoundaryColorDefault);
+
+        #endregion
 
         private const string _showTree = "showTree";
         private const bool _showTreeDefault = false;
@@ -64,6 +117,7 @@ namespace InfoGlasses
         {
             LanguageChanged += ResponseToLanguageChanged;
             ResponseToLanguageChanged(this, new EventArgs());
+            WireConnectRenderItem.Owner = this;
 
             int width = 24;
 
@@ -79,7 +133,26 @@ namespace InfoGlasses
                tips: new string[] { "Click to choose whether to show the wire's label.", "点击以选择是否要显示连线的名称。" },
                createMenu: () =>
                {
-                   ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
+                    ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
+
+                    WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Set Lebel Font Size", "设置选中时连线宽度" }),
+                        GetTransLation(new string[] { "Set Lebel Font Size", "设置选中时连线宽度" }),
+                        ArchiTed_Grasshopper.Properties.Resources.SizeIcon, true, _labelFontSizeDefault, 3, 20, _labelFontSize);
+
+                   WinFormPlus.ItemSet<Color>[] sets = new WinFormPlus.ItemSet<Color>[] {
+
+                    new WinFormPlus.ItemSet<Color>( GetTransLation(new string[] { "Text Color", "文字颜色" }),GetTransLation(new string[] { "Adjust text color.", "调整文字颜色。" }),
+                    null, true, _labelTextColorDefault, _labelTextColor),
+
+                    new WinFormPlus.ItemSet<Color>( GetTransLation(new string[] { "Background Color", "背景颜色" }), GetTransLation(new string[] { "Adjust background color.", "调整背景颜色。" }),
+                    null, true, _labelDackgroundColorDefault, _labelBackgroundColor),
+
+                    new WinFormPlus.ItemSet<Color>(GetTransLation(new string[] { "Boundary Color", "边框颜色" }),
+                            GetTransLation(new string[] { "Adjust boundary color.", "调整边框颜色。" }), null, true,
+                            _labelBoundaryColorDefault, _labelBoundaryColor),
+                    };
+                   WinFormPlus.AddColorBoxItems(menu, this, GetTransLation(new string[] { "Colors", "颜色" }),
+                   GetTransLation(new string[] { "Adjust color.", "调整颜色。" }), ArchiTed_Grasshopper.Properties.Resources.ColorIcon, true, sets);
 
                    return menu;
                });
@@ -115,7 +188,62 @@ namespace InfoGlasses
             this.Controls = new IRespond[] { LabelButton, treeButton, LegendButton, ControlButton};
         }
 
+        protected override void AppendAdditionComponentMenuItems(ToolStripDropDown menu)
+        {
+            ToolStripMenuItem exceptionsItem = new ToolStripMenuItem(GetTransLation(new string[] { "WireColors", "连线颜色" }), Properties.Resources.ExceptionIcon, exceptionClick);
+            exceptionsItem.ToolTipText = GetTransLation(new string[] { "A window to set the wire's color.", "可以设置连线颜色的窗口。" });
+            exceptionsItem.Font = GH_FontServer.StandardBold;
+            exceptionsItem.ForeColor = Color.FromArgb(19, 34, 122);
 
+            void exceptionClick(object sender, EventArgs e)
+            {
+                CreateWindow();
+            }
+            menu.Items.Add(exceptionsItem);
+
+            GH_DocumentObject.Menu_AppendSeparator(menu);
+
+            WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Set Selected Wire Thickness", "设置选中时连线宽度" }),
+                GetTransLation(new string[] { "Set Selected Wire Thickness", "设置选中时连线宽度" }),
+                ArchiTed_Grasshopper.Properties.Resources.TextIcon, true, _selectWireThicknessDefault, 3, 20, _selectWireThickness);
+
+            WinFormPlus.AddLoopBoexItem(menu, this, GetTransLation(new string[] { "Wire Type", "连线类型" }), true, new string[]
+            {
+                GetTransLation(new string[]{ "Bezier Curve", "贝塞尔曲线"}),
+                GetTransLation(new string[]{ "PolyLine", "多段线"}),
+                GetTransLation(new string[]{ "Line", "直线"}),
+            }, _wireTypeDefault, _wireType);
+
+            WinFormPlus.AddLoopBoexItem(menu, this, GetTransLation(new string[] { "Accuracy", "数据精度" }), true, new string[]
+            {
+                GetTransLation(new string[]{ "Rough", "粗糙"}),
+                GetTransLation(new string[]{ "Medium", "中等"}),
+                GetTransLation(new string[]{ "High", "高精"}),
+            }, _accuracyDefault, _accuracy);
+
+            WinFormPlus.ItemSet<Color>[] sets = new WinFormPlus.ItemSet<Color>[]
+            {
+
+                new WinFormPlus.ItemSet<Color>( GetTransLation(new string[] { "Default Wire Color", "默认连线颜色" }),
+                    GetTransLation(new string[] { "Adjust default wire color.", "调整默认连线颜色。" }),
+                    null, true, _defaultColorDefault, _defaultColor),
+
+                new WinFormPlus.ItemSet<Color>( GetTransLation(new string[] { "Selected Wire Color", "选中连线颜色" }),
+                    GetTransLation(new string[] { "Adjust selected wire color.", "调整选中连线颜色。" }),
+                    null, true, _selectedColorDefault, _selectedColor),
+
+                new WinFormPlus.ItemSet<Color>(GetTransLation(new string[] { "Unselected Wire Color", "未选中连线颜色" }),
+                    GetTransLation(new string[] { "Adjust unselected wire color.", "调整未选中连线颜色。" }),
+                    null, true, _unselectColorDefalut, _unselectColor),
+
+                new WinFormPlus.ItemSet<Color>(GetTransLation(new string[] { "Empty Wire Color", "空连线颜色" }),
+                    GetTransLation(new string[] { "Adjust empty wire color.", "调整空连线颜色。" }),
+                    null, true, _emptyColorDefault, _emptyColor),
+            };
+            WinFormPlus.AddColorBoxItems(menu, this, GetTransLation(new string[] { "Wire Colors", "连线颜色" }),
+            GetTransLation(new string[] { "Adjust wire color.", "调整连线颜色。" }), ArchiTed_Grasshopper.Properties.Resources.ColorIcon, true, sets);
+
+        }
 
         /// <summary>
         /// Registers all the input parameters for this component.

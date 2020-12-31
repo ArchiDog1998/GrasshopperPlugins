@@ -79,7 +79,6 @@
     <Compile Include="ParamGlassesComponent.cs" />
     <Compile Include="ParamTypeInfo.cs" />
     <Compile Include="WinformControls\CheckBoxParam.cs" />
-    <Compile Include="WinformControls\WireColorSet.cs" />
     <Compile Include="WinformControls\ColourSwatchParam.cs" />
     <Compile Include="WinformControls\InputBoxDoubleParam.cs" />
     <Compile Include="WinformControls\InputBoxIntParam.cs" />

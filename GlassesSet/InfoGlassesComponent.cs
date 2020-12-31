@@ -232,7 +232,7 @@ namespace InfoGlasses
         protected override void AppendAdditionComponentMenuItems(ToolStripDropDown menu)
         {
             ToolStripMenuItem exceptionsItem = new ToolStripMenuItem(GetTransLation(new string[] { "Exceptions", "除去项" }), Properties.Resources.ExceptionIcon, exceptionClick);
-            exceptionsItem.ToolTipText = GetTransLation(new string[] { "Except for the following selected component.", "除了以下选中的运算器" });
+            exceptionsItem.ToolTipText = GetTransLation(new string[] { "Except for the following selected component.", "除了以下选中的运算器。" });
             exceptionsItem.Font = GH_FontServer.StandardBold;
             exceptionsItem.ForeColor = Color.FromArgb(19, 34, 122);
 

@@ -25,42 +25,9 @@ namespace InfoGlasses.WinformControls
     class WireConnectRenderItem : RenderItem
     {
         #region Stastic Properties
+        public static ParamGlassesComponent Owner { get; internal set; }
+
         #region Wire Properties
-        /// <summary>
-        /// the wire width in the case of connected component is selected.
-        /// </summary>
-        private readonly static float _selectedWireWidth = 5f;
-
-        private static WireColorSet _colorSet;
-        /// <summary>
-        /// Get the default color set about wire display.
-        /// </summary>
-        public static WireColorSet ColorSet
-
-        {
-            get { return _colorSet; }
-            internal set { _colorSet = value; }
-        }
-
-        private static int _wireType = 0;
-        /// <summary>
-        /// Define which wire type should be displayed.
-        /// </summary>
-        public static int WireType
-        {
-            get { return _wireType; }
-            internal set { _wireType = value; }
-        }
-
-        private static int _accuracy = 1;
-        /// <summary>
-        /// the accuracy of getting value type.
-        /// </summary>
-        public static int Accuracy
-        {
-            get { return _accuracy; }
-            internal set { _accuracy = value; }
-        }
 
 
         private static List<ParamTypeInfo> _allParamInfo = null;
@@ -81,40 +48,6 @@ namespace InfoGlasses.WinformControls
 
 
         #region Label Properties
-        private bool _showlabel = false;
-        public bool ShowLabel
-        {
-            get { return _showlabel; }
-            internal set { _showlabel = value; }
-        }
-
-        private float _fontSize = 5;
-        public float FontSize
-        {
-            get { return _fontSize; }
-            internal set { _fontSize = value; }
-        }
-
-        private Color _backgroundColor = Color.FromArgb(200, 245, 245, 245);
-        public Color BackgroundColor
-        {
-            get { return _backgroundColor; }
-            internal set { _backgroundColor = value; }
-        }
-
-        private Color _textColor = Color.FromArgb(200, Color.Black);
-        public Color TextColor
-        {
-            get { return _textColor; }
-            internal set { _textColor = value; }
-        }
-
-        private Color _boundaryColor = Color.FromArgb(200, 30, 30, 30);
-        public Color BoundaryColor
-        {
-            get { return _boundaryColor; }
-            internal set { _boundaryColor = value; }
-        }
 
 
         #endregion
@@ -165,7 +98,7 @@ namespace InfoGlasses.WinformControls
         {
             IEnumerable<IGH_Param> sources = param.Sources;
             GH_ParamWireDisplay style = param.WireDisplay;
-            Font font = new Font(GH_FontServer.StandardBold.FontFamily, FontSize);
+            Font font = new Font(GH_FontServer.StandardBold.FontFamily, (float)Owner.LabelFontSize);
 
             if (!param.Attributes.HasInputGrip)
             {
@@ -204,12 +137,12 @@ namespace InfoGlasses.WinformControls
                         GH_WireType type = GH_Painter.DetermineWireType(source2.VolatileData);
                         DrawConnection(param.Attributes.InputGrip, source2.Attributes.OutputGrip, GH_WireDirection.left, GH_WireDirection.right, param.Attributes.Selected, source2.Attributes.Selected, type, color, canvas, graphics);
 
-                        if (ShowLabel)
+                        if (Owner.IsShowLabel)
                         {
                             PointF pivot = new PointF((source2.Attributes.OutputGrip.X + param.Attributes.InputGrip.X) / 2, (source2.Attributes.OutputGrip.Y + param.Attributes.InputGrip.Y) / 2);
                             string str = info.Name;
                             PointF loc = new PointF(pivot.X, pivot.Y + graphics.MeasureString(str, font).Height / 2);
-                            CanvasRenderEngine.DrawTextBox_Obsolete(graphics, loc, BackgroundColor, BoundaryColor, str, font, TextColor);
+                            CanvasRenderEngine.DrawTextBox_Obsolete(graphics, loc, Owner.LabelBackGroundColor, Owner.LabelBoundaryColor, str, font, Owner.LabelTextColor);
 
                         }
                     }
@@ -222,12 +155,12 @@ namespace InfoGlasses.WinformControls
                     Color color = info.ShowColor;
                     DrawConnection(param.Attributes.InputGrip, source3.Attributes.OutputGrip, GH_WireDirection.left, GH_WireDirection.right, param.Attributes.Selected, source3.Attributes.Selected, GH_WireType.generic, color, canvas, graphics);
 
-                    if (ShowLabel)
+                    if (Owner.IsShowLabel)
                     {
                         PointF pivot = new PointF((source3.Attributes.OutputGrip.X + param.Attributes.InputGrip.X) / 2, (source3.Attributes.OutputGrip.Y + param.Attributes.InputGrip.Y) / 2);
                         string str = info.Name;
                         PointF loc = new PointF(pivot.X, pivot.Y + graphics.MeasureString(str, font).Height / 2);
-                        CanvasRenderEngine.DrawTextBox_Obsolete(graphics, loc, BackgroundColor, BoundaryColor, str, font, TextColor);
+                        CanvasRenderEngine.DrawTextBox_Obsolete(graphics, loc, Owner.LabelBackGroundColor, Owner.LabelBoundaryColor, str, font, Owner.LabelTextColor);
                     }
                 }
                 return;
@@ -242,12 +175,12 @@ namespace InfoGlasses.WinformControls
                         Color color = info.ShowColor;
                         DrawConnection(param.Attributes.InputGrip, source4.Attributes.OutputGrip, GH_WireDirection.left, GH_WireDirection.right, param.Attributes.Selected, source4.Attributes.Selected, GH_WireType.faint, color, canvas, graphics);
 
-                        if (ShowLabel)
+                        if (Owner.IsShowLabel)
                         {
                             PointF pivot = new PointF((source4.Attributes.OutputGrip.X + param.Attributes.InputGrip.X) / 2, (source4.Attributes.OutputGrip.Y + param.Attributes.InputGrip.Y) / 2);
                             string str = info.Name;
                             PointF loc = new PointF(pivot.X, pivot.Y + graphics.MeasureString(str, font).Height / 2);
-                            CanvasRenderEngine.DrawTextBox_Obsolete(graphics, loc, BackgroundColor, BoundaryColor, str, font, TextColor);
+                            CanvasRenderEngine.DrawTextBox_Obsolete(graphics, loc, Owner.LabelBackGroundColor, Owner.LabelBoundaryColor, str, font, Owner.LabelTextColor);
 
                         }
                     }
@@ -265,7 +198,7 @@ namespace InfoGlasses.WinformControls
 
             if (param.VolatileData.AllData(true).Count() > 0)
             {
-                switch (Accuracy)
+                switch (Owner.Accuracy)
                 {
                     case 0:
                         typeFullName = param.Type.FullName;
@@ -349,7 +282,7 @@ namespace InfoGlasses.WinformControls
             if (ConnectionVisible(pointA, pointB, canvas))
             {
                 GraphicsPath graphicsPath = new GraphicsPath();
-                switch (WireType)
+                switch (Owner.WireType)
                 {
                     case 0:
                         graphicsPath = GH_Painter.ConnectionPath(pointA, pointB, directionA, directionB);
@@ -545,7 +478,7 @@ namespace InfoGlasses.WinformControls
 
         private Pen GenerateWirePen_Static_Generic(PointF A, PointF B, bool A_Selected, bool B_Selected, bool Empty, Color color)
         {
-            float width = (A_Selected || B_Selected) ? _selectedWireWidth : 3f;
+            float width = (A_Selected || B_Selected) ? (float)Owner.SelectWireThickness : 3f;
             return new Pen(GenerateWirePen_Fill(A, B, A_Selected, B_Selected, Empty, color), width);
         }
 
@@ -553,25 +486,25 @@ namespace InfoGlasses.WinformControls
         {
             if (asel && bsel)
             {
-                return new SolidBrush(ColorSet.SelectedColor);
+                return new SolidBrush(Owner.SelectedColor);
             }
             if (!asel && !bsel)
             {
                 if (empty)
                 {
-                    return new SolidBrush(ColorSet.EmptyColor);
+                    return new SolidBrush(Owner.EmptyColor);
                 }
                 return new SolidBrush(color);
             }
             if (empty)
             {
-                color = ColorSet.EmptyColor;
+                color = Owner.EmptyColor;
             }
             float num = Math.Abs(a.X - b.X);
             float num2 = Math.Abs(a.Y - b.Y);
             RectangleF rect = RectangleF.FromLTRB(Math.Min(a.X, b.X), Math.Min(a.Y, b.Y), Math.Max(a.X, b.X), Math.Max(a.Y, b.Y));
             rect.Inflate(2f, 2f);
-            LinearGradientBrush linearGradientBrush = (num > num2) ? ((!((asel & (a.X < b.X)) | (bsel & (b.X < a.X)))) ? new LinearGradientBrush(rect, color, ColorSet.SelectedColor, LinearGradientMode.Horizontal) : new LinearGradientBrush(rect, ColorSet.SelectedColor, color, LinearGradientMode.Horizontal)) : ((!((asel & (a.Y < b.Y)) | (bsel & (b.Y < a.Y)))) ? new LinearGradientBrush(rect, color, ColorSet.SelectedColor, LinearGradientMode.Vertical) : new LinearGradientBrush(rect, ColorSet.SelectedColor, color, LinearGradientMode.Vertical));
+            LinearGradientBrush linearGradientBrush = (num > num2) ? ((!((asel & (a.X < b.X)) | (bsel & (b.X < a.X)))) ? new LinearGradientBrush(rect, color, Owner.SelectedColor, LinearGradientMode.Horizontal) : new LinearGradientBrush(rect, Owner.SelectedColor, color, LinearGradientMode.Horizontal)) : ((!((asel & (a.Y < b.Y)) | (bsel & (b.Y < a.Y)))) ? new LinearGradientBrush(rect, color, Owner.SelectedColor, LinearGradientMode.Vertical) : new LinearGradientBrush(rect, Owner.SelectedColor, color, LinearGradientMode.Vertical));
             if (linearGradientBrush != null)
             {
                 linearGradientBrush.WrapMode = WrapMode.TileFlipXY;

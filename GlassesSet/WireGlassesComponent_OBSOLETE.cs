@@ -1195,7 +1195,7 @@ namespace InfoGlasses
                     LanguagableComponent.GetTransLation(new string[] { "High", "高" }),
                 };
                 WinFormPlus.AddLoopBoexItem(menu, this, LanguagableComponent.GetTransLation(new string[] { "Value Type Accuracy", "数值类型精度" }),
-                     true, values, null, 1, "Accuracy");
+                     true, values, 1, "Accuracy");
 
 
                 string[] values2 = new string[] { LanguagableComponent.GetTransLation(new string[] { "Bezier", "贝塞尔曲线" }),
@@ -1203,7 +1203,7 @@ namespace InfoGlasses
                     LanguagableComponent.GetTransLation(new string[] { "Line", "直线" }),
                 };
                 WinFormPlus.AddLoopBoexItem(menu, this, LanguagableComponent.GetTransLation(new string[] { "Wire Type", "连线类型" }),
-                     true, values2, null, 0, "WireType");
+                     true, values2, 0, "WireType");
             }
             GH_DocumentObject.Menu_AppendSeparator(menu);
 
@@ -1247,7 +1247,7 @@ namespace InfoGlasses
                     Bitmap[] maps = new Bitmap[] { Properties.Resources.LeftTopIcon, Properties.Resources.LeftBottomIcon, 
                         Properties.Resources.RightBottomIcon, Properties.Resources.RightTopIcon };
                     WinFormPlus.AddLoopBoexItem(menu, this, LanguagableComponent.GetTransLation(new string[] { "Legend Location", "图例位置" }),
-                         true, values, maps, 2, "LegendMode");
+                         true, values, 2, "LegendMode", maps);
 
 
                     WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Set Legend Size", "设置图例大小" }),

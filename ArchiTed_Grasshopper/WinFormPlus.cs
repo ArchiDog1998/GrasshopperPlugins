@@ -229,8 +229,19 @@ namespace ArchiTed_Grasshopper
 
         #endregion
 
+        /// <summary>
+        /// Set a Loop Box item in Winform Menu
+        /// </summary>
+        /// <param name="menu"></param>
+        /// <param name="component"></param>
+        /// <param name="itemName">item's name for set infront of the name.</param>
+        /// <param name="enable"></param>
+        /// <param name="NameList"></param>
+        /// <param name="IconList"></param>
+        /// <param name="defaultIndex"></param>
+        /// <param name="valueName"></param>
         public static void AddLoopBoexItem(ToolStripDropDown menu, LanguagableComponent component, string itemName, bool enable,
-            string[] NameList, Bitmap[]IconList, int defaultIndex, string valueName)
+            string[] NameList, int defaultIndex, string valueName, Bitmap[] IconList = null)
         {
             if (defaultIndex > NameList.Length - 1)
                 throw new ArgumentOutOfRangeException("defaultIndex");
