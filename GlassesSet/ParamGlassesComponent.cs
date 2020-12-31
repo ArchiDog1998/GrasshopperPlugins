@@ -35,16 +35,20 @@ namespace InfoGlasses
         #endregion
 
         #region Values
-        private readonly string _showLabel = "showLabel";
-        private readonly bool _showLabelDefault = false;
+        private const string _showLabel = "showLabel";
+        private const bool _showLabelDefault = false;
         public bool IsShowLabel => GetValue(_showLabel, _showLabelDefault);
 
-        private readonly string _showLegend = "showLegend";
-        private readonly bool _showLegendDefault = false;
+        private const string _showTree = "showTree";
+        private const bool _showTreeDefault = false;
+        public bool IsShowTree => GetValue(_showTree, _showTreeDefault);
+
+        private const string _showLegend = "showLegend";
+        private const bool _showLegendDefault = false;
         public bool IsShowLegend => GetValue(_showLegend, _showLegendDefault);
 
-        private readonly string _showControl = "showControl";
-        private readonly bool _showControlDefault = false;
+        private const string _showControl = "showControl";
+        private const bool _showControlDefault = false;
         public bool IsShowControl => GetValue(_showControl, _showControlDefault);
 
         #endregion
@@ -61,44 +65,57 @@ namespace InfoGlasses
             LanguageChanged += ResponseToLanguageChanged;
             ResponseToLanguageChanged(this, new EventArgs());
 
-
             int width = 24;
 
-            var funcs = WinformControlHelper.GetInnerRectRightFunc(1, 3, new SizeF(width, width), out _);
+            Func<RectangleF, RectangleF> changeInput;
+            var inFuncs = WinformControlHelper.GetInnerRectLeftFunc(1, 2, new SizeF(width, width), out changeInput);
+            this.ChangeInputLayout = changeInput;
 
-            ClickButtonIcon<LangWindow> LabelButton = new ClickButtonIcon<LangWindow>(_showLabel, this, funcs(0), true, Properties.Resources.LabelIcon, _showLabelDefault,
+            Func<RectangleF, RectangleF> changeOutput;
+            var outFuncs = WinformControlHelper.GetInnerRectRightFunc(1, 2, new SizeF(width, width), out changeOutput);
+            this.ChangeOutputLayout = changeOutput;
+
+            ClickButtonIcon<LangWindow> LabelButton = new ClickButtonIcon<LangWindow>(_showLabel, this, inFuncs(1), true, Properties.Resources.LabelIcon, _showLabelDefault,
                tips: new string[] { "Click to choose whether to show the wire's label.", "点击以选择是否要显示连线的名称。" },
                createMenu: () =>
                {
-                   return null;
-                   //ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true }
+                   ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
 
-                   //return menu;
+                   return menu;
                });
 
-            ClickButtonIcon<LangWindow> LegendButton = new ClickButtonIcon<LangWindow>(_showLegend, this, funcs(1), true, Properties.Resources.LegendIcon, _showLabelDefault,
+            ClickButtonIcon<LangWindow> treeButton = new ClickButtonIcon<LangWindow>(_showTree, this, inFuncs(0), true, Properties.Resources.ShowTreeStructure, _showTreeDefault,
+                tips: new string[] { "Click to switch whether to show the wire's data structure", "点击以选择是否要显示连线的数据结构。" },
+                createMenu: () =>
+                {
+                    ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
+
+                    return menu;
+                });
+
+
+            ClickButtonIcon<LangWindow> LegendButton = new ClickButtonIcon<LangWindow>(_showLegend, this, outFuncs(0), true, Properties.Resources.LegendIcon, _showLabelDefault,
                 tips: new string[] { "Click to choose whether to show the wire's legend.", "点击以选择是否要显示连线的图例。" },
                 createMenu: () =>
                 {
-                    return null;
-                    //ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true }
+                    ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
 
-                    //return menu;
+                    return menu;
                 });
 
-            ClickButtonIcon<LangWindow> ControlButton = new ClickButtonIcon<LangWindow>(_showControl, this, funcs(2), true, Properties.Resources.InputLogo, _showControlDefault,
+            ClickButtonIcon<LangWindow> ControlButton = new ClickButtonIcon<LangWindow>(_showControl, this, outFuncs(1), true, Properties.Resources.InputLogo, _showControlDefault,
                 tips: new string[] { "Click to choose whether to show the wire's legend.", "点击以选择是否要显示连线的图例。" },
                 createMenu: () =>
                 {
-                    return null;
-                    //ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true }
+                    ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
 
-                    //return menu;
+                    return menu;
                 });
 
-            this.Controls = new IRespond[] { LabelButton, LegendButton, ControlButton};
-
+            this.Controls = new IRespond[] { LabelButton, treeButton, LegendButton, ControlButton};
         }
+
+
 
         /// <summary>
         /// Registers all the input parameters for this component.
@@ -139,7 +156,12 @@ namespace InfoGlasses
         public override void CreateWindow()
         {
             WinformControlHelper.CreateWindow(Activator.CreateInstance(this.WindowsType, this) as LangWindow, this);
+        }
 
+        public override void RemovedFromDocument(GH_Document document)
+        {
+            LanguageChanged -= ResponseToLanguageChanged;
+            base.RemovedFromDocument(document);
         }
 
 
