@@ -40,7 +40,7 @@ namespace InfoGlasses
 
         #region Wire Setting
         private const string _selectWireThickness = "selectWireThickness";
-        private const double _selectWireThicknessDefault = 2;
+        private const double _selectWireThicknessDefault = 4;
         public double SelectWireThickness => GetValue(_selectWireThickness, _selectWireThicknessDefault);
 
         private const string _selectWireSolid = "selectWireSolid";
@@ -56,7 +56,7 @@ namespace InfoGlasses
         public double PolywireParam => GetValue(_polywireParam, _polywireParamDefault);
 
         private const string _accuracy = "accuracy";
-        private const int _accuracyDefault = 0;
+        private const int _accuracyDefault = 1;
         public int Accuracy => GetValue(_accuracy, _accuracyDefault);
         #endregion
 
@@ -80,7 +80,7 @@ namespace InfoGlasses
 
         #region Label
         private const string _showLabel = "showLabel";
-        private const bool _showLabelDefault = true;
+        private const bool _showLabelDefault = false;
         public bool IsShowLabel => GetValue(_showLabel, _showLabelDefault);
 
         private const string _labelFontSize = "labelFontSize";
@@ -100,14 +100,19 @@ namespace InfoGlasses
         public Color LabelBoundaryColor => GetValue(_labelBoundaryColor, _labelBoundaryColorDefault);
 
         #endregion
-
+        #region Tree
         private const string _showTree = "showTree";
         private const bool _showTreeDefault = false;
         public bool IsShowTree => GetValue(_showTree, _showTreeDefault);
 
+        private const string _treeCount = "treeCount";
+        private const int _treeCountDefault = 10;
+        public int TreeCount => GetValue(_treeCount, _treeCountDefault);
+        #endregion
+
         #region Legend
         private const string _showLegend = "showLegend";
-        private const bool _showLegendDefault = true;
+        private const bool _showLegendDefault = false;
         public bool IsShowLegend => GetValue(_showLegend, _showLegendDefault);
 
         private const string _legendLocation = "legendLocation";
@@ -173,7 +178,6 @@ namespace InfoGlasses
         {
             LanguageChanged += ResponseToLanguageChanged;
             ResponseToLanguageChanged(this, new EventArgs());
-            WireConnectRenderItem.Owner = this;
             ShowProxy = new List<ParamProxy>();
 
             int width = 24;
@@ -192,7 +196,7 @@ namespace InfoGlasses
                {
                     ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
 
-                    WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Set Lebel Font Size", "设置气泡框中字体大小" }),
+                    WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Lebel Font Size", "气泡框中字体大小" }),
                         GetTransLation(new string[] { "Set Lebel Font Size", "设置气泡框中字体大小" }),
                         ArchiTed_Grasshopper.Properties.Resources.SizeIcon, true, _labelFontSizeDefault, 3, 20, _labelFontSize);
 
@@ -219,6 +223,10 @@ namespace InfoGlasses
                 createMenu: () =>
                 {
                     ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
+
+                    WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Data Tree Count", "树型数据显示长度" }),
+                        GetTransLation(new string[] { "Set Data Tree Count", "设置树型数据显示长度" }),
+                        ArchiTed_Grasshopper.Properties.Resources.SizeIcon, true, _treeCountDefault, 1, 50, _treeCount);
 
                     return menu;
                 });
@@ -299,11 +307,11 @@ namespace InfoGlasses
 
             WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Selected Wire Thickness Plus", "选中时连线宽度增值" }),
                 GetTransLation(new string[] { "Set Selected Wire Thickness Plus", "设置选中时连线宽度增值" }),
-                ArchiTed_Grasshopper.Properties.Resources.TextIcon, true, _selectWireThicknessDefault, 0, 20, _selectWireThickness);
+                ArchiTed_Grasshopper.Properties.Resources.SizeIcon, true, _selectWireThicknessDefault, 0, 20, _selectWireThickness);
 
             WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Selected Wire Color Alpha Plus", "选中时连线颜色ALpha通道增量" }),
                 GetTransLation(new string[] { "Set Selected Wire Color Alpha Plus", "选中时连线颜色ALpha通道增量" }),
-                ArchiTed_Grasshopper.Properties.Resources.TextIcon, true, _selectWireSolidDefault, -255, 255, _selectWireSolid);
+                ArchiTed_Grasshopper.Properties.Resources.ColorIcon, true, _selectWireSolidDefault, -255, 255, _selectWireSolid);
 
             GH_DocumentObject.Menu_AppendSeparator(menu);
 
@@ -379,8 +387,6 @@ namespace InfoGlasses
             this.RenderObjs = new List<IRenderable>();
             this.RenderObjsUnderComponent = new List<IRenderable>();
 
-            this.OnPingDocument().ObjectsAdded -= InfeGlassesComponent_ObjectsAdded;
-
             if (_isFirst)
             {
 
@@ -411,21 +417,12 @@ namespace InfoGlasses
                 {
                     this.AddOneObject(obj);
                 }
-                this.OnPingDocument().ObjectsAdded += InfeGlassesComponent_ObjectsAdded;
                 Grasshopper.Instances.ActiveCanvas.Refresh();
 
                 if (this.IsShowLegend)
                 {
                     this.RenderObjs.Add(new ParamLegend(this));
                 }
-            }
-        }
-
-        private void InfeGlassesComponent_ObjectsAdded(object sender, GH_DocObjectEventArgs e)
-        {
-            foreach (var obj in e.Objects)
-            {
-                this.AddOneObject(obj);
             }
         }
 
@@ -440,7 +437,7 @@ namespace InfoGlasses
                 IGH_Param param = obj as IGH_Param;
                 if (param.Attributes.HasInputGrip)
                 {
-                    this.RenderObjs.Add(new WireConnectRenderItem(param));
+                    this.RenderObjs.Add(new WireConnectRenderItem(param, this));
                 }
             }
             else if(obj is IGH_Component)
@@ -448,7 +445,27 @@ namespace InfoGlasses
                 IGH_Component com = obj as IGH_Component;
                 foreach (IGH_Param param in com.Params.Input)
                 {
-                    this.RenderObjs.Add(new WireConnectRenderItem(param));
+                    this.RenderObjs.Add(new WireConnectRenderItem(param, this));
+                }
+            }
+        }
+
+        private void RemoveOneObject(IGH_DocumentObject obj)
+        {
+            if (obj is IGH_Param)
+            {
+                IGH_Param param = obj as IGH_Param;
+                if (param.Attributes.HasInputGrip)
+                {
+                    this.RenderObjs.Remove(new WireConnectRenderItem(param, this));
+                }
+            }
+            else if (obj is IGH_Component)
+            {
+                IGH_Component com = obj as IGH_Component;
+                foreach (IGH_Param param in com.Params.Input)
+                {
+                    this.RenderObjs.Remove(new WireConnectRenderItem(param, this));
                 }
             }
         }
@@ -491,7 +508,10 @@ namespace InfoGlasses
 
         private void ObjectsDeletedAction(object sender, GH_DocObjectEventArgs e)
         {
-
+            foreach (GH_DocumentObject docobj in e.Objects)
+            {
+                RemoveOneObject(docobj);
+            }
         }
 
         private void ActiveCanvas_CanvasPostPaintWires(GH_Canvas sender)

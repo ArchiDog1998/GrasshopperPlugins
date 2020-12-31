@@ -26,7 +26,7 @@ namespace InfoGlasses.WinformControls
     class WireConnectRenderItem : RenderItem
     {
         #region Stastic Properties
-        public static ParamGlassesComponent Owner { get; internal set; }
+        public ParamGlassesComponent Owner { get;}
 
         #region Wire Properties
 
@@ -35,16 +35,24 @@ namespace InfoGlasses.WinformControls
         /// </summary>
         public static List<ParamProxy> LegendParamInfo { get; internal set; }
         #endregion
-        public List<ParamProxy> paramProxies { get; private set; }
+        public List<ParamProxy> ParamProxies { get; private set; }
 
         #endregion
 
-        public WireConnectRenderItem(IGH_Param target, Func<bool> showFunc = null, bool renderLittleZoom = false)
+        public WireConnectRenderItem(IGH_Param target, ParamGlassesComponent owner, Func<bool> showFunc = null, bool renderLittleZoom = false)
             : base(target, showFunc, renderLittleZoom)
         {
             if (!target.Attributes.HasInputGrip)
                 throw new ArgumentOutOfRangeException("Target must has InputGrip!");
-            paramProxies = new List<ParamProxy>();
+            ParamProxies = new List<ParamProxy>();
+            this.Owner = owner;
+
+            //target.OnPingDocument().SolutionEnd += WireConnectRenderItem_SolutionEnd;
+        }
+
+        private void WireConnectRenderItem_SolutionEnd(object sender, GH_SolutionEventArgs e)
+        {
+            UpdateParamProxy();
         }
 
         /// <summary>
@@ -60,7 +68,7 @@ namespace InfoGlasses.WinformControls
             RectangleF rectF = new RectangleF(param.Attributes.InputGrip, new SizeF(0, 0));
             foreach (IGH_Param upParam in param.Sources)
             {
-                RectangleF.Union(rectF, new RectangleF(upParam.Attributes.OutputGrip, new SizeF(0, 0)));
+                rectF = RectangleF.Union(rectF, new RectangleF(upParam.Attributes.OutputGrip, new SizeF(0, 0)));
             }
             return rectF;
         }
@@ -76,6 +84,47 @@ namespace InfoGlasses.WinformControls
             if(channel == GH_CanvasChannel.Wires)
             {
                 NewRenderIncomingWires(Target as IGH_Param, canvas, graphics);
+            }
+        }
+
+        private void UpdateParamProxy()
+        {
+            var sources = ((IGH_Param)this.Target).Sources;
+            if (ParamProxies.Count != sources.Count)
+            {
+                ParamProxies = new List<ParamProxy>();
+
+                foreach (IGH_Param item in sources)
+                {
+                    ParamProxies.Add(FindOrCreateInfo(item));
+                }
+            }
+        }
+
+        private void RenderTextBox(Graphics graphics, Font font, int i)
+        {
+            if (Owner.IsShowLabel || Owner.IsShowTree)
+            {
+                string str = "";
+                PointF pivot = new PointF((((IGH_Param)Target).Sources.ElementAt(i).Attributes.OutputGrip.X + ((IGH_Param)Target).Attributes.InputGrip.X) / 2, ((((IGH_Param)Target).Sources.ElementAt(i).Attributes.OutputGrip.Y + ((IGH_Param)Target).Attributes.InputGrip.Y) / 2));
+                if(Owner.IsShowLabel) str += ParamProxies[i].TypeName + "\n";
+                if (Owner.IsShowTree) 
+                {
+                    string dataStr = "";
+                    var datas = ((IGH_Param)Target).Sources.ElementAt(i).VolatileData;
+                    for (int j = 0; j < Math.Min(datas.PathCount, Owner.TreeCount); j++)
+                    {
+                        dataStr += datas.get_Path(j).ToString() + "    N = " + 
+                        datas.get_Branch(j).Count.ToString() + "\n";
+                    }
+                    if(datas.PathCount > Owner.TreeCount)
+                    {
+                        dataStr += "\n...";
+                    }
+                    str += dataStr;
+                } 
+                PointF loc = new PointF(pivot.X, pivot.Y + graphics.MeasureString(str, font).Height / 2);
+                CanvasRenderEngine.DrawTextBox_Obsolete(graphics, loc, Owner.LabelBackGroundColor, Owner.LabelBoundaryColor, str, font, Owner.LabelTextColor);
             }
         }
 
@@ -112,16 +161,7 @@ namespace InfoGlasses.WinformControls
             }
 
             int count = sources.Count();
-            if (paramProxies.Count != count)
-            {
-                paramProxies = new List<ParamProxy>();
-                foreach (IGH_Param item in sources)
-                {
-                    paramProxies.Add(FindOrCreateInfo(item));
-                }
-            }
-
-
+            UpdateParamProxy();
             if (flag)
             {
                 if (CentralSettings.CanvasFancyWires)
@@ -129,29 +169,15 @@ namespace InfoGlasses.WinformControls
                     for (int i = 0; i<count; i++)
                     {
                         GH_WireType type = GH_Painter.DetermineWireType(sources.ElementAt(i).VolatileData);
-                        DrawConnection(param.Attributes.InputGrip, sources.ElementAt(i).Attributes.OutputGrip, GH_WireDirection.left, GH_WireDirection.right, param.Attributes.Selected, sources.ElementAt(i).Attributes.Selected, type, paramProxies[i].ShowColor, canvas, graphics);
-
-                        if (Owner.IsShowLabel)
-                        {
-                            PointF pivot = new PointF((sources.ElementAt(i).Attributes.OutputGrip.X + param.Attributes.InputGrip.X) / 2, (sources.ElementAt(i).Attributes.OutputGrip.Y + param.Attributes.InputGrip.Y) / 2);
-                            string str = paramProxies[i].TypeName;
-                            PointF loc = new PointF(pivot.X, pivot.Y + graphics.MeasureString(str, font).Height / 2);
-                            CanvasRenderEngine.DrawTextBox_Obsolete(graphics, loc, Owner.LabelBackGroundColor, Owner.LabelBoundaryColor, str, font, Owner.LabelTextColor);
-                        }
+                        DrawConnection(param.Attributes.InputGrip, sources.ElementAt(i).Attributes.OutputGrip, GH_WireDirection.left, GH_WireDirection.right, param.Attributes.Selected, sources.ElementAt(i).Attributes.Selected, type, ParamProxies[i].ShowColor, canvas, graphics);
+                        RenderTextBox(graphics, font, i);
                     }
                     return;
                 }
                 for (int i = 0; i < count; i++)
                 {
-                    DrawConnection(param.Attributes.InputGrip, sources.ElementAt(i).Attributes.OutputGrip, GH_WireDirection.left, GH_WireDirection.right, param.Attributes.Selected, sources.ElementAt(i).Attributes.Selected, GH_WireType.generic, paramProxies[i].ShowColor, canvas, graphics);
-
-                    if (Owner.IsShowLabel)
-                    {
-                        PointF pivot = new PointF((sources.ElementAt(i).Attributes.OutputGrip.X + param.Attributes.InputGrip.X) / 2, (sources.ElementAt(i).Attributes.OutputGrip.Y + param.Attributes.InputGrip.Y) / 2);
-                        string str = paramProxies[i].TypeName;
-                        PointF loc = new PointF(pivot.X, pivot.Y + graphics.MeasureString(str, font).Height / 2);
-                        CanvasRenderEngine.DrawTextBox_Obsolete(graphics, loc, Owner.LabelBackGroundColor, Owner.LabelBoundaryColor, str, font, Owner.LabelTextColor);
-                    }
+                    DrawConnection(param.Attributes.InputGrip, sources.ElementAt(i).Attributes.OutputGrip, GH_WireDirection.left, GH_WireDirection.right, param.Attributes.Selected, sources.ElementAt(i).Attributes.Selected, GH_WireType.generic, ParamProxies[i].ShowColor, canvas, graphics);
+                    RenderTextBox(graphics, font, i);
                 }
                 return;
             }
@@ -160,15 +186,8 @@ namespace InfoGlasses.WinformControls
                 case GH_ParamWireDisplay.faint:
                     for (int i = 0; i < count; i++)
                     {
-                        DrawConnection(param.Attributes.InputGrip, sources.ElementAt(i).Attributes.OutputGrip, GH_WireDirection.left, GH_WireDirection.right, param.Attributes.Selected, sources.ElementAt(i).Attributes.Selected, GH_WireType.faint, paramProxies[i].ShowColor, canvas, graphics);
-
-                        if (Owner.IsShowLabel)
-                        {
-                            PointF pivot = new PointF((sources.ElementAt(i).Attributes.OutputGrip.X + param.Attributes.InputGrip.X) / 2, (sources.ElementAt(i).Attributes.OutputGrip.Y + param.Attributes.InputGrip.Y) / 2);
-                            string str = paramProxies[i].TypeName;
-                            PointF loc = new PointF(pivot.X, pivot.Y + graphics.MeasureString(str, font).Height / 2);
-                            CanvasRenderEngine.DrawTextBox_Obsolete(graphics, loc, Owner.LabelBackGroundColor, Owner.LabelBoundaryColor, str, font, Owner.LabelTextColor);
-                        }
+                        DrawConnection(param.Attributes.InputGrip, sources.ElementAt(i).Attributes.OutputGrip, GH_WireDirection.left, GH_WireDirection.right, param.Attributes.Selected, sources.ElementAt(i).Attributes.Selected, GH_WireType.faint, ParamProxies[i].ShowColor, canvas, graphics);
+                        RenderTextBox(graphics, font, i);
                     }
                     break;
                  case GH_ParamWireDisplay.hidden:
@@ -263,10 +282,11 @@ namespace InfoGlasses.WinformControls
             return MinFatherType(types1);
         }
 
-        public void DrawConnection(PointF pointA, PointF pointB, GH_WireDirection directionA, GH_WireDirection directionB, bool selectedA, bool selectedB, GH_WireType type, Color color, GH_Canvas canvas, Graphics graphics)
+        public void DrawConnection(PointF pointA, PointF pointB, GH_WireDirection directionA, GH_WireDirection directionB, bool selectedA, bool selectedB, GH_WireType type, Color colorinput, GH_Canvas canvas, Graphics graphics)
         {
             if (ConnectionVisible(pointA, pointB, canvas))
             {
+                Color color = colorinput;
                 if(selectedA || selectedB)
                 {
                     color.SolidenColor(Owner.SelectWireSolid);
