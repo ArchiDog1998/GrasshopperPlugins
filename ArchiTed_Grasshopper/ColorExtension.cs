@@ -33,6 +33,17 @@ namespace ArchiTed_Grasshopper
             return Color.FromArgb(color.A, R, G, B);
         }
 
+        public static Color SolidenColor(this Color color, int change)
+        {
+            int A = color.A + change;
+
+            A = A > 255 ? 255 : A;
+
+            A = A < 0 ? 0 : A;
+
+            return Color.FromArgb(A, color);
+        }
+
         public static Color OnColor = Color.FromArgb(255, 19, 34, 122);
         public static System.Windows.Media.Color MediaOnColor = ConvertToMediaColor(OnColor);
         public static Color OffColor = Color.FromArgb(255, 60, 60, 60);

@@ -15,16 +15,18 @@ using System.Threading.Tasks;
 
 namespace InfoGlasses.WPF
 {
-    public class ParamProxy: Proxy
+    public class ParamProxy : Proxy
     {
         public Color ShowColor { get; set; }
         public string TypeFullName { get; }
+        public string TypeName{ get; }
 
         public ParamProxy(IGH_Param param, Color color)
             :base(param)
         {
             this.ShowColor = color;
             this.TypeFullName = param.Type.FullName;
+            this.TypeName = param.TypeName;
         }
     }
 }

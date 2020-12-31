@@ -134,7 +134,7 @@ namespace InfoGlasses.WinformControls
                         if (Owner.IsShowLabel)
                         {
                             PointF pivot = new PointF((sources.ElementAt(i).Attributes.OutputGrip.X + param.Attributes.InputGrip.X) / 2, (sources.ElementAt(i).Attributes.OutputGrip.Y + param.Attributes.InputGrip.Y) / 2);
-                            string str = paramProxies[i].FullName;
+                            string str = paramProxies[i].TypeName;
                             PointF loc = new PointF(pivot.X, pivot.Y + graphics.MeasureString(str, font).Height / 2);
                             CanvasRenderEngine.DrawTextBox_Obsolete(graphics, loc, Owner.LabelBackGroundColor, Owner.LabelBoundaryColor, str, font, Owner.LabelTextColor);
                         }
@@ -148,7 +148,7 @@ namespace InfoGlasses.WinformControls
                     if (Owner.IsShowLabel)
                     {
                         PointF pivot = new PointF((sources.ElementAt(i).Attributes.OutputGrip.X + param.Attributes.InputGrip.X) / 2, (sources.ElementAt(i).Attributes.OutputGrip.Y + param.Attributes.InputGrip.Y) / 2);
-                        string str = paramProxies[i].FullName;
+                        string str = paramProxies[i].TypeName;
                         PointF loc = new PointF(pivot.X, pivot.Y + graphics.MeasureString(str, font).Height / 2);
                         CanvasRenderEngine.DrawTextBox_Obsolete(graphics, loc, Owner.LabelBackGroundColor, Owner.LabelBoundaryColor, str, font, Owner.LabelTextColor);
                     }
@@ -165,10 +165,9 @@ namespace InfoGlasses.WinformControls
                         if (Owner.IsShowLabel)
                         {
                             PointF pivot = new PointF((sources.ElementAt(i).Attributes.OutputGrip.X + param.Attributes.InputGrip.X) / 2, (sources.ElementAt(i).Attributes.OutputGrip.Y + param.Attributes.InputGrip.Y) / 2);
-                            string str = paramProxies[i].FullName;
+                            string str = paramProxies[i].TypeName;
                             PointF loc = new PointF(pivot.X, pivot.Y + graphics.MeasureString(str, font).Height / 2);
                             CanvasRenderEngine.DrawTextBox_Obsolete(graphics, loc, Owner.LabelBackGroundColor, Owner.LabelBoundaryColor, str, font, Owner.LabelTextColor);
-
                         }
                     }
                     break;
@@ -220,16 +219,16 @@ namespace InfoGlasses.WinformControls
             {
                 if (info.TypeFullName == typeFullName)
                 {
-                    //if (!LegendParamInfo.Contains(info))
-                    //{
-                    //    LegendParamInfo.Add(info);
-                    //}
+                    if (!Owner.ShowProxy.Contains(info))
+                    {
+                        Owner.ShowProxy.Add(info);
+                    }
                     return info;
                 }
             }
             ParamProxy newInfo = new ParamProxy(param, Owner.DefaultColor);
             Owner.AllProxy.Add(newInfo);
-            //LegendParamInfo.Add(newInfo);
+            Owner.ShowProxy.Add(newInfo);
             return newInfo;
         }
 
@@ -268,6 +267,11 @@ namespace InfoGlasses.WinformControls
         {
             if (ConnectionVisible(pointA, pointB, canvas))
             {
+                if(selectedA || selectedB)
+                {
+                    color.SolidenColor(Owner.SelectWireSolid);
+                }
+
                 GraphicsPath graphicsPath = new GraphicsPath();
                 switch (Owner.WireType)
                 {
@@ -297,7 +301,12 @@ namespace InfoGlasses.WinformControls
                     graphicsPath = new GraphicsPath();
                     graphicsPath.AddLine(pointA, pointB);
                 }
+
                 Pen pen = GenerateWirePen(pointA, pointB, selectedA, selectedB, type, color, canvas);
+
+                if (selectedA || selectedB)
+                    pen.Width += (float)Owner.SelectWireThickness;
+
                 if (pen == null)
                 {
                     pen = new Pen(Color.Black);
@@ -466,8 +475,7 @@ namespace InfoGlasses.WinformControls
 
         private Pen GenerateWirePen_Static_Generic(PointF A, PointF B, bool A_Selected, bool B_Selected, bool Empty, Color color)
         {
-            float width = (A_Selected || B_Selected) ? (float)Owner.SelectWireThickness : 3f;
-            return new Pen(GenerateWirePen_Fill(A, B, A_Selected, B_Selected, Empty, color), width);
+            return new Pen(GenerateWirePen_Fill(A, B, A_Selected, B_Selected, Empty, color), 3f);
         }
 
         public Brush GenerateWirePen_Fill(PointF a, PointF b, bool asel, bool bsel, bool empty, Color color)

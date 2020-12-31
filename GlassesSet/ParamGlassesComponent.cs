@@ -40,8 +40,12 @@ namespace InfoGlasses
 
         #region Wire Setting
         private const string _selectWireThickness = "selectWireThickness";
-        private const double _selectWireThicknessDefault = 5;
+        private const double _selectWireThicknessDefault = 2;
         public double SelectWireThickness => GetValue(_selectWireThickness, _selectWireThicknessDefault);
+
+        private const string _selectWireSolid = "selectWireSolid";
+        private const int _selectWireSolidDefault = 255;
+        public int SelectWireSolid => GetValue(_selectWireSolid, _selectWireSolidDefault);
 
         private const string _wireType = "wireType";
         private const int _wireTypeDefault = 0;
@@ -76,22 +80,22 @@ namespace InfoGlasses
 
         #region Label
         private const string _showLabel = "showLabel";
-        private const bool _showLabelDefault = false;
+        private const bool _showLabelDefault = true;
         public bool IsShowLabel => GetValue(_showLabel, _showLabelDefault);
 
         private const string _labelFontSize = "labelFontSize";
         private const double _labelFontSizeDefault = 5;
         public double LabelFontSize => GetValue(_labelFontSize, _labelFontSizeDefault);
 
-        private const string _labelTextColor = "TextColor";
+        private const string _labelTextColor = "labelTextColor";
         private readonly Color _labelTextColorDefault = Color.Black;
         public Color LabelTextColor => GetValue(_labelTextColor, _labelTextColorDefault);
 
-        private const string _labelBackgroundColor = "BackGroundColor";
+        private const string _labelBackgroundColor = "labelBackGroundColor";
         private readonly Color _labelDackgroundColorDefault = Color.WhiteSmoke;
         public Color LabelBackGroundColor => GetValue(_labelBackgroundColor, _labelDackgroundColorDefault);
 
-        private const string _labelBoundaryColor = "BoundaryColor";
+        private const string _labelBoundaryColor = "labelBoundaryColor";
         private readonly Color _labelBoundaryColorDefault = Color.FromArgb(30, 30, 30);
         public Color LabelBoundaryColor => GetValue(_labelBoundaryColor, _labelBoundaryColorDefault);
 
@@ -101,9 +105,36 @@ namespace InfoGlasses
         private const bool _showTreeDefault = false;
         public bool IsShowTree => GetValue(_showTree, _showTreeDefault);
 
+        #region Legend
         private const string _showLegend = "showLegend";
-        private const bool _showLegendDefault = false;
+        private const bool _showLegendDefault = true;
         public bool IsShowLegend => GetValue(_showLegend, _showLegendDefault);
+
+        private const string _legendLocation = "legendLocation";
+        private const int _legendLocationDefault = 2;
+        public int LegendLocation => GetValue(_legendLocation, _legendLocationDefault);
+
+        private const string _legendSize = "legendSize";
+        private const double _legendSizeDefault = 20;
+        public double LegendSize => GetValue(_legendSize, _legendSizeDefault);
+
+        private const string _legendSpacing = "legendSpacing";
+        private const double _legendSpacingDefault = 30;
+        public double LegendSpacing => GetValue(_legendSpacing, _legendSpacingDefault);
+
+        private const string _legendTextColor = "legendTextColor";
+        private readonly Color _legendTextColorDefault = Color.Black;
+        public Color LegendTextColor => GetValue(_legendTextColor, _legendTextColorDefault);
+
+        private const string _legendBackgroundColor = "legendBackGroundColor";
+        private readonly Color _legendDackgroundColorDefault = Color.WhiteSmoke;
+        public Color LegendBackGroundColor => GetValue(_legendBackgroundColor, _legendDackgroundColorDefault);
+
+        private const string _legendBoundaryColor = "labelBoundaryColor";
+        private readonly Color _legendBoundaryColorDefault = Color.FromArgb(30, 30, 30);
+        public Color LegendBoundaryColor => GetValue(_legendBoundaryColor, _legendBoundaryColorDefault);
+
+        #endregion
 
         private const string _showControl = "showControl";
         private const bool _showControlDefault = false;
@@ -129,6 +160,8 @@ namespace InfoGlasses
             set { _allProxy = value; }
         }
 
+        public List<ParamProxy> ShowProxy { get; internal set; }
+
         /// <summary>
         /// Initializes a new instance of the ParamGlassesComponent class.
         /// </summary>
@@ -141,6 +174,7 @@ namespace InfoGlasses
             LanguageChanged += ResponseToLanguageChanged;
             ResponseToLanguageChanged(this, new EventArgs());
             WireConnectRenderItem.Owner = this;
+            ShowProxy = new List<ParamProxy>();
 
             int width = 24;
 
@@ -190,11 +224,48 @@ namespace InfoGlasses
                 });
 
 
-            ClickButtonIcon<LangWindow> LegendButton = new ClickButtonIcon<LangWindow>(_showLegend, this, outFuncs(0), true, Properties.Resources.LegendIcon, _showLabelDefault,
+            ClickButtonIcon<LangWindow> LegendButton = new ClickButtonIcon<LangWindow>(_showLegend, this, outFuncs(0), true, Properties.Resources.LegendIcon, _showLegendDefault,
                 tips: new string[] { "Click to choose whether to show the wire's legend.", "点击以选择是否要显示连线的图例。" },
                 createMenu: () =>
                 {
                     ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
+
+                    WinFormPlus.AddLoopBoexItem(menu, this, GetTransLation(new string[] { "Legend Location", "图例位置" }), true, new string[]
+                    {
+                        GetTransLation(new string[] { "Left Top", "左上角" }),
+                        GetTransLation(new string[] { "Left Buttom", "左下角" }),
+                        GetTransLation(new string[] { "Right Buttom", "右下角" }),
+                        GetTransLation(new string[] { "Right Top", "右上角" }),
+                    }, _legendLocationDefault, _legendLocation, new Bitmap[] 
+                    { 
+                        Properties.Resources.LeftTopIcon,
+                        Properties.Resources.LeftBottomIcon,
+                        Properties.Resources.RightBottomIcon,
+                        Properties.Resources.RightTopIcon,
+                    });
+
+                    WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Legend Size", "图例大小" }),
+                        GetTransLation(new string[] { "Set Legend Size", "设置图例大小" }),
+                        ArchiTed_Grasshopper.Properties.Resources.SizeIcon, true, _legendSizeDefault, 10, 100, _legendSize);
+
+                    WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Legend Spacing", "图例间距" }),
+                        GetTransLation(new string[] { "Set Legend Spacing to Border", "设置图例到窗体边缘的距离" }),
+                        ArchiTed_Grasshopper.Properties.Resources.DistanceIcon, true, _legendSpacingDefault, 0, 200, _legendSpacing);
+
+                    WinFormPlus.ItemSet<Color>[] sets = new WinFormPlus.ItemSet<Color>[] {
+
+                    new WinFormPlus.ItemSet<Color>( GetTransLation(new string[] { "Text Color", "文字颜色" }),GetTransLation(new string[] { "Adjust text color.", "调整文字颜色。" }),
+                    null, true, _legendTextColorDefault, _legendTextColor),
+
+                    new WinFormPlus.ItemSet<Color>( GetTransLation(new string[] { "Background Color", "背景颜色" }), GetTransLation(new string[] { "Adjust background color.", "调整背景颜色。" }),
+                    null, true, _legendDackgroundColorDefault, _legendBackgroundColor),
+
+                    new WinFormPlus.ItemSet<Color>(GetTransLation(new string[] { "Boundary Color", "边框颜色" }),
+                            GetTransLation(new string[] { "Adjust boundary color.", "调整边框颜色。" }), null, true,
+                            _legendBoundaryColorDefault, _legendBoundaryColor),
+                    };
+                    WinFormPlus.AddColorBoxItems(menu, this, GetTransLation(new string[] { "Colors", "颜色" }),
+                    GetTransLation(new string[] { "Adjust color.", "调整颜色。" }), ArchiTed_Grasshopper.Properties.Resources.ColorIcon, true, sets);
 
                     return menu;
                 });
@@ -226,9 +297,15 @@ namespace InfoGlasses
 
             GH_DocumentObject.Menu_AppendSeparator(menu);
 
-            WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Set Selected Wire Thickness", "设置选中时连线宽度" }),
-                GetTransLation(new string[] { "Set Selected Wire Thickness", "设置选中时连线宽度" }),
-                ArchiTed_Grasshopper.Properties.Resources.TextIcon, true, _selectWireThicknessDefault, 3, 20, _selectWireThickness);
+            WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Selected Wire Thickness Plus", "选中时连线宽度增值" }),
+                GetTransLation(new string[] { "Set Selected Wire Thickness Plus", "设置选中时连线宽度增值" }),
+                ArchiTed_Grasshopper.Properties.Resources.TextIcon, true, _selectWireThicknessDefault, 0, 20, _selectWireThickness);
+
+            WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Selected Wire Color Alpha Plus", "选中时连线颜色ALpha通道增量" }),
+                GetTransLation(new string[] { "Set Selected Wire Color Alpha Plus", "选中时连线颜色ALpha通道增量" }),
+                ArchiTed_Grasshopper.Properties.Resources.TextIcon, true, _selectWireSolidDefault, -255, 255, _selectWireSolid);
+
+            GH_DocumentObject.Menu_AppendSeparator(menu);
 
             WinFormPlus.AddLoopBoexItem(menu, this, GetTransLation(new string[] { "Wire Type", "连线类型" }), true, new string[]
             {
@@ -336,6 +413,11 @@ namespace InfoGlasses
                 }
                 this.OnPingDocument().ObjectsAdded += InfeGlassesComponent_ObjectsAdded;
                 Grasshopper.Instances.ActiveCanvas.Refresh();
+
+                if (this.IsShowLegend)
+                {
+                    this.RenderObjs.Add(new ParamLegend(this));
+                }
             }
         }
 
@@ -430,12 +512,29 @@ namespace InfoGlasses
                 if (!proxy.Obsolete && proxy.Kind == GH_ObjectType.CompiledObject)
                 {
                     IGH_DocumentObject obj = proxy.CreateInstance();
-                    if (obj is IGH_Param)
+                    if (IsPersistentParam(obj.GetType()))
                     {
                         _allProxy.Add(new ParamProxy((IGH_Param)obj, this.DefaultColor));
                     }
                 }
             }
+        }
+
+        private bool IsPersistentParam(Type type)
+        {
+            if(type == null)
+            {
+                return false;
+            }
+            else if (type.IsGenericType)
+            {
+                if (type.GetGenericTypeDefinition() == typeof(GH_PersistentParam<>))
+                    return true;
+                else if (type.GetGenericTypeDefinition() == typeof(GH_Param<>))
+                    return false;
+            }
+
+            return IsPersistentParam(type.BaseType);
         }
 
         #endregion
