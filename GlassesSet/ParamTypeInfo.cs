@@ -17,75 +17,75 @@ using System.Windows.Media.Imaging;
 
 namespace InfoGlasses
 {
-    public class ParamTypeInfo
-    {
-        public Bitmap Icon { get; set; }
-        public BitmapSource IconSource { get; set; }
+    //public class ParamTypeInfo
+    //{
+    //    public Bitmap Icon { get; set; }
+    //    public BitmapSource IconSource { get; set; }
 
-        public string TypeFullName { get; set; }
-        public String Name { get; set; }
+    //    public string TypeFullName { get; set; }
+    //    public String Name { get; set; }
 
-        public string AssemblyName { get; set; }
+    //    public string AssemblyName { get; set; }
 
-        public string AssemblyDesc { get; set; }
-        public string ParamFullName { get; set; }
-        public string ProxyDesc { get; set; }
-        public BitmapSource AssemblyIconSource { get; set; }
+    //    public string AssemblyDesc { get; set; }
+    //    public string ParamFullName { get; set; }
+    //    public string ProxyDesc { get; set; }
+    //    public BitmapSource AssemblyIconSource { get; set; }
 
-        public bool IsPlugin { get; set; }
+    //    public bool IsPlugin { get; set; }
 
-        public bool HasInput { get; set; }
+    //    public bool HasInput { get; set; }
 
-        public Color ShowColor { get; set; }
+    //    public Color ShowColor { get; set; }
 
-        private void CreateAttribute(IGH_Param param)
-        {
-            this.Icon = param.Icon_24x24;
-            this.IconSource = CanvasRenderEngine.BitmapToBitmapImage(new Bitmap(this.Icon, 20, 20));
-            this.ProxyDesc = param.Description;
-
-
-            this.HasInput = param.IsDataProvider;
-            Type type = param.Type;
-
-            this.TypeFullName = type.FullName;
-
-            //void ScheduleCallback(GH_Document doc)
-            //{
-            this.Name = param.Type.Name;
-            //}
-            //GH_Document.GH_ScheduleDelegate callback = new GH_Document.GH_ScheduleDelegate(ScheduleCallback);
-            //document.ScheduleSolution(10, callback);
+    //    private void CreateAttribute(IGH_Param param)
+    //    {
+    //        this.Icon = param.Icon_24x24;
+    //        this.IconSource = CanvasRenderEngine.BitmapToBitmapImage(new Bitmap(this.Icon, 20, 20));
+    //        this.ProxyDesc = param.Description;
 
 
-            this.ParamFullName = param.GetType().FullName;
+    //        this.HasInput = param.IsDataProvider;
+    //        Type type = param.Type;
 
-            //this.AllInstances = new List<IGH_Param>();
-            GH_AssemblyInfo assem = ComTypeInfo.GetGHLibrary(param.GetType());
-            this.AssemblyName = assem.Assembly.GetName().Name;
-            this.AssemblyDesc = assem.Description;
+    //        this.TypeFullName = type.FullName;
 
-            this.IsPlugin = !assem.IsCoreLibrary;
-            if (assem.Icon != null)
-                this.AssemblyIconSource = CanvasRenderEngine.BitmapToBitmapImage(new Bitmap(assem.Icon, 16, 16));
-            else
-                this.AssemblyIconSource = CanvasRenderEngine.BitmapToBitmapImage(new Bitmap(16, 16));
-        }
-
-        public ParamTypeInfo(IGH_ObjectProxy proxy)
-        {
-
-            IGH_Param param = ((IGH_Param)proxy.CreateInstance());
-            CreateAttribute(param);
-        }
-
-        public ParamTypeInfo(IGH_Param param)
-        {
-            CreateAttribute(param);
-        }
+    //        //void ScheduleCallback(GH_Document doc)
+    //        //{
+    //        this.Name = param.Type.Name;
+    //        //}
+    //        //GH_Document.GH_ScheduleDelegate callback = new GH_Document.GH_ScheduleDelegate(ScheduleCallback);
+    //        //document.ScheduleSolution(10, callback);
 
 
+    //        this.ParamFullName = param.GetType().FullName;
+
+    //        //this.AllInstances = new List<IGH_Param>();
+    //        GH_AssemblyInfo assem = ComTypeInfo.GetGHLibrary(param.GetType());
+    //        this.AssemblyName = assem.Assembly.GetName().Name;
+    //        this.AssemblyDesc = assem.Description;
+
+    //        this.IsPlugin = !assem.IsCoreLibrary;
+    //        if (assem.Icon != null)
+    //            this.AssemblyIconSource = CanvasRenderEngine.BitmapToBitmapImage(new Bitmap(assem.Icon, 16, 16));
+    //        else
+    //            this.AssemblyIconSource = CanvasRenderEngine.BitmapToBitmapImage(new Bitmap(16, 16));
+    //    }
+
+    //    public ParamTypeInfo(IGH_ObjectProxy proxy)
+    //    {
+
+    //        IGH_Param param = ((IGH_Param)proxy.CreateInstance());
+    //        CreateAttribute(param);
+    //    }
+
+    //    public ParamTypeInfo(IGH_Param param)
+    //    {
+    //        CreateAttribute(param);
+    //    }
 
 
-    }
+
+
+    //}
 }

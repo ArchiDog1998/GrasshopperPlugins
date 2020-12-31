@@ -101,6 +101,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="WPF\ExceptionProxy.cs" />
+    <Compile Include="WPF\ParamProxy.cs" />
+    <Compile Include="WPF\Proxy.cs" />
     <Compile Include="WPF\WireColorsWindow.xaml.cs">
       <DependentUpon>WireColorsWindow.xaml</DependentUpon>
     </Compile>

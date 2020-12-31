@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using Grasshopper.GUI.Canvas;
 
 namespace InfoGlasses
 {
@@ -45,6 +46,10 @@ namespace InfoGlasses
         private const string _wireType = "wireType";
         private const int _wireTypeDefault = 0;
         public int WireType => GetValue(_wireType, _wireTypeDefault);
+
+        private const string _polywireParam = "polywireParam";
+        private const double _polywireParamDefault = 0.5;
+        public double PolywireParam => GetValue(_polywireParam, _polywireParamDefault);
 
         private const string _accuracy = "accuracy";
         private const int _accuracyDefault = 0;
@@ -104,7 +109,25 @@ namespace InfoGlasses
         private const bool _showControlDefault = false;
         public bool IsShowControl => GetValue(_showControl, _showControlDefault);
 
+
         #endregion
+
+        private bool _run = true;
+        private bool _isFirst = true;
+
+        private List<ParamProxy> _allProxy;
+        public List<ParamProxy> AllProxy
+        {
+            get
+            {
+                if (_allProxy == null)
+                {
+                    UpdateAllProxy();
+                }
+                return _allProxy;
+            }
+            set { _allProxy = value; }
+        }
 
         /// <summary>
         /// Initializes a new instance of the ParamGlassesComponent class.
@@ -135,8 +158,8 @@ namespace InfoGlasses
                {
                     ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
 
-                    WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Set Lebel Font Size", "设置选中时连线宽度" }),
-                        GetTransLation(new string[] { "Set Lebel Font Size", "设置选中时连线宽度" }),
+                    WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Set Lebel Font Size", "设置气泡框中字体大小" }),
+                        GetTransLation(new string[] { "Set Lebel Font Size", "设置气泡框中字体大小" }),
                         ArchiTed_Grasshopper.Properties.Resources.SizeIcon, true, _labelFontSizeDefault, 3, 20, _labelFontSize);
 
                    WinFormPlus.ItemSet<Color>[] sets = new WinFormPlus.ItemSet<Color>[] {
@@ -214,6 +237,13 @@ namespace InfoGlasses
                 GetTransLation(new string[]{ "Line", "直线"}),
             }, _wireTypeDefault, _wireType);
 
+            if(WireType == 1)
+            {
+                WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "    PolyLine Param", "    多段线参数" }),
+                    GetTransLation(new string[] { "Click to set the polyline wire param.", "点击以修改多段线的参数。" }),
+                    null, true, _polywireParamDefault, 0, 1, _polywireParam);
+            }
+
             WinFormPlus.AddLoopBoexItem(menu, this, GetTransLation(new string[] { "Accuracy", "数据精度" }), true, new string[]
             {
                 GetTransLation(new string[]{ "Rough", "粗糙"}),
@@ -261,14 +291,156 @@ namespace InfoGlasses
         {
         }
 
+        #region Algrithm
         /// <summary>
         /// This is the method that actually does the work.
         /// </summary>
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
+            DA.GetData(0, ref _run);
+            this.RenderObjs = new List<IRenderable>();
+            this.RenderObjsUnderComponent = new List<IRenderable>();
+
+            this.OnPingDocument().ObjectsAdded -= InfeGlassesComponent_ObjectsAdded;
+
+            if (_isFirst)
+            {
+
+                this.OnPingDocument().ObjectsAdded += ObjectsAddedAction;
+                this.OnPingDocument().ObjectsDeleted += ObjectsDeletedAction;
+                Grasshopper.Instances.ActiveCanvas.CanvasPrePaintWires += ActiveCanvas_CanvasPrePaintWires;
+                Grasshopper.Instances.ActiveCanvas.CanvasPostPaintWires += ActiveCanvas_CanvasPostPaintWires;
+                Grasshopper.Instances.ActiveCanvas.DocumentChanged += ActiveCanvas_DocumentChanged;
+
+                //GetProxy();
+                //GetObject();
+
+                //bool read = true;
+                //foreach (var item in allParamType)
+                //{
+                //    if (GetColor(item) != defaultColor)
+                //        read = false;
+                //}
+                //if (read)
+                //    Readtxt();
+
+                _isFirst = false;
+            }
+
+            if (_run)
+            {
+                foreach (var obj in this.OnPingDocument().Objects)
+                {
+                    this.AddOneObject(obj);
+                }
+                this.OnPingDocument().ObjectsAdded += InfeGlassesComponent_ObjectsAdded;
+                Grasshopper.Instances.ActiveCanvas.Refresh();
+            }
         }
 
+        private void InfeGlassesComponent_ObjectsAdded(object sender, GH_DocObjectEventArgs e)
+        {
+            foreach (var obj in e.Objects)
+            {
+                this.AddOneObject(obj);
+            }
+        }
+
+        /// <summary>
+        /// Add a new object into this component.
+        /// </summary>
+        /// <param name="obj"></param>
+        private void AddOneObject(IGH_DocumentObject obj)
+        {
+            if(obj is IGH_Param)
+            {
+                IGH_Param param = obj as IGH_Param;
+                if (param.Attributes.HasInputGrip)
+                {
+                    this.RenderObjs.Add(new WireConnectRenderItem(param));
+                }
+            }
+            else if(obj is IGH_Component)
+            {
+                IGH_Component com = obj as IGH_Component;
+                foreach (IGH_Param param in com.Params.Input)
+                {
+                    this.RenderObjs.Add(new WireConnectRenderItem(param));
+                }
+            }
+        }
+
+        private void SetTranslateColor()
+        {
+            GH_Skin.wire_default = Color.Transparent;
+            GH_Skin.wire_empty = Color.Transparent;
+            GH_Skin.wire_selected_a = Color.Transparent;
+            GH_Skin.wire_selected_b = Color.Transparent;
+        }
+
+        private void SetDefaultColor()
+        {
+            GH_Skin.wire_default = this.DefaultColor;
+            GH_Skin.wire_empty = this.EmptyColor;
+            GH_Skin.wire_selected_a = this.SelectedColor;
+            GH_Skin.wire_selected_b = this.UnselectColor;
+        }
+
+        private void ActiveCanvas_DocumentChanged(GH_Canvas sender, GH_CanvasDocumentChangedEventArgs e)
+        {
+            Grasshopper.Instances.ActiveCanvas.CanvasPrePaintWires -= ActiveCanvas_CanvasPrePaintWires;
+            Grasshopper.Instances.ActiveCanvas.CanvasPostPaintWires -= ActiveCanvas_CanvasPostPaintWires;
+
+            if (sender.Document == this.OnPingDocument())
+            {
+                Grasshopper.Instances.ActiveCanvas.CanvasPrePaintWires += ActiveCanvas_CanvasPrePaintWires;
+                Grasshopper.Instances.ActiveCanvas.CanvasPostPaintWires += ActiveCanvas_CanvasPostPaintWires;
+            }
+        }
+
+        private void ObjectsAddedAction(object sender, GH_DocObjectEventArgs e)
+        {
+            foreach (GH_DocumentObject docObj in e.Objects)
+            {
+                AddOneObject(docObj);
+            }
+        }
+
+        private void ObjectsDeletedAction(object sender, GH_DocObjectEventArgs e)
+        {
+
+        }
+
+        private void ActiveCanvas_CanvasPostPaintWires(GH_Canvas sender)
+        {
+            SetDefaultColor();
+        }
+
+        private void ActiveCanvas_CanvasPrePaintWires(GH_Canvas sender)
+        {
+            SetTranslateColor();
+        }
+
+        private void UpdateAllProxy()
+        {
+            _allProxy = new List<ParamProxy>();
+            foreach (IGH_ObjectProxy proxy in Grasshopper.Instances.ComponentServer.ObjectProxies)
+            {
+                if (!proxy.Obsolete && proxy.Kind == GH_ObjectType.CompiledObject)
+                {
+                    IGH_DocumentObject obj = proxy.CreateInstance();
+                    if (obj is IGH_Param)
+                    {
+                        _allProxy.Add(new ParamProxy((IGH_Param)obj, this.DefaultColor));
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        #region After Algrithm
         protected override void ResponseToLanguageChanged(object sender, EventArgs e)
         {
             string[] input = new string[] { GetTransLation(new string[] { "Run", "启动" }), GetTransLation(new string[] { "R", "启动" }), GetTransLation(new string[] { "Run", "启动" }) };
@@ -289,9 +461,25 @@ namespace InfoGlasses
         public override void RemovedFromDocument(GH_Document document)
         {
             LanguageChanged -= ResponseToLanguageChanged;
+            Grasshopper.Instances.ActiveCanvas.DocumentChanged -= ActiveCanvas_DocumentChanged;
+            Grasshopper.Instances.ActiveCanvas.CanvasPrePaintWires -= ActiveCanvas_CanvasPrePaintWires;
+            Grasshopper.Instances.ActiveCanvas.CanvasPostPaintWires -= ActiveCanvas_CanvasPostPaintWires;
+
+            SetDefaultColor();
+
+
+            try
+            {
+                this.OnPingDocument().ObjectsAdded -= ObjectsAddedAction;
+                this.OnPingDocument().ObjectsDeleted -= ObjectsDeletedAction;
+            }
+            catch
+            {
+
+            }
             base.RemovedFromDocument(document);
         }
-
+        #endregion
 
     }
 }

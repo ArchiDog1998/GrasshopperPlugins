@@ -17,19 +17,10 @@ using ArchiTed_Grasshopper.WPF;
 
 namespace InfoGlasses.WPF
 {
-    public class ExceptionProxy: ISearchItem
+    public class ExceptionProxy: Proxy
     {
-        public string FullName { get; }
-        public string Category { get; }
-        public string Subcategory { get; }
-        public string Description { get; }
-        public BitmapImage Icon { get; }
-        public GH_Exposure Exposure { get; }
-        public string Location { get; set; }
-        public Guid Guid { get; }
 
         private InfoGlassesComponent _owner;
-        public bool IsPlugin = true;
 
         private bool _isExceptNormal;
         public bool IsExceptNormal
@@ -76,27 +67,9 @@ namespace InfoGlasses.WPF
             }
         }
 
-        public string FindDesc => FullName;
-
         public ExceptionProxy(IGH_ObjectProxy proxy, InfoGlassesComponent owner)
+            :base(proxy)
         {
-            this.FullName = proxy.Desc.Name;
-            this.Category = proxy.Desc.HasCategory ? proxy.Desc.Category : "";
-            this.Subcategory = proxy.Desc.HasSubCategory ? proxy.Desc.SubCategory : "";
-            this.Description = proxy.Desc.Description;
-            this.Icon = CanvasRenderEngine.BitmapToBitmapImage(proxy.Icon);
-            this.Guid = proxy.Guid;
-            this.Exposure = proxy.Exposure;
-            this.Location = proxy.Location;
-
-            foreach (var item in Grasshopper.Instances.ComponentServer.Libraries)
-            {
-                if(item.Id == proxy.LibraryGuid)
-                {
-                    this.IsPlugin = !item.IsCoreLibrary;
-                    break;
-                }
-            }
             this._owner = owner;
 
             this.IsExceptNormal = _owner.normalExceptionGuid.Contains(this.Guid);

@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ArchiTed_Grasshopper;
 using ArchiTed_Grasshopper.WinformControls;
+using InfoGlasses.WPF;
 using Grasshopper;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
@@ -29,28 +30,12 @@ namespace InfoGlasses.WinformControls
 
         #region Wire Properties
 
-
-        private static List<ParamTypeInfo> _allParamInfo = null;
-        /// <summary>
-        /// Alll Param that in grasshopper.
-        /// </summary>
-        public static List<ParamTypeInfo> AllParamInfo
-        {
-            //Need to set the Default Get AllParamType!!!
-            get { return _allParamInfo; }
-        }
-
         /// <summary>
         /// the param that used in the right document.
         /// </summary>
-        public static List<ParamTypeInfo> LegendParamInfo { get; internal set; }
+        public static List<ParamProxy> LegendParamInfo { get; internal set; }
         #endregion
-
-
-        #region Label Properties
-
-
-        #endregion
+        public List<ParamProxy> paramProxies { get; private set; }
 
         #endregion
 
@@ -59,6 +44,7 @@ namespace InfoGlasses.WinformControls
         {
             if (!target.Attributes.HasInputGrip)
                 throw new ArgumentOutOfRangeException("Target must has InputGrip!");
+            paramProxies = new List<ParamProxy>();
         }
 
         /// <summary>
@@ -125,40 +111,44 @@ namespace InfoGlasses.WinformControls
                 flag = true;
             }
 
+            int count = sources.Count();
+            if (paramProxies.Count != count)
+            {
+                paramProxies = new List<ParamProxy>();
+                foreach (IGH_Param item in sources)
+                {
+                    paramProxies.Add(FindOrCreateInfo(item));
+                }
+            }
+
+
             if (flag)
             {
                 if (CentralSettings.CanvasFancyWires)
                 {
-                    foreach (IGH_Param source2 in sources)
+                    for (int i = 0; i<count; i++)
                     {
-                        ParamTypeInfo info = FindOrCreateInfo(source2);
-
-                        Color color = info.ShowColor;
-                        GH_WireType type = GH_Painter.DetermineWireType(source2.VolatileData);
-                        DrawConnection(param.Attributes.InputGrip, source2.Attributes.OutputGrip, GH_WireDirection.left, GH_WireDirection.right, param.Attributes.Selected, source2.Attributes.Selected, type, color, canvas, graphics);
+                        GH_WireType type = GH_Painter.DetermineWireType(sources.ElementAt(i).VolatileData);
+                        DrawConnection(param.Attributes.InputGrip, sources.ElementAt(i).Attributes.OutputGrip, GH_WireDirection.left, GH_WireDirection.right, param.Attributes.Selected, sources.ElementAt(i).Attributes.Selected, type, paramProxies[i].ShowColor, canvas, graphics);
 
                         if (Owner.IsShowLabel)
                         {
-                            PointF pivot = new PointF((source2.Attributes.OutputGrip.X + param.Attributes.InputGrip.X) / 2, (source2.Attributes.OutputGrip.Y + param.Attributes.InputGrip.Y) / 2);
-                            string str = info.Name;
+                            PointF pivot = new PointF((sources.ElementAt(i).Attributes.OutputGrip.X + param.Attributes.InputGrip.X) / 2, (sources.ElementAt(i).Attributes.OutputGrip.Y + param.Attributes.InputGrip.Y) / 2);
+                            string str = paramProxies[i].FullName;
                             PointF loc = new PointF(pivot.X, pivot.Y + graphics.MeasureString(str, font).Height / 2);
                             CanvasRenderEngine.DrawTextBox_Obsolete(graphics, loc, Owner.LabelBackGroundColor, Owner.LabelBoundaryColor, str, font, Owner.LabelTextColor);
-
                         }
                     }
                     return;
                 }
-                foreach (IGH_Param source3 in sources)
+                for (int i = 0; i < count; i++)
                 {
-                    ParamTypeInfo info = FindOrCreateInfo(source3);
-
-                    Color color = info.ShowColor;
-                    DrawConnection(param.Attributes.InputGrip, source3.Attributes.OutputGrip, GH_WireDirection.left, GH_WireDirection.right, param.Attributes.Selected, source3.Attributes.Selected, GH_WireType.generic, color, canvas, graphics);
+                    DrawConnection(param.Attributes.InputGrip, sources.ElementAt(i).Attributes.OutputGrip, GH_WireDirection.left, GH_WireDirection.right, param.Attributes.Selected, sources.ElementAt(i).Attributes.Selected, GH_WireType.generic, paramProxies[i].ShowColor, canvas, graphics);
 
                     if (Owner.IsShowLabel)
                     {
-                        PointF pivot = new PointF((source3.Attributes.OutputGrip.X + param.Attributes.InputGrip.X) / 2, (source3.Attributes.OutputGrip.Y + param.Attributes.InputGrip.Y) / 2);
-                        string str = info.Name;
+                        PointF pivot = new PointF((sources.ElementAt(i).Attributes.OutputGrip.X + param.Attributes.InputGrip.X) / 2, (sources.ElementAt(i).Attributes.OutputGrip.Y + param.Attributes.InputGrip.Y) / 2);
+                        string str = paramProxies[i].FullName;
                         PointF loc = new PointF(pivot.X, pivot.Y + graphics.MeasureString(str, font).Height / 2);
                         CanvasRenderEngine.DrawTextBox_Obsolete(graphics, loc, Owner.LabelBackGroundColor, Owner.LabelBoundaryColor, str, font, Owner.LabelTextColor);
                     }
@@ -168,17 +158,14 @@ namespace InfoGlasses.WinformControls
             switch (style)
             {
                 case GH_ParamWireDisplay.faint:
-                    foreach (IGH_Param source4 in sources)
+                    for (int i = 0; i < count; i++)
                     {
-                        ParamTypeInfo info = FindOrCreateInfo(source4);
-
-                        Color color = info.ShowColor;
-                        DrawConnection(param.Attributes.InputGrip, source4.Attributes.OutputGrip, GH_WireDirection.left, GH_WireDirection.right, param.Attributes.Selected, source4.Attributes.Selected, GH_WireType.faint, color, canvas, graphics);
+                        DrawConnection(param.Attributes.InputGrip, sources.ElementAt(i).Attributes.OutputGrip, GH_WireDirection.left, GH_WireDirection.right, param.Attributes.Selected, sources.ElementAt(i).Attributes.Selected, GH_WireType.faint, paramProxies[i].ShowColor, canvas, graphics);
 
                         if (Owner.IsShowLabel)
                         {
-                            PointF pivot = new PointF((source4.Attributes.OutputGrip.X + param.Attributes.InputGrip.X) / 2, (source4.Attributes.OutputGrip.Y + param.Attributes.InputGrip.Y) / 2);
-                            string str = info.Name;
+                            PointF pivot = new PointF((sources.ElementAt(i).Attributes.OutputGrip.X + param.Attributes.InputGrip.X) / 2, (sources.ElementAt(i).Attributes.OutputGrip.Y + param.Attributes.InputGrip.Y) / 2);
+                            string str = paramProxies[i].FullName;
                             PointF loc = new PointF(pivot.X, pivot.Y + graphics.MeasureString(str, font).Height / 2);
                             CanvasRenderEngine.DrawTextBox_Obsolete(graphics, loc, Owner.LabelBackGroundColor, Owner.LabelBoundaryColor, str, font, Owner.LabelTextColor);
 
@@ -192,7 +179,7 @@ namespace InfoGlasses.WinformControls
             }
         }
 
-        private ParamTypeInfo FindOrCreateInfo(IGH_Param param)
+        private ParamProxy FindOrCreateInfo(IGH_Param param)
         {
             string typeFullName = param.Type.FullName;
 
@@ -229,20 +216,20 @@ namespace InfoGlasses.WinformControls
 
             }
 
-            foreach (var info in AllParamInfo)
+            foreach (var info in Owner.AllProxy)
             {
                 if (info.TypeFullName == typeFullName)
                 {
-                    if (!LegendParamInfo.Contains(info))
-                    {
-                        LegendParamInfo.Add(info);
-                    }
+                    //if (!LegendParamInfo.Contains(info))
+                    //{
+                    //    LegendParamInfo.Add(info);
+                    //}
                     return info;
                 }
             }
-            ParamTypeInfo newInfo = new ParamTypeInfo(param);
-            AllParamInfo.Add(newInfo);
-            LegendParamInfo.Add(newInfo);
+            ParamProxy newInfo = new ParamProxy(param, Owner.DefaultColor);
+            Owner.AllProxy.Add(newInfo);
+            //LegendParamInfo.Add(newInfo);
             return newInfo;
         }
 
@@ -288,8 +275,9 @@ namespace InfoGlasses.WinformControls
                         graphicsPath = GH_Painter.ConnectionPath(pointA, pointB, directionA, directionB);
                         break;
                     case 1:
-                        PointF C = new PointF((pointA.X + pointB.X) / 2, pointA.Y);
-                        PointF D = new PointF((pointA.X + pointB.X) / 2, pointB.Y);
+                        float distance = pointB.X - pointA.X;
+                        PointF C = new PointF(pointA.X + distance * (float)Owner.PolywireParam, pointA.Y);
+                        PointF D = new PointF(pointB.X - distance * (float)Owner.PolywireParam, pointB.Y);
                         graphicsPath.AddLine(pointA, C);
                         graphicsPath.AddLine(C, D);
                         graphicsPath.AddLine(D, pointB);

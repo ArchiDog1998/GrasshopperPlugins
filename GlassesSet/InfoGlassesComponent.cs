@@ -136,7 +136,7 @@ namespace InfoGlasses
             set { _allProxy = value; }
         }
 
-        private bool Run = true;
+        private bool _run = true;
         #endregion
 
         #endregion
@@ -294,7 +294,7 @@ namespace InfoGlasses
 
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            DA.GetData(0,ref Run);
+            DA.GetData(0,ref _run);
 
             this.RenderObjs = new List<IRenderable>();
             this.RenderObjsUnderComponent = new List<IRenderable>();
@@ -315,7 +315,7 @@ namespace InfoGlasses
 
             }
 
-            if (Run)
+            if (_run)
             {
                 foreach (var obj in this.OnPingDocument().Objects)
                 {
