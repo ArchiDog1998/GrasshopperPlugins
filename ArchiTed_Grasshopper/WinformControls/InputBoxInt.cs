@@ -21,7 +21,7 @@ namespace ArchiTed_Grasshopper.WinformControls
         public int Max { get; }
 
         public InputBoxInt(string valueName, ControllableComponent owner, Func<int, RectangleF, RectangleF, RectangleF> layoutWidth, bool enable,
-            int @default, int min = int.MinValue, int max = int.MaxValue, string[] tips = null, int tipsRelay = 1000, Func<ToolStripDropDownMenu> createMenu = null,
+            int @default, int min = int.MinValue, int max = int.MaxValue, string[] tips = null, int tipsRelay = 5000, Func<ToolStripDropDownMenu> createMenu = null,
             bool renderLittleZoom = false)
             : base(valueName, owner, layoutWidth, enable, tips, tipsRelay, createMenu, renderLittleZoom)
         {
@@ -55,9 +55,9 @@ namespace ArchiTed_Grasshopper.WinformControls
             return Owner.GetValuePub(ValueName, Default);
         }
 
-        protected override void SetValue(int valueIn)
+        protected override void SetValue(int valueIn, bool record)
         {
-            Owner.SetValuePub(ValueName, valueIn);
+            Owner.SetValuePub(ValueName, valueIn, record);
         }
     }
 }

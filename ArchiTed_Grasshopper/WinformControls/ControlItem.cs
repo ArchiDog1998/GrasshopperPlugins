@@ -76,7 +76,7 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// <param name="tipsRelay">How long in millisecond to show the tips.</param>
         /// <param name="renderLittleZoom">Whether to render when viewport's zoom is less than 0.5.</param>
         public ControlItem(string valueName, ControllableComponent owner, Func<RectangleF, RectangleF, RectangleF> layout,  bool enable,
-            string[] tips = null, int tipsRelay = 1000,
+            string[] tips = null, int tipsRelay = 5000,
             bool renderLittleZoom = false)
             :base(renderLittleZoom)
         {
@@ -123,7 +123,7 @@ namespace ArchiTed_Grasshopper.WinformControls
                     if (!showed)
                     {
                         Point location = new Point(e.ControlLocation.X + 30, e.ControlLocation.Y - 30);
-                        tip.Show(LanguagableComponent.GetTransLation(Tips), sender, location, 10000);
+                        tip.Show(LanguagableComponent.GetTransLation(Tips), sender, location, this.TipsRelay);
                         showed = true;
                     }
 
@@ -276,7 +276,7 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// Set value that in controllableComponent.
         /// </summary>
         /// <param name="valueIn">Value.</param>
-        protected abstract void SetValue(T valueIn);
+        protected abstract void SetValue(T valueIn, bool record = true);
 
     }
 }

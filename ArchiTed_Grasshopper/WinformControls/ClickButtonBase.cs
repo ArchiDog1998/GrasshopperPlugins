@@ -51,7 +51,7 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// <param name="renderLittleZoom">Whether to render when viewport's zoom is less than 0.5.</param>
         /// <param name="renderSet"> render settings. </param>
         public ClickButtonBase(string valueName, ControllableComponent owner, Func<RectangleF, RectangleF, RectangleF> layout, bool enable,
-             bool @default, string[] tips = null, int tipsRelay = 1000,Func<ToolStripDropDownMenu> createMenu = null, bool isToggle = true,
+             bool @default, string[] tips = null, int tipsRelay = 5000,Func<ToolStripDropDownMenu> createMenu = null, bool isToggle = true,
              bool renderLittleZoom = false, ButtonRenderSet? renderSet = null)
             :base(valueName, owner, layout, enable, tips, tipsRelay, createMenu, renderLittleZoom)
         {
@@ -111,9 +111,9 @@ namespace ArchiTed_Grasshopper.WinformControls
             return Owner.GetValuePub(ValueName, Default);
         }
 
-        protected override void SetValue(bool valueIn)
+        protected override void SetValue(bool valueIn, bool record = true)
         {
-            Owner.SetValuePub(ValueName, valueIn);
+            Owner.SetValuePub(ValueName, valueIn, record);
         }
 
 

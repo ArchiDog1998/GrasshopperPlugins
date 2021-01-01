@@ -54,7 +54,7 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// <param name="renderLittleZoom">Whether to render when viewport's zoom is less than 0.5.</param>
         /// <param name="renderSet">render settings. </param>
         public SwitchButtonBase(string valueName, ControllableComponent owner, Func<RectangleF, RectangleF, RectangleF> layout, bool enable,
-             int @default, string[][] allTips = null, int tipsRelay = 1000, Func<ToolStripDropDownMenu> createMenu = null,
+             int @default, string[][] allTips = null, int tipsRelay = 5000, Func<ToolStripDropDownMenu> createMenu = null,
              bool renderLittleZoom = false, ButtonRenderSet? renderSet = null)
             : base(valueName, owner, layout, enable, null, tipsRelay, createMenu, renderLittleZoom)
         {
@@ -76,9 +76,9 @@ namespace ArchiTed_Grasshopper.WinformControls
         {
             return Owner.GetValuePub(ValueName, Default);
         }
-        protected override void SetValue(int valueIn)
+        protected override void SetValue(int valueIn, bool record = true)
         {
-            Owner.SetValuePub(ValueName, valueIn);
+            Owner.SetValuePub(ValueName, valueIn, record);
         }
     }
 }

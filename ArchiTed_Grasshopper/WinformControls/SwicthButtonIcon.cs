@@ -47,7 +47,7 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// <param name="renderLittleZoom">Whether to render when viewport's zoom is less than 0.5.</param>
         /// <param name="renderSet"> render settings. </param>
         public SwicthButtonIcon(string valueName, ControllableComponent owner, Func<RectangleF, RectangleF, RectangleF> layout, bool enable,
-             Bitmap[] icons, int @default, string[][] allTips = null, int tipsRelay = 1000, Func<ToolStripDropDownMenu> createMenu = null,
+             Bitmap[] icons, int @default, string[][] allTips = null, int tipsRelay = 5000, Func<ToolStripDropDownMenu> createMenu = null,
              bool renderLittleZoom = false, ButtonRenderSet? renderSet = null)
             : base(valueName, owner, layout, enable, @default, allTips, tipsRelay, createMenu, renderLittleZoom, renderSet)
         {

@@ -5,6 +5,7 @@
     See file LICENSE for detail or copy at http://opensource.org/licenses/MIT
 */
 
+using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using System;
@@ -14,42 +15,82 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ArchiTed_Grasshopper.WinformControls;
+using ArchiTed_Grasshopper;
 
-namespace ArchiTed_Grasshopper.WinformControls
+namespace InfoGlasses.WinformControls
 {
-    class InputBoxIntParam: InputBoxInt, ITargetParam<int>
+    class InputBoxIntParam<TGoo> : InputBoxInt, ITargetParam<TGoo, int>, IDisposable where TGoo : GH_Goo<int>
     {
-        public GH_PersistentParam<GH_Goo<int>> Target { get; }
+        public GH_PersistentParam<TGoo> Target { get; }
 
         public GH_ParamAccess Access { get; set; }
 
         //public string Suffix => WinformControlHelper.GetSuffix(this.Access);
 
-        public InputBoxIntParam(string valueName, ControllableComponent owner, GH_PersistentParam<GH_Goo<int>> target, bool enable,
-            int @default, int min = int.MinValue, int max = int.MaxValue, string[] tips = null, int tipsRelay = 1000, Func<ToolStripDropDownMenu> createMenu = null,
-            bool renderLittleZoom = false)
-            : base(valueName, owner, null, enable, @default, min, max, tips, tipsRelay, createMenu, renderLittleZoom)
+        public InputBoxIntParam(GH_PersistentParam<TGoo> target, ControllableComponent owner, bool enable,
+            string[] tips = null, int tipsRelay = 5000, bool renderLittleZoom = false)
+            : base(null, owner, null, enable, 0, int.MinValue, int.MaxValue, tips, tipsRelay, null, renderLittleZoom)
         {
             this.Target = target;
+            Grasshopper.Instances.ActiveCanvas.MouseClick += ActiveCanvas_MouseClick;
+            try
+            {
+                this.Default = ((TGoo)target.PersistentData.AllData(true).ElementAt(0)).Value;
+            }
+            catch
+            {
+                this.Default = 0;
+                SetValue(this.Default);
+            }
+
+        }
+
+        private void ActiveCanvas_MouseClick(object sender, MouseEventArgs e)
+        {
+            GH_Viewport vp = Grasshopper.Instances.ActiveCanvas.Viewport;
+            if (this.Bounds.Contains(vp.UnprojectPoint(e.Location)))
+            {
+                this.RespondToMouseDoubleClick(Grasshopper.Instances.ActiveCanvas, new Grasshopper.GUI.GH_CanvasMouseEvent(vp, e));
+            }
         }
 
         public override void Layout(RectangleF innerRect, RectangleF outerRect)
         {
-            this.Bounds = WinformControlHelper.ParamLayoutBase(this.Target.Attributes, Width, innerRect, outerRect);
+            this.Bounds = ParamControlHelper.UpDownSmallRect(ParamControlHelper.ParamLayoutBase(this.Target.Attributes, Width, outerRect));
             this.Bounds.Inflate(-2, -2);
+        }
+
+        protected override bool IsRender(GH_Canvas canvas, Graphics graphics, bool renderLittleZoom = false)
+        {
+            if (!this.Enable)
+            {
+                return false;
+            }
+            Layout(new RectangleF(), Target.Attributes.Bounds);
+            return base.IsRender(canvas, graphics, renderLittleZoom);
         }
 
         protected override int GetValue()
         {
             GH_ParamAccess access = GH_ParamAccess.item;
-            var result = WinformControlHelper.GetData<int>(this, out access);
+            var result = ParamControlHelper.GetData<TGoo, int>(this, out access);
             this.Access = access;
             return result;
         }
 
-        protected override void SetValue(int valueIn)
+        protected override void SetValue(int valueIn, bool record = true)
         {
-            WinformControlHelper.SetData<int>(this, valueIn);
+            if (record)
+            {
+                Target.RecordUndoEvent("Set the Integer");
+            }
+            ParamControlHelper.SetData<TGoo, int>(this, valueIn);
+        }
+
+        public void Dispose()
+        {
+            Grasshopper.Instances.ActiveCanvas.MouseClick -= ActiveCanvas_MouseClick;
         }
     }
 }

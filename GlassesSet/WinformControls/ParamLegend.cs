@@ -40,7 +40,7 @@ namespace InfoGlasses.WinformControls
 
         protected override void Render(GH_Canvas canvas, Graphics graphics, GH_CanvasChannel channel)
         {
-            if(channel == GH_CanvasChannel.Overlay)
+            if (channel == GH_CanvasChannel.Overlay)
             {
                 DrawLegend(graphics);
             }
@@ -120,7 +120,7 @@ namespace InfoGlasses.WinformControls
 
         }
 
-        private void DrawOneLegend(Graphics graphics, PointF pivot, ParamProxy  info, float size, float mult)
+        private void DrawOneLegend(Graphics graphics, PointF pivot, ParamProxy info, float size, float mult)
         {
 
             float height = size * mult;

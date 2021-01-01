@@ -82,6 +82,8 @@
     <Compile Include="WinformControls\InputBoxDoubleParam.cs" />
     <Compile Include="WinformControls\InputBoxIntParam.cs" />
     <Compile Include="WinformControls\InputBoxStringParam.cs" />
+    <Compile Include="WinformControls\ITargetParam.cs" />
+    <Compile Include="WinformControls\ParamControlHelper.cs" />
     <Compile Include="WinformControls\ParamLegend.cs" />
     <Compile Include="WinformControls\WireConnectRenderItem.cs" />
     <Compile Include="WPF\ExceptionWindow.xaml.cs">

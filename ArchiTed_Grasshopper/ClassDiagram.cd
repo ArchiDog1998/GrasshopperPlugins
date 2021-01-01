@@ -23,7 +23,7 @@
   <Class Name="ArchiTed_Grasshopper.ColorExtension">
     <Position X="1" Y="14.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EAAAAAAAAAAAAAACQAAAAACAAAAAAAAAAQAAEAAAABA=</HashCode>
+      <HashCode>EAAAAAAAAAAAAAACQAAAAACAAAAAAAACAQAAEAAAABA=</HashCode>
       <FileName>ColorExtension.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -253,7 +253,7 @@
   <Class Name="ArchiTed_Grasshopper.WinformControls.WinformControlHelper">
     <Position X="4.25" Y="0.5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAIAAAREAEAIAAAAAAABAEAAAQAAAAAgAAgAQAAABA=</HashCode>
+      <HashCode>AAAIAAAAAAEAIAAAAAAABAEAAAQAAAAAgAAgAQAAABA=</HashCode>
       <FileName>WinformControls\WinformControlHelper.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -366,13 +366,6 @@
     <TypeIdentifier>
       <HashCode>AAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
       <FileName>WinformControls\IRenderable.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
-  <Interface Name="ArchiTed_Grasshopper.WinformControls.ITargetParam&lt;T&gt;">
-    <Position X="51.75" Y="17.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAEAAAAAAACAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>WinformControls\ITargetParam.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="ArchiTed_Grasshopper.WinformControls.IControlState&lt;T&gt;">

@@ -49,7 +49,7 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// <param name="renderLittleZoom">Whether to render when viewport's zoom is less than 0.5.</param>
         /// <param name="renderSet"> render settings. </param>
         public ClickButtonIcon(string valueName, ControllableComponent owner, Func<RectangleF, RectangleF, RectangleF> layout, bool enable,
-            Bitmap icon, bool @default, string[] tips = null, int tipsRelay = 1000,Func<ToolStripDropDownMenu> createMenu = null, bool isToggle = true,
+            Bitmap icon, bool @default, string[] tips = null, int tipsRelay = 5000,Func<ToolStripDropDownMenu> createMenu = null, bool isToggle = true,
              bool renderLittleZoom = false, ButtonRenderSet? renderSet = null)
             :base(valueName, owner, layout, enable, null, @default, tips, tipsRelay, createMenu, isToggle, renderLittleZoom, renderSet)
         {

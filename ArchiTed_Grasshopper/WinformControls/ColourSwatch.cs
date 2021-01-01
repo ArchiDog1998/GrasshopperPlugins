@@ -24,7 +24,7 @@ namespace ArchiTed_Grasshopper.WinformControls
     {
 
         public ColourSwatch(string valueName, ControllableComponent owner, Func<RectangleF, RectangleF, RectangleF> layout, bool enable, Color @default,
-            string[] tips = null, int tipsRelay = 1000,
+            string[] tips = null, int tipsRelay = 5000,
             bool renderLittleZoom = false)
             : base(valueName, owner, layout, enable, tips, tipsRelay, renderLittleZoom)
         {
@@ -45,9 +45,9 @@ namespace ArchiTed_Grasshopper.WinformControls
             return color;
         }
 
-        protected override void SetValue(Color valueIn)
+        protected override void SetValue(Color valueIn, bool record = true)
         {
-            Owner.SetValuePub(ValueName, valueIn);
+            Owner.SetValuePub(ValueName, valueIn, record);
         }
 
 
@@ -66,24 +66,21 @@ namespace ArchiTed_Grasshopper.WinformControls
         protected override void RespondToMouseUp(GH_Canvas canvas, GH_CanvasMouseEvent @event)
         {
 
-                bool flag = true;
-                ToolStripDropDownMenu obj = new ToolStripDropDownMenu
-                {
-                    ShowCheckMargin = false,
-                    ShowImageMargin = false
-                };
-                GH_DocumentObject.Menu_AppendColourPicker(obj, GetValue(), ColourChanged);
-                obj.Show(canvas, @event.ControlLocation);
+            bool flag = true;
+            ToolStripDropDownMenu obj = new ToolStripDropDownMenu
+            {
+                ShowCheckMargin = false,
+                ShowImageMargin = false
+            };
+            GH_DocumentObject.Menu_AppendColourPicker(obj, GetValue(), ColourChanged);
+            obj.Show(canvas, @event.ControlLocation);
 
-                void ColourChanged(GH_ColourPicker sender, GH_ColourPickerEventArgs e)
-                {
-                    if (flag)
-                    {
-                    SetValue(e.Colour);
-                    }
-                    flag = false;
-                    
-                }
+            void ColourChanged(GH_ColourPicker sender, GH_ColourPickerEventArgs e)
+            {
+                SetValue(e.Colour, flag);
+                flag = false;
+
+            }
         }
 
 

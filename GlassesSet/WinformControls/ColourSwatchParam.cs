@@ -5,6 +5,7 @@
     See file LICENSE for detail or copy at http://opensource.org/licenses/MIT
 */
 
+using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using System;
@@ -13,12 +14,16 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using ArchiTed_Grasshopper.WinformControls;
+using ArchiTed_Grasshopper;
 
-namespace ArchiTed_Grasshopper.WinformControls
+namespace InfoGlasses.WinformControls
 {
-    public class ColourSwatchParam : ColourSwatch, ITargetParam<Color>
+    public class ColourSwatchParam<TGoo> : ColourSwatch, ITargetParam<TGoo, Color>, IDisposable where TGoo: GH_Goo<Color>
+
     {
-        public GH_PersistentParam<GH_Goo<Color>> Target { get; }
+        public GH_PersistentParam<TGoo> Target { get; }
 
         public int Width => 20;
 
@@ -26,18 +31,46 @@ namespace ArchiTed_Grasshopper.WinformControls
 
         //public string Suffix => WinformControlHelper.GetSuffix(this.Access);
 
-        public ColourSwatchParam(string valueName, ControllableComponent owner, GH_PersistentParam<GH_Goo<Color>> target, bool enable, Color @default,
-            string[] tips = null, int tipsRelay = 1000,
-            bool renderLittleZoom = false)
-            : base(valueName, owner, null, enable, @default, tips, tipsRelay, renderLittleZoom)
+        public ColourSwatchParam(GH_PersistentParam<TGoo> target, ControllableComponent owner, bool enable, 
+            string[] tips = null, int tipsRelay = 5000, bool renderLittleZoom = false)
+            : base(null, owner, null, enable, Color.Black, tips, tipsRelay, renderLittleZoom)
         {
             this.Target = target;
+            Grasshopper.Instances.ActiveCanvas.MouseClick += ActiveCanvas_MouseClick;
+            try
+            {
+                this.Default = ((TGoo)target.PersistentData.AllData(true).ElementAt(0)).Value;
+            }
+            catch
+            {
+                this.Default = Color.Black;
+                SetValue(this.Default);
+            }
+        }
+
+        private void ActiveCanvas_MouseClick(object sender, MouseEventArgs e)
+        {
+            GH_Viewport vp = Grasshopper.Instances.ActiveCanvas.Viewport;
+            if (this.Bounds.Contains(vp.UnprojectPoint(e.Location)))
+            {
+                this.RespondToMouseUp(Grasshopper.Instances.ActiveCanvas, new Grasshopper.GUI.GH_CanvasMouseEvent(vp, e));
+            }
         }
 
         public override void Layout(RectangleF innerRect, RectangleF outerRect)
         {
-            this.Bounds = CanvasRenderEngine.MaxSquare(WinformControlHelper.ParamLayoutBase(this.Target.Attributes, Width, innerRect, outerRect));
+            this.Bounds = CanvasRenderEngine.MaxSquare(ParamControlHelper.ParamLayoutBase(this.Target.Attributes, Width, outerRect));
             this.Bounds.Inflate(-2, -2);
+        }
+
+        protected override bool IsRender(GH_Canvas canvas, Graphics graphics, bool renderLittleZoom = false)
+        {
+            if (!this.Enable)
+            {
+                return false;
+            }
+            Layout(new RectangleF(), Target.Attributes.Bounds);
+            return base.IsRender(canvas, graphics, renderLittleZoom);
         }
 
 
@@ -45,19 +78,24 @@ namespace ArchiTed_Grasshopper.WinformControls
         protected override Color GetValue()
         {
             GH_ParamAccess access = GH_ParamAccess.item;
-            var result = WinformControlHelper.GetData<Color>(this, out access);
+            var result = ParamControlHelper.GetData<TGoo, Color>(this, out access);
             this.Access = access;
             return result;
         }
 
-        protected override void SetValue(Color valueIn)
+        protected override void SetValue(Color valueIn, bool record = true)
         {
-            WinformControlHelper.SetData<Color>(this, valueIn);
+            if (record)
+            {
+                Target.RecordUndoEvent("Set the Colour");
+            }
+            ParamControlHelper.SetData<TGoo, Color>(this, valueIn);
         }
 
-
-
-
+        public void Dispose()
+        {
+            Grasshopper.Instances.ActiveCanvas.MouseClick -= ActiveCanvas_MouseClick;
+        }
     }
 }
 

@@ -5,7 +5,9 @@
     See file LICENSE for detail or copy at http://opensource.org/licenses/MIT
 */
 
-using ArchiTed_Grasshopper.WPF;
+using ArchiTed_Grasshopper;
+using ArchiTed_Grasshopper.WinformControls;
+using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using System;
@@ -15,12 +17,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CheckBox = ArchiTed_Grasshopper.WinformControls.CheckBox;
 
-namespace ArchiTed_Grasshopper.WinformControls
+namespace InfoGlasses.WinformControls
 {
-    class CheckBoxParam: CheckBox, ITargetParam<bool>
+    class CheckBoxParam<TGoo>: CheckBox, ITargetParam<TGoo, bool>, IDisposable where TGoo: GH_Goo<bool>
     {
-        public GH_PersistentParam<GH_Goo<bool>> Target { get; }
+        public GH_PersistentParam<TGoo> Target { get; }
 
         public GH_ParamAccess Access { get; set; }
 
@@ -28,40 +31,69 @@ namespace ArchiTed_Grasshopper.WinformControls
 
         public int Width => 20;
 
-        public CheckBoxParam(GH_PersistentParam<GH_Goo<bool>> target, ControllableComponent owner, bool enable,
-            string[] tips = null, int tipsRelay = 1000, Func<ToolStripDropDownMenu> createMenu = null, bool isToggle = true,
+        public CheckBoxParam(GH_PersistentParam<TGoo> target, ControllableComponent owner, bool enable,
+            string[] tips = null, int tipsRelay = 5000, Func<ToolStripDropDownMenu> createMenu = null, bool isToggle = true,
             bool renderLittleZoom = false)
-            : base(null, owner, null, enable, ((GH_Goo<bool>)target.VolatileData.AllData(true).ElementAt(0)).Value, tips, tipsRelay, createMenu, isToggle, renderLittleZoom)
+            : base(null, owner, null, enable, false, tips, tipsRelay, createMenu, isToggle, renderLittleZoom)
         {
             this.Target = target;
-            //Grasshopper.Instances.ActiveCanvas.MouseClick += ActiveCanvas_MouseClick;
+            Grasshopper.Instances.ActiveCanvas.MouseClick += ActiveCanvas_MouseClick;
+            try
+            {
+                this.Default = ((TGoo)target.PersistentData.AllData(true).ElementAt(0)).Value;
+            }
+            catch
+            {
+                this.Default = false;
+                SetValue(this.Default);
+            }
         }
 
-        //private void ActiveCanvas_MouseClick(object sender, MouseEventArgs e)
-        //{
-        //    Grasshopper.Instances.ActiveCanvas.PointToClient(e.Location);
-        //    e.Location;
-        //}
+        private void ActiveCanvas_MouseClick(object sender, MouseEventArgs e)
+        {
+            GH_Viewport vp = Grasshopper.Instances.ActiveCanvas.Viewport;
+            if (this.Bounds.Contains(vp.UnprojectPoint(e.Location)))
+            {
+                this.RespondToMouseUp(Grasshopper.Instances.ActiveCanvas, new Grasshopper.GUI.GH_CanvasMouseEvent(vp, e));
+            }
+        }
 
         public override void Layout(RectangleF innerRect, RectangleF outerRect)
         {
-            this.Bounds = CanvasRenderEngine.MaxSquare(WinformControlHelper.ParamLayoutBase(this.Target.Attributes, Width, innerRect, outerRect));
+            this.Bounds = CanvasRenderEngine.MaxSquare(ParamControlHelper.ParamLayoutBase(this.Target.Attributes, Width, outerRect));
             this.Bounds.Inflate(-2, -2);
         }
 
-
+        protected override bool IsRender(GH_Canvas canvas, Graphics graphics, bool renderLittleZoom = false)
+        {
+            if (!this.Enable)
+            {
+                return false;
+            }
+            Layout(new RectangleF(), Target.Attributes.Bounds);
+            return  base.IsRender(canvas, graphics, renderLittleZoom);
+        }
 
         protected override bool GetValue()
         {
             GH_ParamAccess access = GH_ParamAccess.item;
-            var result = WinformControlHelper.GetData<bool>(this, out access);
+            var result = ParamControlHelper.GetData<TGoo, bool>(this, out access);
             this.Access = access;
             return result;
         }
 
-        protected override void SetValue(bool valueIn)
+        protected override void SetValue(bool valueIn, bool record = true)
         {
-            WinformControlHelper.SetData<bool>(this, valueIn);
+            if (record)
+            {
+                Target.RecordUndoEvent("Set the boolean");
+            }
+            ParamControlHelper.SetData<TGoo, bool>(this, valueIn);
+        }
+
+        public void Dispose()
+        {
+            Grasshopper.Instances.ActiveCanvas.MouseClick -= ActiveCanvas_MouseClick;
         }
     }
 }

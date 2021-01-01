@@ -19,7 +19,7 @@ namespace ArchiTed_Grasshopper.WinformControls
     {
 
         public InputBoxString(string valueName, ControllableComponent owner, Func<int, RectangleF, RectangleF, RectangleF> layoutName, bool enable,
-            string @default, string[] tips = null, int tipsRelay = 1000, Func<ToolStripDropDownMenu> createMenu = null,
+            string @default, string[] tips = null, int tipsRelay = 5000, Func<ToolStripDropDownMenu> createMenu = null,
             bool renderLittleZoom = false)
             : base(valueName, owner, layoutName, enable, tips, tipsRelay, createMenu, renderLittleZoom)
         {
@@ -31,9 +31,9 @@ namespace ArchiTed_Grasshopper.WinformControls
             return Owner.GetValuePub(ValueName, Default);
         }
 
-        protected override void SetValue(string valueIn)
+        protected override void SetValue(string valueIn, bool record)
         {
-            Owner.SetValuePub(ValueName, valueIn);
+            Owner.SetValuePub(ValueName, valueIn, record);
         }
 
         protected override string StringToT(string str)

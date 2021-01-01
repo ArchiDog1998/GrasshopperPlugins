@@ -39,7 +39,7 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// <param name="createMenu"> how to create menu. </param>
         /// <param name="renderLittleZoom">Whether to render when viewport's zoom is less than 0.5.</param>
         public MenuControl(string valueName, ControllableComponent owner, Func<RectangleF, RectangleF, RectangleF> layout, bool enable,
-            string[] tips = null, int tipsRelay = 1000, Func<ToolStripDropDownMenu> createMenu = null,
+            string[] tips = null, int tipsRelay = 5000, Func<ToolStripDropDownMenu> createMenu = null,
             bool renderLittleZoom = false)
             : base(valueName, owner, layout, enable, tips, tipsRelay, renderLittleZoom)
         {

@@ -5,6 +5,7 @@
     See file LICENSE for detail or copy at http://opensource.org/licenses/MIT
 */
 
+using ArchiTed_Grasshopper.WinformControls;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using System;
@@ -13,11 +14,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ArchiTed_Grasshopper.WinformControls
+namespace InfoGlasses.WinformControls
 {
-    public interface ITargetParam<T> : IControlState<T>, INeedWidth, IRespond
+    public interface ITargetParam<TGoo, T> : IControlState<T>, INeedWidth, IRespond where TGoo : GH_Goo<T>
     {
-        GH_PersistentParam<GH_Goo<T>> Target { get; }
+        GH_PersistentParam<TGoo> Target { get; }
         GH_ParamAccess Access { get; set; }
         //string Suffix { get; }
     }

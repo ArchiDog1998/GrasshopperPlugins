@@ -46,7 +46,7 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// <param name="createMenu"> how to create menu. </param>
         /// <param name="renderLittleZoom">Whether to render when viewport's zoom is less than 0.5.</param>
         public InputBoxBase(string valueName, ControllableComponent owner, Func<int, RectangleF, RectangleF, RectangleF> layoutWidth, bool enable,
-            string[] tips = null, int tipsRelay = 1000, Func<ToolStripDropDownMenu> createMenu = null,
+            string[] tips = null, int tipsRelay = 5000, Func<ToolStripDropDownMenu> createMenu = null,
             bool renderLittleZoom = false)
             : base(valueName, owner, null, enable, tips, tipsRelay, createMenu, renderLittleZoom)
         {
@@ -82,7 +82,6 @@ namespace ArchiTed_Grasshopper.WinformControls
                 Brush brush = new SolidBrush(this.Enable ? ColorExtension.OffColor : ColorExtension.UnableColor);
                 graphics.DrawString(WholeToString(GetValue()), GH_FontServer.StandardAdjusted, brush, this.Bounds, format);
             }
-
         }
 
         protected override void RespondToMouseDoubleClick(GH_Canvas sender, GH_CanvasMouseEvent e)

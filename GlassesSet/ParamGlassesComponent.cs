@@ -20,6 +20,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel.Types;
+using Grasshopper.Kernel.Parameters;
 
 namespace InfoGlasses
 {
@@ -388,8 +389,7 @@ namespace InfoGlasses
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             DA.GetData(0, ref _run);
-            this.RenderObjs = new List<IRenderable>();
-            this.RenderObjsUnderComponent = new List<IRenderable>();
+            RemoveAll();
 
             if (_isFirst)
             {
@@ -427,6 +427,23 @@ namespace InfoGlasses
             }
         }
 
+        private void RemoveAll()
+        {
+            if(this.RenderObjs != null)
+            {
+                foreach (var item in this.RenderObjs)
+                {
+                    if(item is IDisposable)
+                    {
+                        var dispose = item as IDisposable;
+                        dispose.Dispose();
+                    }
+                }
+            }
+            this.RenderObjs = new List<IRenderable>();
+            this.RenderObjsUnderComponent = new List<IRenderable>();
+        }
+
         /// <summary>
         /// Add a new object into this component.
         /// </summary>
@@ -444,9 +461,10 @@ namespace InfoGlasses
             else if(obj is IGH_Component)
             {
                 IGH_Component com = obj as IGH_Component;
+                bool addControl = obj != this;
                 foreach (IGH_Param param in com.Params.Input)
                 {
-                    AddOneParam(param);
+                    AddOneParam(param, addControl);
                 }
             }
         }
@@ -458,7 +476,7 @@ namespace InfoGlasses
                 IGH_Param param = obj as IGH_Param;
                 if (param.Attributes.HasInputGrip)
                 {
-                    this.RenderObjs.Remove(new WireConnectRenderItem(param, this));
+                    RemoveOneParam(param);
                 }
             }
             else if (obj is IGH_Component)
@@ -466,21 +484,65 @@ namespace InfoGlasses
                 IGH_Component com = obj as IGH_Component;
                 foreach (IGH_Param param in com.Params.Input)
                 {
-                    this.RenderObjs.Remove(new WireConnectRenderItem(param, this));
+                    RemoveOneParam(param);
                 }
             }
         }
 
-        private void AddOneParam(IGH_Param param)
+        private void RemoveOneParam(IGH_Param param)
+        {
+            foreach (var item in this.RenderObjs)
+            {
+                var result = item.GetType().GetProperty("Target");
+                if(result != null)
+                {
+                    if( result.GetValue(item) == param)
+                    {
+                        if (item is IDisposable)
+                        {
+                            ((IDisposable)item).Dispose();
+                        }
+                        this.RenderObjs.Remove(item);
+                    }
+                }
+            }
+        }
+
+        private void AddOneParam(IGH_Param param, bool addControl = true)
         {
             this.RenderObjs.Add(new WireConnectRenderItem(param, this));
-            if (!this.IsShowControl) return;
+            if (!this.IsShowControl || !addControl) return;
 
-            //强制转换问题！
-            //if(param is GH_PersistentParam<GH_Boolean>)
-            //{
-            //    this.RenderObjs.Add(new CheckBoxParam((GH_PersistentParam<GH_Goo<bool>>)param, this, true));
-            //}
+            if(IsPersistentParam(param.GetType()))
+            {
+                Type type = param.Type;
+
+                if (typeof(GH_Goo<bool>).IsAssignableFrom(type))
+                {
+                    Type paramType = typeof(CheckBoxParam<>).MakeGenericType(type);
+                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 1000, null, true, false));
+                }    
+                else if (typeof(GH_Goo<Color>).IsAssignableFrom(type))
+                {
+                    Type paramType = typeof(ColourSwatchParam<>).MakeGenericType(type);
+                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 1000, false));
+                }
+                else if (typeof(GH_Goo<double>).IsAssignableFrom(type))
+                {
+                    Type paramType = typeof(InputBoxDoubleParam<>).MakeGenericType(type);
+                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 1000, false));
+                }
+                else if (typeof(GH_Goo<int>).IsAssignableFrom(type))
+                {
+                    Type paramType = typeof(InputBoxIntParam<>).MakeGenericType(type);
+                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 1000, false));
+                }
+                else if (typeof(GH_Goo<string>).IsAssignableFrom(type))
+                {
+                    Type paramType = typeof(InputBoxStringParam<>).MakeGenericType(type);
+                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 1000, false));
+                }
+            }
         }
 
         private void SetTranslateColor()

@@ -56,9 +56,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GlassesSet\ShowcaseTools.csproj">
-      <Project>{96763b6e-9041-4cf4-8a84-be48f07f8ef7}</Project>
-      <Name>ShowcaseTools</Name>
+    <ProjectReference Include="..\ArchiTed_Grasshopper\ArchiTed_Grasshopper.csproj">
+      <Project>{5b04e8df-20d2-479a-b8ce-9b650440db03}</Project>
+      <Name>ArchiTed_Grasshopper</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

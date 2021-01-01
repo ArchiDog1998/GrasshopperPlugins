@@ -76,7 +76,6 @@
     <Compile Include="WinformControls\InputBoxDouble.cs" />
     <Compile Include="WinformControls\InputBoxInt.cs" />
     <Compile Include="WinformControls\InputBoxString.cs" />
-    <Compile Include="WinformControls\ITargetParam.cs" />
     <Compile Include="WinformControls\INeedWidth.cs" />
     <Compile Include="WinformControls\MenuWPFControl.cs" />
     <Compile Include="WinformControls\CheckBox.cs" />
