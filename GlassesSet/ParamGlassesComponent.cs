@@ -24,6 +24,7 @@ using Grasshopper.Kernel.Parameters;
 using System.IO;
 using System.Text;
 using GH_IO.Serialization;
+using System.Linq;
 
 namespace InfoGlasses
 {
@@ -720,7 +721,20 @@ namespace InfoGlasses
         internal void WriteTxt()
         {
             string name = "WireGlasses_Default";
-            string path = System.IO.Path.GetDirectoryName(this.GetType().Assembly.Location) + "\\" + name + ".txt";
+            string path = "";
+            try
+            {
+                path = System.IO.Path.GetDirectoryName(this.GetType().Assembly.Location) + "\\" + name + ".txt";
+            }
+            catch
+            {
+                var result = (Directory.EnumerateFiles(Grasshopper.Folders.DefaultAssemblyFolder, "*" + name + ".txt", SearchOption.TopDirectoryOnly));
+                if (result.Count() > 0)
+                {
+                    path = result.ElementAt(0);
+                }
+            }
+
             FileStream fs = new FileStream(path, FileMode.Create);
             StreamWriter sw = new StreamWriter(fs);
 
@@ -740,7 +754,20 @@ namespace InfoGlasses
         private void Readtxt()
         {
             string name = "WireGlasses_Default";
-            string path = System.IO.Path.GetDirectoryName(this.GetType().Assembly.Location) + "\\" + name + ".txt";
+            string path = "";
+            try
+            {
+                path = System.IO.Path.GetDirectoryName(this.GetType().Assembly.Location) + "\\" + name + ".txt";
+            }
+            catch
+            {
+                var result = (Directory.EnumerateFiles(Grasshopper.Folders.DefaultAssemblyFolder, "*" + name + ".txt", SearchOption.TopDirectoryOnly));
+                if(result.Count() > 0)
+                {
+                    path = result.ElementAt(0);
+                }
+            }
+
 
             ColorDict = new Dictionary<string, Color>();
             try

@@ -19,6 +19,7 @@ using TextBox = ArchiTed_Grasshopper.WinformControls.TextBox;
 using InfoGlasses.WPF;
 using System.IO;
 using System.Text;
+using System.Linq;
 
 namespace InfoGlasses
 {
@@ -555,7 +556,19 @@ namespace InfoGlasses
         public void Writetxt()
         {
             string name = "Infoglasses_Default";
-            string path = System.IO.Path.GetDirectoryName( this.GetType().Assembly.Location) + "\\" + name + ".txt";
+            string path = "";
+            try
+            {
+                path = System.IO.Path.GetDirectoryName(this.GetType().Assembly.Location) + "\\" + name + ".txt";
+            }
+            catch
+            {
+                var result = (Directory.EnumerateFiles(Grasshopper.Folders.DefaultAssemblyFolder, "*" + name + ".txt", SearchOption.TopDirectoryOnly));
+                if (result.Count() > 0)
+                {
+                    path = result.ElementAt(0);
+                }
+            }
 
             Writetxt(path);
         }
@@ -599,8 +612,19 @@ namespace InfoGlasses
             string name = "Infoglasses_Default";
             normalExceptionGuid = new List<Guid>();
             pluginExceptionGuid = new List<Guid>();
-            string path = System.IO.Path.GetDirectoryName(this.GetType().Assembly.Location) + "\\" + name + ".txt";
-
+            string path = "";
+            try
+            {
+                path = System.IO.Path.GetDirectoryName(this.GetType().Assembly.Location) + "\\" + name + ".txt";
+            }
+            catch
+            {
+                var result = (Directory.EnumerateFiles(Grasshopper.Folders.DefaultAssemblyFolder, "*" + name + ".txt", SearchOption.TopDirectoryOnly));
+                if (result.Count() > 0)
+                {
+                    path = result.ElementAt(0);
+                }
+            }
             Readtxt(path);
         }
 
