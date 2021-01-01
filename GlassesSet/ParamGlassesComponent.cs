@@ -720,7 +720,7 @@ namespace InfoGlasses
         internal void WriteTxt()
         {
             string name = "WireGlasses_Default";
-            string path = Grasshopper.Folders.DefaultAssemblyFolder + name + ".txt";
+            string path = System.IO.Path.GetDirectoryName(this.GetType().Assembly.Location) + "\\" + name + ".txt";
             FileStream fs = new FileStream(path, FileMode.Create);
             StreamWriter sw = new StreamWriter(fs);
 
@@ -740,7 +740,7 @@ namespace InfoGlasses
         private void Readtxt()
         {
             string name = "WireGlasses_Default";
-            string path = Grasshopper.Folders.DefaultAssemblyFolder + name + ".txt";
+            string path = System.IO.Path.GetDirectoryName(this.GetType().Assembly.Location) + "\\" + name + ".txt";
 
             ColorDict = new Dictionary<string, Color>();
             try
