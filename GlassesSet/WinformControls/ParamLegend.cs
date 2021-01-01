@@ -48,6 +48,9 @@ namespace InfoGlasses.WinformControls
 
         private void DrawLegend(Graphics graphics)
         {
+            if (Owner.ShowProxy.Count == 0)
+                return;
+
             float zoom = Grasshopper.Instances.ActiveCanvas.Viewport.Zoom;
             float size = (float)Owner.LegendSize / zoom;
             float spacing = (float)Owner.LegendSpacing / zoom;

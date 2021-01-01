@@ -65,9 +65,14 @@ namespace InfoGlasses.WinformControls
 
         protected override bool IsRender(GH_Canvas canvas, Graphics graphics, bool renderLittleZoom = false)
         {
-            if (!this.Enable)
+            Grasshopper.Instances.ActiveCanvas.MouseClick -= ActiveCanvas_MouseClick;
+            if (Target.SourceCount > 0)
             {
                 return false;
+            }
+            else
+            {
+                Grasshopper.Instances.ActiveCanvas.MouseClick += ActiveCanvas_MouseClick;
             }
             Layout(new RectangleF(), Target.Attributes.Bounds);
             return base.IsRender(canvas, graphics, renderLittleZoom);

@@ -149,6 +149,25 @@ namespace InfoGlasses
         private const bool _showControlDefault = false;
         public bool IsShowControl => GetValue(_showControl, _showControlDefault);
 
+        private const string _showBoolControl = "showBoolControl";
+        private const bool _showBoolControlDefault = true;
+        public bool IsShowBoolControl => GetValue(_showBoolControl, _showBoolControlDefault);
+
+        private const string _showColorControl = "showColorControl";
+        private const bool _showColorControlDefault = true;
+        public bool IsShowColorControl => GetValue(_showColorControl, _showColorControlDefault);
+
+        private const string _showDoubleControl = "showDoubleControl";
+        private const bool _showDoubleControlDefault = true;
+        public bool IsShowDoubleControl => GetValue(_showDoubleControl, _showDoubleControlDefault);
+
+        private const string _showIntControl = "showIntControl";
+        private const bool _showIntControlDefault = true;
+        public bool IsShowIntControl => GetValue(_showIntControl, _showIntControlDefault);
+
+        private const string _showStringControl = "showStringControl";
+        private const bool _showStringControlDefault = true;
+        public bool IsShowStringControl => GetValue(_showStringControl, _showStringControlDefault);
 
         #endregion
 
@@ -263,10 +282,16 @@ namespace InfoGlasses
                 });
 
             ClickButtonIcon<LangWindow> ControlButton = new ClickButtonIcon<LangWindow>(_showControl, this, outFuncs(1), true, Properties.Resources.InputLogo, _showControlDefault,
-                tips: new string[] { "Click to choose whether to show the wire's legend.", "点击以选择是否要显示连线的图例。" },
+                tips: new string[] { "Click to choose whether to show the param's control.", "点击以选择是否要显示参数的控制项。" },
                 createMenu: () =>
                 {
                     ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
+
+                    WinFormPlus.AddCheckBoxItem(menu, LanguagableComponent.GetTransLation(new string[] { "Show Bool Control", "显示布尔控制项" }), null, null, this, _showBoolControl, _showBoolControlDefault);
+                    WinFormPlus.AddCheckBoxItem(menu, LanguagableComponent.GetTransLation(new string[] { "Show Colour Control", "显示颜色控制项" }), null, null, this, _showColorControl, _showColorControlDefault);
+                    WinFormPlus.AddCheckBoxItem(menu, LanguagableComponent.GetTransLation(new string[] { "Show Number Control", "显示数值控制项" }), null, null, this, _showDoubleControl, _showDoubleControlDefault);
+                    WinFormPlus.AddCheckBoxItem(menu, LanguagableComponent.GetTransLation(new string[] { "Show Int Control", "显示整数控制项" }), null, null, this, _showIntControl, _showIntControlDefault);
+                    WinFormPlus.AddCheckBoxItem(menu, LanguagableComponent.GetTransLation(new string[] { "Show Text Control", "显示文字控制项" }), null, null, this, _showStringControl, _showStringControlDefault);
 
                     return menu;
                 });
@@ -517,27 +542,27 @@ namespace InfoGlasses
             {
                 Type type = param.Type;
 
-                if (typeof(GH_Goo<bool>).IsAssignableFrom(type))
+                if (this.IsShowBoolControl && typeof(GH_Goo<bool>).IsAssignableFrom(type))
                 {
                     Type paramType = typeof(CheckBoxParam<>).MakeGenericType(type);
                     this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 1000, null, true, false));
                 }    
-                else if (typeof(GH_Goo<Color>).IsAssignableFrom(type))
+                else if (this.IsShowColorControl && typeof(GH_Goo<Color>).IsAssignableFrom(type))
                 {
                     Type paramType = typeof(ColourSwatchParam<>).MakeGenericType(type);
                     this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 1000, false));
                 }
-                else if (typeof(GH_Goo<double>).IsAssignableFrom(type))
+                else if (this.IsShowDoubleControl && typeof(GH_Goo<double>).IsAssignableFrom(type))
                 {
                     Type paramType = typeof(InputBoxDoubleParam<>).MakeGenericType(type);
                     this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 1000, false));
                 }
-                else if (typeof(GH_Goo<int>).IsAssignableFrom(type))
+                else if (this.IsShowIntControl &&  typeof(GH_Goo<int>).IsAssignableFrom(type))
                 {
                     Type paramType = typeof(InputBoxIntParam<>).MakeGenericType(type);
                     this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 1000, false));
                 }
-                else if (typeof(GH_Goo<string>).IsAssignableFrom(type))
+                else if (this.IsShowStringControl && typeof(GH_Goo<string>).IsAssignableFrom(type))
                 {
                     Type paramType = typeof(InputBoxStringParam<>).MakeGenericType(type);
                     this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 1000, false));

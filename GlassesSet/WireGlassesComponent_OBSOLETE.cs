@@ -32,7 +32,7 @@ namespace InfoGlasses
 {
     public class WireGlassesComponent_OBSOLETE : LanguagableComponent
     {
-        public override GH_Exposure Exposure => GH_Exposure.primary;
+        public override GH_Exposure Exposure => GH_Exposure.primary | GH_Exposure.hidden;
 
         public Color defaultColor;
         public Color UnselectedColor;
