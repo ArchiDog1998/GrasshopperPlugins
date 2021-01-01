@@ -34,7 +34,6 @@ namespace InfoGlasses.WinformControls
             : base(null, owner, null, enable, 0, double.MinValue, double.MaxValue, tips, tipsRelay, null, renderLittleZoom)
         {
             this.Target = target;
-            Grasshopper.Instances.ActiveCanvas.MouseClick += ActiveCanvas_MouseClick;
             try
             {
                 this.Default = ((TGoo)target.PersistentData.AllData(true).ElementAt(0)).Value;

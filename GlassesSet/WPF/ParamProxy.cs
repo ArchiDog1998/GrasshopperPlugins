@@ -18,7 +18,7 @@ namespace InfoGlasses.WPF
     public class ParamProxy : Proxy
     {
         public ParamGlassesComponent Owner { get; }
-        public Color ShowColor => Owner.GetValuePub(this.TypeFullName, Owner.DefaultColor);
+        public Color ShowColor => Owner.GetColor(this.TypeFullName);
         public string TypeFullName { get; }
         public string TypeName{ get; }
 

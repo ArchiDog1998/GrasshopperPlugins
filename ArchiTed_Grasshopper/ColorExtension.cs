@@ -46,7 +46,7 @@ namespace ArchiTed_Grasshopper
 
         public static Color OnColor = Color.FromArgb(255, 19, 34, 122);
         public static System.Windows.Media.Color MediaOnColor = ConvertToMediaColor(OnColor);
-        public static Color OffColor = Color.FromArgb(255, 60, 60, 60);
+        public static Color OffColor = Color.FromArgb(255, 50, 50, 50);
         public static System.Windows.Media.Color MediaOffColor = ConvertToMediaColor(OffColor);
 
         public static Color UnableColor = Color.FromArgb(255, 100, 100, 100);

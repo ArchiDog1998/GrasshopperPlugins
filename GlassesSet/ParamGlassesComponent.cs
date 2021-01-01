@@ -21,6 +21,9 @@ using System.Windows.Forms;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel.Types;
 using Grasshopper.Kernel.Parameters;
+using System.IO;
+using System.Text;
+using GH_IO.Serialization;
 
 namespace InfoGlasses
 {
@@ -189,6 +192,8 @@ namespace InfoGlasses
         }
 
         public List<ParamProxy> ShowProxy { get; internal set; }
+
+        public Dictionary<string, Color> ColorDict { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the ParamGlassesComponent class.
@@ -425,14 +430,10 @@ namespace InfoGlasses
                 Grasshopper.Instances.ActiveCanvas.CanvasPostPaintWires += ActiveCanvas_CanvasPostPaintWires;
                 Grasshopper.Instances.ActiveCanvas.DocumentChanged += ActiveCanvas_DocumentChanged;
 
-                //bool read = true;
-                //foreach (var item in allParamType)
-                //{
-                //    if (GetColor(item) != defaultColor)
-                //        read = false;
-                //}
-                //if (read)
-                //    Readtxt();
+                if(ColorDict == null)
+                {
+                    Readtxt();
+                }
 
                 _isFirst = false;
             }
@@ -683,7 +684,7 @@ namespace InfoGlasses
             Grasshopper.Instances.ActiveCanvas.DocumentChanged -= ActiveCanvas_DocumentChanged;
             Grasshopper.Instances.ActiveCanvas.CanvasPrePaintWires -= ActiveCanvas_CanvasPrePaintWires;
             Grasshopper.Instances.ActiveCanvas.CanvasPostPaintWires -= ActiveCanvas_CanvasPostPaintWires;
-
+            RemoveAll();
             SetDefaultColor();
 
 
@@ -697,6 +698,110 @@ namespace InfoGlasses
 
             }
             base.RemovedFromDocument(document);
+        }
+
+        public void SetColor(string name, Color color)
+        {
+            ColorDict[name] = color;
+        }
+
+        public Color GetColor(string name)
+        {
+            try
+            {
+                return ColorDict[name];
+            }
+            catch
+            {
+                return this.DefaultColor;
+            }
+        }
+
+        internal void WriteTxt()
+        {
+            string name = "WireGlasses_Default";
+            string path = Grasshopper.Folders.DefaultAssemblyFolder + name + ".txt";
+            FileStream fs = new FileStream(path, FileMode.Create);
+            StreamWriter sw = new StreamWriter(fs);
+
+            string saveStr = "";
+
+            foreach (var item in ColorDict.Keys)
+            {
+                saveStr += item.ToString() + ',' + ColorDict[item].ToArgb().ToString() + "\n";
+            }
+
+            sw.Write(saveStr);
+            sw.Flush();
+            sw.Close();
+            fs.Close();
+        }
+
+        private void Readtxt()
+        {
+            string name = "WireGlasses_Default";
+            string path = Grasshopper.Folders.DefaultAssemblyFolder + name + ".txt";
+
+            ColorDict = new Dictionary<string, Color>();
+            try
+            {
+                StreamReader sr = new StreamReader(path, Encoding.Default);
+
+                try
+                {
+                    while (true)
+                    {
+
+                        string[] strs = sr.ReadLine().Split(',');
+                        SetColor(strs[0], Color.FromArgb(int.Parse(strs[1])));
+
+
+                    }
+
+                }
+                catch
+                {
+
+                }
+            }
+            catch
+            {
+
+            }
+
+        }
+
+        public override bool Write(GH_IWriter writer)
+        {
+            if(ColorDict.Count != 0)
+            {
+                writer.SetInt32("ColorCount", ColorDict.Count);
+                int n = 0;
+                foreach (string key in ColorDict.Keys)
+                {
+                    writer.SetString("name" + n.ToString(), key);
+                    writer.SetDrawingColor("color" + n.ToString(), ColorDict[key]);
+                    n++;
+                }
+            }
+            return base.Write(writer);
+        }
+
+        public override bool Read(GH_IReader reader)
+        {
+            ColorDict = new Dictionary<string, Color>();
+            int count = 0;
+            if( reader.TryGetInt32("ColorCount", ref count))
+            {
+                for (int n = 0; n < count; n++)
+                {
+                    ColorDict[reader.GetString("name" + n.ToString())] =
+                        reader.GetDrawingColor("color" + n.ToString());
+                }
+                
+            }
+
+            return base.Read(reader);
         }
         #endregion
 

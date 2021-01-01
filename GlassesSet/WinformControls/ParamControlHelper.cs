@@ -102,7 +102,7 @@ namespace InfoGlasses.WinformControls
 
         }
 
-        public static RectangleF UpDownSmallRect(RectangleF rect, float dis = 5)
+        public static RectangleF UpDownSmallRect(RectangleF rect, float dis = 4)
         {
             PointF pivot = new PointF(rect.X, rect.Y + dis);
             return new RectangleF(pivot, new SizeF(rect.Width, rect.Height - 2 * dis));
