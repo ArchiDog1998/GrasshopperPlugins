@@ -518,21 +518,30 @@ namespace InfoGlasses
 
         private void RemoveOneParam(IGH_Param param)
         {
-            foreach (var item in this.RenderObjs)
+            while (true)
             {
-                var result = item.GetType().GetProperty("Target");
-                if(result != null)
+                bool findit = false;
+                foreach (var item in this.RenderObjs)
                 {
-                    if( result.GetValue(item) == param)
+                    var result = item.GetType().GetProperty("Target");
+                    if (result != null)
                     {
-                        if (item is IDisposable)
+                        var prop = result.GetValue(item);
+                        if (prop == param)
                         {
-                            ((IDisposable)item).Dispose();
+                            if (item is IDisposable)
+                            {
+                                ((IDisposable)item).Dispose();
+                            }
+                            this.RenderObjs.Remove(item);
+                            findit = true;
+                            break;
                         }
-                        this.RenderObjs.Remove(item);
                     }
                 }
+                if (!findit) break;
             }
+
         }
 
         private void AddOneParam(IGH_Param param, bool addControl = true)

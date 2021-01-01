@@ -39,8 +39,8 @@ namespace InfoGlasses.WinformControls
 
         #endregion
 
-        public WireConnectRenderItem(IGH_Param target, ParamGlassesComponent owner, Func<bool> showFunc = null, bool renderLittleZoom = false)
-            : base(target, showFunc, renderLittleZoom)
+        public WireConnectRenderItem(IGH_Param target, ParamGlassesComponent owner, Func<bool> showFunc = null)
+            : base(target, showFunc, true)
         {
             if (!target.Attributes.HasInputGrip)
                 throw new ArgumentOutOfRangeException("Target must has InputGrip!");
