@@ -65,7 +65,7 @@ namespace InfoGlasses
         {
             get
             {
-                return "1.2.3.20210101";
+                return "1.2.4.20210101";
             }
         }
     }
