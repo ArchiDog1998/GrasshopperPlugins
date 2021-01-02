@@ -88,23 +88,21 @@ namespace InfoGlasses.WinformControls
 
         #region ParamLayout
 
-        public static RectangleF ParamLayoutBase(IGH_Attributes targetAtt, int Width, RectangleF bound, int sideDistance = 8)
+        public static RectangleF ParamLayoutBase(IGH_Attributes targetAtt, int Width, RectangleF bound, int sideDistance = 8, bool inflate = true)
         {
-
+            RectangleF rect;
             //check whether input
             if (targetAtt.HasInputGrip)
             {
-                RectangleF rect = new RectangleF(bound.Left - Width - sideDistance, targetAtt.Bounds.Top, Width, targetAtt.Bounds.Height);
-                rect.Inflate(-2, -2);
-                return rect;
+                rect = new RectangleF(bound.Left - Width - sideDistance, targetAtt.Bounds.Top, Width, targetAtt.Bounds.Height);
             }
             else
             {
-                RectangleF rect = new RectangleF(bound.Right + sideDistance, targetAtt.Bounds.Top, Width, targetAtt.Bounds.Height);
-                rect.Inflate(-2, -2);
-                return rect;
+                rect = new RectangleF(bound.Right + sideDistance, targetAtt.Bounds.Top, Width, targetAtt.Bounds.Height);
             }
-
+            if (inflate) rect.Inflate(-2, -2);
+            else rect = new RectangleF(new PointF(rect.X - 2, rect.Y), rect.Size);
+            return rect;
         }
 
         public static RectangleF UpDownSmallRect(RectangleF rect, float dis = 2)
