@@ -75,8 +75,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddProxyParams.cs" />
     <Compile Include="ComTypeInfo.cs" />
     <Compile Include="ParamGlassesComponent.cs" />
+    <Compile Include="WinformControls\CheckBoxAddObject.cs" />
     <Compile Include="WinformControls\CheckBoxParam.cs" />
     <Compile Include="WinformControls\ColourSwatchParam.cs" />
     <Compile Include="WinformControls\InputBoxDoubleParam.cs" />
@@ -265,7 +267,8 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>Copy "$(TargetPath)" "C:\Users\教学专用\AppData\Roaming\Grasshopper\Libraries\$(ProjectName).gha"</PostBuildEvent>
+    <PostBuildEvent>Copy "$(TargetPath)" "C:\Users\教学专用\AppData\Roaming\Grasshopper\Libraries\$(ProjectName).gha"
+Copy "$(TargetPath)" "C:\Users\Administrator\AppData\Roaming\Grasshopper\Libraries\$(ProjectName).gha"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <FallbackCulture>en-US</FallbackCulture>

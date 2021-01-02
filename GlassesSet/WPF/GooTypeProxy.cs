@@ -6,6 +6,7 @@
 */
 
 using ArchiTed_Grasshopper.WPF;
+using ArchiTed_Grasshopper;
 using Grasshopper.Kernel;
 using System;
 using System.Collections.Generic;
@@ -21,18 +22,8 @@ namespace InfoGlasses.WPF
         public ParamGlassesComponent Owner { get; }
         public Color ShowColor => Owner.GetColor(this.TypeFullName);
 
-        private Func<IGH_DocumentObject> _createObject;
-        /// <summary>
-        /// Null for no defination.
-        /// </summary>
-        public Func<IGH_DocumentObject> CreateObject { get 
-            {
-                if(_createObject == null)
-                {
-                    FindCreateFunction();
-                }
-                return _createObject;
-            } }
+        public int OutParamIndex { get; set; }
+
         public string TypeFullName { get; }
         public string TypeName{ get; }
         public bool IsPlugin = true;
@@ -51,17 +42,6 @@ namespace InfoGlasses.WPF
                 {
                     this.IsPlugin = !item.IsCoreLibrary;
                     break;
-                }
-            }
-        }
-
-        private void FindCreateFunction()
-        {
-            foreach (var item in Owner.AllProxy)
-            {
-                if(item.Guid == Owner.GetCreateProxyGuid(this.TypeFullName).Value)
-                {
-                    _createObject = item.CreateObejct;
                 }
             }
         }

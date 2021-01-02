@@ -206,7 +206,7 @@ namespace InfoGlasses
             set { _allProxy = value; }
         }
 
-        public Dictionary<string, Guid> CreateProxyDict { get; set; }
+        public Dictionary<string, AddProxyParams> CreateProxyDict { get; set; }
 
         public List<GooTypeProxy> ShowProxy { get; internal set; }
 
@@ -224,6 +224,11 @@ namespace InfoGlasses
             LanguageChanged += ResponseToLanguageChanged;
             ResponseToLanguageChanged(this, new EventArgs());
             ShowProxy = new List<GooTypeProxy>();
+            //For test
+            CreateProxyDict = new Dictionary<string, AddProxyParams>() 
+            {
+                {"Grasshopper.Kernel.Types.GH_Point", new AddProxyParams(new Guid("{3581F42A-9592-4549-BD6B-1C0FC39D067B}"), 0) }
+            };
 
             int width = 24;
 
@@ -572,7 +577,7 @@ namespace InfoGlasses
                 if (this.IsShowBoolControl && typeof(GH_Goo<bool>).IsAssignableFrom(type))
                 {
                     Type paramType = typeof(CheckBoxParam<>).MakeGenericType(type);
-                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 1000, null, true, false));
+                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, null, true, false));
                 }    
                 else if (this.IsShowColorControl && typeof(GH_Goo<Color>).IsAssignableFrom(type))
                 {
@@ -582,17 +587,22 @@ namespace InfoGlasses
                 else if (this.IsShowDoubleControl && typeof(GH_Goo<double>).IsAssignableFrom(type))
                 {
                     Type paramType = typeof(InputBoxDoubleParam<>).MakeGenericType(type);
-                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 1000, false));
+                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, false));
                 }
                 else if (this.IsShowIntControl &&  typeof(GH_Goo<int>).IsAssignableFrom(type))
                 {
                     Type paramType = typeof(InputBoxIntParam<>).MakeGenericType(type);
-                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 1000, false));
+                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, false));
                 }
                 else if (this.IsShowStringControl && typeof(GH_Goo<string>).IsAssignableFrom(type))
                 {
                     Type paramType = typeof(InputBoxStringParam<>).MakeGenericType(type);
-                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 1000, false));
+                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, false));
+                }
+                else if (true)
+                {
+                    Type paramType = typeof(CheckBoxAddObject<>).MakeGenericType(type);
+                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, null, true, false));
                 }
             }
         }
@@ -768,12 +778,12 @@ namespace InfoGlasses
             }
         }
 
-        internal void SetCreateProxyGuid(string name, Guid proxy)
+        internal void SetCreateProxyGuid(string name, AddProxyParams proxy)
         {
             CreateProxyDict[name] = proxy;
         }
 
-        internal Guid? GetCreateProxyGuid(string name)
+        internal AddProxyParams? GetCreateProxyGuid(string name)
         {
             try
             {

@@ -182,6 +182,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>Copy "$(TargetPath)" "C:\Users\教学专用\AppData\Roaming\Grasshopper\Libraries\$(ProjectName).dll"</PostBuildEvent>
+    <PostBuildEvent>Copy "$(TargetPath)" "C:\Users\教学专用\AppData\Roaming\Grasshopper\Libraries\$(ProjectName).dll"
+Copy "$(TargetPath)" "C:\Users\Administrator\AppData\Roaming\Grasshopper\Libraries\$(ProjectName).dll"</PostBuildEvent>
   </PropertyGroup>
 </Project>
