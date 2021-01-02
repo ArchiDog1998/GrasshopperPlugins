@@ -5,6 +5,7 @@
     See file LICENSE for detail or copy at http://opensource.org/licenses/MIT
 */
 
+using ArchiTed_Grasshopper.WPF;
 using Grasshopper.Kernel;
 using System;
 using System.Collections.Generic;
@@ -15,19 +16,30 @@ using System.Threading.Tasks;
 
 namespace InfoGlasses.WPF
 {
-    public class ParamProxy : Proxy
+    public class ParamProxy : ISearchItem
     {
         public ParamGlassesComponent Owner { get; }
         public Color ShowColor => Owner.GetColor(this.TypeFullName);
         public string TypeFullName { get; }
         public string TypeName{ get; }
+        public bool IsPlugin = true;
 
-        public ParamProxy(IGH_Param param, ParamGlassesComponent owner)
-            :base(param)
+
+        public string FindDesc => TypeName + TypeFullName;
+
+        public ParamProxy(Type type, ParamGlassesComponent owner)
         {
             this.Owner = owner;
-            this.TypeFullName = param.Type.FullName;
-            this.TypeName = param.TypeName;
+            this.TypeFullName = type.FullName;
+            this.TypeName = type.Name;
+            foreach (var item in Grasshopper.Instances.ComponentServer.Libraries)
+            {
+                if (item.Assembly == type.Assembly)
+                {
+                    this.IsPlugin = !item.IsCoreLibrary;
+                    break;
+                }
+            }
         }
     }
 }

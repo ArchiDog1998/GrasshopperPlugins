@@ -236,7 +236,7 @@ namespace InfoGlasses.WinformControls
 
             }
 
-            foreach (var info in Owner.AllProxy)
+            foreach (var info in Owner.AllParamProxy)
             {
                 if (info.TypeFullName == typeFullName)
                 {
@@ -247,8 +247,8 @@ namespace InfoGlasses.WinformControls
                     return info;
                 }
             }
-            ParamProxy newInfo = new ParamProxy(param, Owner);
-            Owner.AllProxy.Add(newInfo);
+            ParamProxy newInfo = new ParamProxy(param.Type, Owner);
+            Owner.AllParamProxy.Add(newInfo);
             Owner.ShowProxy.Add(newInfo);
             return newInfo;
         }

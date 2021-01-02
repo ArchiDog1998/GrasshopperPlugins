@@ -17,7 +17,7 @@ using ArchiTed_Grasshopper.WPF;
 
 namespace InfoGlasses.WPF
 {
-    public class ExceptionProxy: Proxy
+    public class ExceptionProxy: ObjectProxy
     {
 
         private InfoGlassesComponent _owner;
@@ -69,6 +69,17 @@ namespace InfoGlasses.WPF
 
         public ExceptionProxy(IGH_ObjectProxy proxy, InfoGlassesComponent owner)
             :base(proxy)
+        {
+            this.AddOwner(owner);
+        }
+
+        public ExceptionProxy(IGH_DocumentObject obj, InfoGlassesComponent owner)
+            :base(obj)
+        {
+            this.AddOwner(owner);
+        }
+
+        private void AddOwner(InfoGlassesComponent owner)
         {
             this._owner = owner;
 

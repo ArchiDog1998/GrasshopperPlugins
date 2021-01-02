@@ -59,10 +59,7 @@ namespace InfoGlasses.WinformControls
 
         public override void Layout(RectangleF innerRect, RectangleF outerRect)
         {
-            RectangleF rect = CanvasRenderEngine.MaxSquare(ParamControlHelper.ParamLayoutBase(this.Target.Attributes, Width, outerRect));
-            float size = -5;
-            //rect.Inflate(size, size);
-            this.Bounds = rect;
+            this.Bounds = CanvasRenderEngine.MaxSquare(ParamControlHelper.ParamLayoutBase(this.Target.Attributes, Width, outerRect));
         }
 
         protected override bool IsRender(GH_Canvas canvas, Graphics graphics, bool renderLittleZoom = false)

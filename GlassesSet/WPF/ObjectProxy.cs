@@ -1,4 +1,4 @@
-﻿/*  Copyright 2020 RadiRhino-秋水. All Rights Reserved.
+﻿/*  Copyright 2021 RadiRhino-秋水. All Rights Reserved.
 
     Distributed under MIT license.
 
@@ -17,7 +17,7 @@ using System.Windows.Media.Imaging;
 
 namespace InfoGlasses.WPF
 {
-    public class Proxy: ISearchItem
+    public class ObjectProxy : ISearchItem
     {
         public string FullName { get; }
         public string Category { get; }
@@ -25,12 +25,12 @@ namespace InfoGlasses.WPF
         public string Description { get; }
         public BitmapImage Icon { get; }
         public GH_Exposure Exposure { get; }
-        public string Location { get; set; }
+        public string Location { get; }
         public Guid Guid { get; }
         public bool IsPlugin = true;
-        public string FindDesc => FullName;
+        public string FindDesc => FullName + Guid;
 
-        public Proxy(IGH_ObjectProxy proxy)
+        public ObjectProxy(IGH_ObjectProxy proxy)
         {
             this.FullName = proxy.Desc.Name;
             this.Category = proxy.Desc.HasCategory ? proxy.Desc.Category : "";
@@ -49,7 +49,8 @@ namespace InfoGlasses.WPF
                 }
             }
         }
-        public Proxy(IGH_DocumentObject obj)
+
+        public ObjectProxy(IGH_DocumentObject obj)
         {
             this.FullName = obj.Name;
             this.Category = obj.HasCategory ? obj.Category : "";
@@ -67,7 +68,6 @@ namespace InfoGlasses.WPF
                     break;
                 }
             }
-
         }
     }
 }
