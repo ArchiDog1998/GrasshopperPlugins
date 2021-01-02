@@ -206,7 +206,7 @@ namespace InfoGlasses
             set { _allProxy = value; }
         }
 
-        public Dictionary<string, ParamGlassesProxy> CreateProxyDict { get; set; }
+        public Dictionary<string, Guid> CreateProxyDict { get; set; }
 
         public List<GooTypeProxy> ShowProxy { get; internal set; }
 
@@ -751,12 +751,12 @@ namespace InfoGlasses
             base.RemovedFromDocument(document);
         }
 
-        public void SetColor(string name, Color color)
+        internal void SetColor(string name, Color color)
         {
             ColorDict[name] = color;
         }
 
-        public Color GetColor(string name)
+        internal Color GetColor(string name)
         {
             try
             {
@@ -768,12 +768,12 @@ namespace InfoGlasses
             }
         }
 
-        public void SetCreateProxy(string name, ParamGlassesProxy proxy)
+        internal void SetCreateProxyGuid(string name, Guid proxy)
         {
             CreateProxyDict[name] = proxy;
         }
 
-        public ParamGlassesProxy GetCreateProxy(string name)
+        internal Guid? GetCreateProxyGuid(string name)
         {
             try
             {

@@ -20,10 +20,19 @@ namespace InfoGlasses.WPF
     {
         public ParamGlassesComponent Owner { get; }
         public Color ShowColor => Owner.GetColor(this.TypeFullName);
+
+        private Func<IGH_DocumentObject> _createObject;
         /// <summary>
         /// Null for no defination.
         /// </summary>
-        public ParamGlassesProxy CreateProxy => Owner.GetCreateProxy(this.TypeFullName);
+        public Func<IGH_DocumentObject> CreateObject { get 
+            {
+                if(_createObject == null)
+                {
+                    FindCreateFunction();
+                }
+                return _createObject;
+            } }
         public string TypeFullName { get; }
         public string TypeName{ get; }
         public bool IsPlugin = true;
@@ -46,15 +55,14 @@ namespace InfoGlasses.WPF
             }
         }
 
-        public IGH_DocumentObject CreateOnePlusObject()
+        private void FindCreateFunction()
         {
-            if (this.CreateProxy != null)
+            foreach (var item in Owner.AllProxy)
             {
-                return this.CreateProxy.CreateObejct.Invoke();
-            }
-            else
-            {
-                return null;
+                if(item.Guid == Owner.GetCreateProxyGuid(this.TypeFullName).Value)
+                {
+                    _createObject = item.CreateObejct;
+                }
             }
         }
     }
