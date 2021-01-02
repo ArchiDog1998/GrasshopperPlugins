@@ -106,12 +106,19 @@ namespace InfoGlasses.WinformControls
             {
                 if (MyProxies.Length != 1)
                 {
-                    Color showColor = this.Enable ? ColorExtension.OffColor : ColorExtension.UnableColor;
-                    Pen drawPen = new Pen(showColor, 3);
-                    graphics.DrawLine(drawPen, new Point((int)this.Bounds.Left, (int)(this.Bounds.Top + this.Bounds.Height / 2)),
-                        new Point((int)this.Bounds.Right, (int)(this.Bounds.Top + this.Bounds.Height / 2)));
-                    graphics.DrawLine(drawPen, new Point((int)(this.Bounds.Left + this.Bounds.Width / 2), (int)this.Bounds.Top),
-                         new Point((int)(this.Bounds.Left + this.Bounds.Width / 2), (int)this.Bounds.Bottom));
+                    ParamControlHelper.RenderParamButtonIcon(graphics, this.Target.Icon_24x24, this.Bounds);
+
+                    //float size = 8;
+                    //float width = 2;
+                    //float dis = 4;
+
+                    //Color showColor = ColorExtension.OnColor;
+                    //RectangleF rect = new RectangleF(new PointF(this.Bounds.Location.X - size - dis, this.Bounds.Location.Y), new SizeF(size, size));
+                    //Pen drawPen = new Pen(showColor, width);
+                    //graphics.DrawLine(drawPen, new Point((int)rect.Left, (int)(rect.Top + rect.Height / 2)),
+                    //    new Point((int)rect.Right, (int)(rect.Top + rect.Height / 2)));
+                    //graphics.DrawLine(drawPen, new Point((int)(rect.Left + rect.Width / 2), (int)rect.Top),
+                    //     new Point((int)(rect.Left + rect.Width / 2), (int)rect.Bottom));
                 }
                 else if(MyProxies.Length == 1)
                 {

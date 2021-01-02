@@ -9,6 +9,7 @@ using ArchiTed_Grasshopper;
 using ArchiTed_Grasshopper.WinformControls;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
+using Grasshopper.Kernel.Special;
 using Grasshopper.Kernel.Types;
 using System;
 using System.Collections.Generic;
@@ -27,8 +28,17 @@ namespace InfoGlasses.WinformControls
 
         public GH_ParamAccess Access { get; set; }
 
-        //public string Suffix => WinformControlHelper.GetSuffix(this.Access);
+        public RectangleF IconButtonLayout
+        {
+            get
+            {
+                float spacing = 6;
+                float dis = this.Bounds.Height;
+                return new RectangleF(this.Bounds.X - dis - spacing, this.Bounds.Y, dis, dis);
+            }
+        }
 
+        private Bitmap icon = new GH_BooleanToggle().Icon_24x24;
         public int Width => 20;
 
         public CheckBoxParam(GH_PersistentParam<TGoo> target, ControllableComponent owner, bool enable,
@@ -51,9 +61,19 @@ namespace InfoGlasses.WinformControls
         private void ActiveCanvas_MouseClick(object sender, MouseEventArgs e)
         {
             GH_Viewport vp = Grasshopper.Instances.ActiveCanvas.Viewport;
-            if (vp.Zoom >= 0.5f && this.Bounds.Contains(vp.UnprojectPoint(e.Location)))
+            if (vp.Zoom >= 0.5f)
             {
-                this.RespondToMouseUp(Grasshopper.Instances.ActiveCanvas, new Grasshopper.GUI.GH_CanvasMouseEvent(vp, e));
+                PointF mouseLoc = vp.UnprojectPoint(e.Location);
+                if (this.Bounds.Contains(mouseLoc))
+                {
+                    this.RespondToMouseUp(Grasshopper.Instances.ActiveCanvas, new Grasshopper.GUI.GH_CanvasMouseEvent(vp, e));
+                }
+                else if (this.IconButtonLayout.Contains(mouseLoc))
+                {
+                    GH_BooleanToggle toggle = new GH_BooleanToggle();
+                    toggle.Value = GetValue();
+                    CheckBoxAddObject<GH_Interval>.CreateNewObject(toggle, this.Target, leftMove: 150);
+                }
             }
         }
 
@@ -78,6 +98,15 @@ namespace InfoGlasses.WinformControls
             }
             Layout(new RectangleF(), Target.Attributes.Bounds);
             return  base.IsRender(canvas, graphics, renderLittleZoom);
+        }
+
+        protected override void Render(GH_Canvas canvas, Graphics graphics, GH_CanvasChannel channel)
+        {
+            if (channel == GH_CanvasChannel.Objects)
+            {
+                ParamControlHelper.RenderParamButtonIcon(graphics, icon, IconButtonLayout);
+            }
+            base.Render(canvas, graphics, channel);
         }
 
         protected override bool GetValue()
