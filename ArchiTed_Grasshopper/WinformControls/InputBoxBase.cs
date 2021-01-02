@@ -88,7 +88,13 @@ namespace ArchiTed_Grasshopper.WinformControls
         {
             if (e.Button == MouseButtons.Left)
             {
-                new InputBoxBalloon(this.Bounds, Write).ShowTextInputBox(sender, WholeToString(GetValue()), selectContent: true, limitToBoundary: true, sender.Viewport.XFormMatrix(GH_Viewport.GH_DisplayMatrix.CanvasToControl));
+                float mul = 3.5f;
+                RectangleF bound = this.Bounds;
+                if(this.Bounds.Height* mul > this.Bounds.Width)
+                {
+                    bound = new RectangleF(this.Bounds.Location, new SizeF(this.Bounds.Height * mul, this.Bounds.Height));
+                }
+                new InputBoxBalloon(bound, Write).ShowTextInputBox(sender, WholeToString(GetValue()), selectContent: true, limitToBoundary: true, sender.Viewport.XFormMatrix(GH_Viewport.GH_DisplayMatrix.CanvasToControl));
                 void Write(string str)
                 {
                     SetValue(StringToT(str));
