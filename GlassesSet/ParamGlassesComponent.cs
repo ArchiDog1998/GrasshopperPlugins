@@ -642,11 +642,20 @@ namespace InfoGlasses
             {
                 if (!proxy.Obsolete && proxy.Kind == GH_ObjectType.CompiledObject)
                 {
-                    IGH_DocumentObject obj = proxy.CreateInstance();
-                    if (IsPersistentParam(obj.GetType()))
+                    try
                     {
-                        _allProxy.Add(new ParamProxy((IGH_Param)obj, this));
+                        IGH_DocumentObject obj = proxy.CreateInstance();
+                        if (IsPersistentParam(obj.GetType()))
+                        {
+                            _allProxy.Add(new ParamProxy((IGH_Param)obj, this));
+                        }
                     }
+                    catch
+                    {
+                        this.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, proxy.Desc.Name +
+                            GetTransLation(new string[] { " failed to create!", "创建失败！" }));
+                    }
+
                 }
             }
         }

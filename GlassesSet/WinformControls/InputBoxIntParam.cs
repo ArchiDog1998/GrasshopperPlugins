@@ -48,7 +48,7 @@ namespace InfoGlasses.WinformControls
         private void ActiveCanvas_MouseClick(object sender, MouseEventArgs e)
         {
             GH_Viewport vp = Grasshopper.Instances.ActiveCanvas.Viewport;
-            if (this.Bounds.Contains(vp.UnprojectPoint(e.Location)))
+            if (vp.Zoom >= 0.5f && this.Bounds.Contains(vp.UnprojectPoint(e.Location)))
             {
                 this.RespondToMouseDoubleClick(Grasshopper.Instances.ActiveCanvas, new Grasshopper.GUI.GH_CanvasMouseEvent(vp, e));
             }
@@ -57,7 +57,6 @@ namespace InfoGlasses.WinformControls
         public override void Layout(RectangleF innerRect, RectangleF outerRect)
         {
             this.Bounds = ParamControlHelper.UpDownSmallRect(ParamControlHelper.ParamLayoutBase(this.Target.Attributes, Width, outerRect));
-            this.Bounds.Inflate(-2, -2);
         }
 
         protected override bool IsRender(GH_Canvas canvas, Graphics graphics, bool renderLittleZoom = false)
