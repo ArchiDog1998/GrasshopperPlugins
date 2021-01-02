@@ -85,6 +85,14 @@ namespace InfoGlasses.WinformControls
             {
                 NewRenderIncomingWires(Target as IGH_Param, canvas, graphics);
             }
+            else if(channel == GH_CanvasChannel.Objects)
+            {
+                Font font = new Font(GH_FontServer.StandardBold.FontFamily, (float)Owner.LabelFontSize);
+                for (int i = 0; i < ((IGH_Param)this.Target).SourceCount; i++)
+                {
+                    RenderTextBox(graphics, font, i);
+                }
+            }
         }
 
         private void UpdateParamProxy()
@@ -106,7 +114,8 @@ namespace InfoGlasses.WinformControls
             if (Owner.IsShowLabel || Owner.IsShowTree)
             {
                 string str = "";
-                PointF pivot = new PointF((((IGH_Param)Target).Sources.ElementAt(i).Attributes.OutputGrip.X + ((IGH_Param)Target).Attributes.InputGrip.X) / 2, ((((IGH_Param)Target).Sources.ElementAt(i).Attributes.OutputGrip.Y + ((IGH_Param)Target).Attributes.InputGrip.Y) / 2));
+                PointF pivot = new PointF((((IGH_Param)Target).Sources.ElementAt(i).Attributes.OutputGrip.X + ((IGH_Param)Target).Attributes.InputGrip.X) / 2, 
+                    ((((IGH_Param)Target).Sources.ElementAt(i).Attributes.OutputGrip.Y + ((IGH_Param)Target).Attributes.InputGrip.Y) / 2));
                 if (Owner.IsShowLabel) str += ParamProxies[i].TypeName + "\n";
                 if (Owner.IsShowTree)
                 {
@@ -125,8 +134,9 @@ namespace InfoGlasses.WinformControls
                 }
                 if (str == "")
                     return;
-                PointF loc = new PointF(pivot.X, pivot.Y + graphics.MeasureString(str, font).Height / 2);
-                CanvasRenderEngine.DrawTextBox_Obsolete(graphics, loc, Owner.LabelBackGroundColor, Owner.LabelBoundaryColor, str, font, Owner.LabelTextColor);
+                SizeF size = graphics.MeasureString(str, font);
+                PointF loc = new PointF(pivot.X, pivot.Y + size.Height / 2);
+                TextBox.DrawTextBox(graphics, CanvasRenderEngine.MiddleDownRect(loc, size), Owner.LabelBackGroundColor, Owner.LabelBoundaryColor, str, font, Owner.LabelTextColor); ;
             }
         }
 
@@ -135,7 +145,6 @@ namespace InfoGlasses.WinformControls
         {
             IEnumerable<IGH_Param> sources = param.Sources;
             GH_ParamWireDisplay style = param.WireDisplay;
-            Font font = new Font(GH_FontServer.StandardBold.FontFamily, (float)Owner.LabelFontSize);
 
             if (!param.Attributes.HasInputGrip)
             {
@@ -172,14 +181,12 @@ namespace InfoGlasses.WinformControls
                     {
                         GH_WireType type = GH_Painter.DetermineWireType(sources.ElementAt(i).VolatileData);
                         DrawConnection(param.Attributes.InputGrip, sources.ElementAt(i).Attributes.OutputGrip, GH_WireDirection.left, GH_WireDirection.right, param.Attributes.Selected, sources.ElementAt(i).Attributes.Selected, type, ParamProxies[i].ShowColor, canvas, graphics);
-                        RenderTextBox(graphics, font, i);
                     }
                     return;
                 }
                 for (int i = 0; i < count; i++)
                 {
                     DrawConnection(param.Attributes.InputGrip, sources.ElementAt(i).Attributes.OutputGrip, GH_WireDirection.left, GH_WireDirection.right, param.Attributes.Selected, sources.ElementAt(i).Attributes.Selected, GH_WireType.generic, ParamProxies[i].ShowColor, canvas, graphics);
-                    RenderTextBox(graphics, font, i);
                 }
                 return;
             }
@@ -189,7 +196,6 @@ namespace InfoGlasses.WinformControls
                     for (int i = 0; i < count; i++)
                     {
                         DrawConnection(param.Attributes.InputGrip, sources.ElementAt(i).Attributes.OutputGrip, GH_WireDirection.left, GH_WireDirection.right, param.Attributes.Selected, sources.ElementAt(i).Attributes.Selected, GH_WireType.faint, ParamProxies[i].ShowColor, canvas, graphics);
-                        RenderTextBox(graphics, font, i);
                     }
                     break;
                 case GH_ParamWireDisplay.hidden:
