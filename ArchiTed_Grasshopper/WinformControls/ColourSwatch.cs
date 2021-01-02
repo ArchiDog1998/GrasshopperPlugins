@@ -55,10 +55,13 @@ namespace ArchiTed_Grasshopper.WinformControls
         {
             if(channel == GH_CanvasChannel.Objects)
             {
+                //float width = this.Bounds.Height / 10;
+                float width = 1;
+
                 GraphicsPath path = TextBox.GetRoundRectangle(this.Bounds, this.Bounds.Height / 6);
                 
                 graphics.FillPath(new SolidBrush(GetValue()), path);
-                //graphics.DrawPath(new Pen(this.Enable ? Color.Black : ColorControl.UnableColor, this.Bounds.Height/10), path);
+                graphics.DrawPath(new Pen(this.Enable ? Color.DimGray : ColorExtension.UnableColor, width), path);
             }
             
         }
