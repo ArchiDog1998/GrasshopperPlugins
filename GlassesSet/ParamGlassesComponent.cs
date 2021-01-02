@@ -178,8 +178,8 @@ namespace InfoGlasses
         private bool _run = true;
         private bool _isFirst = true;
 
-        private List<ParamProxy> _allParamProxy;
-        public List<ParamProxy> AllParamProxy
+        private List<GooTypeProxy> _allParamProxy;
+        public List<GooTypeProxy> AllParamProxy
         {
             get
             {
@@ -192,8 +192,8 @@ namespace InfoGlasses
             set { _allParamProxy = value; }
         }
 
-        private List<ObjectProxy> _allProxy;
-        public List<ObjectProxy> AllProxy
+        private List<ParamGlassesProxy> _allProxy;
+        public List<ParamGlassesProxy> AllProxy
         {
             get
             {
@@ -206,8 +206,9 @@ namespace InfoGlasses
             set { _allProxy = value; }
         }
 
+        public Dictionary<string, ParamGlassesProxy> CreateProxyDict { get; set; }
 
-        public List<ParamProxy> ShowProxy { get; internal set; }
+        public List<GooTypeProxy> ShowProxy { get; internal set; }
 
         public Dictionary<string, Color> ColorDict { get; set; }
 
@@ -222,7 +223,7 @@ namespace InfoGlasses
         {
             LanguageChanged += ResponseToLanguageChanged;
             ResponseToLanguageChanged(this, new EventArgs());
-            ShowProxy = new List<ParamProxy>();
+            ShowProxy = new List<GooTypeProxy>();
 
             int width = 24;
 
@@ -652,7 +653,7 @@ namespace InfoGlasses
 
         private void UpdateAllParamProxy()
         {
-            _allParamProxy = new List<ParamProxy>();
+            _allParamProxy = new List<GooTypeProxy>();
             foreach (IGH_ObjectProxy proxy in Grasshopper.Instances.ComponentServer.ObjectProxies)
             {
                 if (!proxy.Obsolete && proxy.Kind == GH_ObjectType.CompiledObject)
@@ -662,7 +663,7 @@ namespace InfoGlasses
                         IGH_DocumentObject obj = proxy.CreateInstance();
                         if (IsPersistentParam(obj.GetType()))
                         {
-                            ParamProxy paramProxy = new ParamProxy(((IGH_Param)obj).Type, this);
+                            GooTypeProxy paramProxy = new GooTypeProxy(((IGH_Param)obj).Type, this);
                             if (!_allParamProxy.Contains(paramProxy))
                             {
                                 _allParamProxy.Add(paramProxy);
@@ -681,12 +682,12 @@ namespace InfoGlasses
 
         public void UpdateAllProxy()
         {
-            _allProxy = new List<ObjectProxy>();
+            _allProxy = new List<ParamGlassesProxy>();
             foreach (IGH_ObjectProxy proxy in Grasshopper.Instances.ComponentServer.ObjectProxies)
             {
                 if (!proxy.Obsolete && proxy.Kind == GH_ObjectType.CompiledObject)
                 {
-                    _allProxy.Add(new ObjectProxy(proxy));
+                    _allProxy.Add(new ParamGlassesProxy(proxy));
                 }
             }
         }
@@ -764,6 +765,23 @@ namespace InfoGlasses
             catch
             {
                 return this.DefaultColor;
+            }
+        }
+
+        public void SetCreateProxy(string name, ParamGlassesProxy proxy)
+        {
+            CreateProxyDict[name] = proxy;
+        }
+
+        public ParamGlassesProxy GetCreateProxy(string name)
+        {
+            try
+            {
+                return CreateProxyDict[name];
+            }
+            catch
+            {
+                return null;
             }
         }
 

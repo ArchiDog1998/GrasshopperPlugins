@@ -33,9 +33,9 @@ namespace InfoGlasses.WinformControls
         /// <summary>
         /// the param that used in the right document.
         /// </summary>
-        public static List<ParamProxy> LegendParamInfo { get; internal set; }
+        public static List<GooTypeProxy> LegendParamInfo { get; internal set; }
         #endregion
-        public List<ParamProxy> ParamProxies { get; private set; }
+        public List<GooTypeProxy> ParamProxies { get; private set; }
 
         #endregion
 
@@ -44,7 +44,7 @@ namespace InfoGlasses.WinformControls
         {
             if (!target.Attributes.HasInputGrip)
                 throw new ArgumentOutOfRangeException("Target must has InputGrip!");
-            ParamProxies = new List<ParamProxy>();
+            ParamProxies = new List<GooTypeProxy>();
             this.Owner = owner;
 
             //target.OnPingDocument().SolutionEnd += WireConnectRenderItem_SolutionEnd;
@@ -92,7 +92,7 @@ namespace InfoGlasses.WinformControls
             var sources = ((IGH_Param)this.Target).Sources;
             if (ParamProxies.Count != sources.Count)
             {
-                ParamProxies = new List<ParamProxy>();
+                ParamProxies = new List<GooTypeProxy>();
 
                 foreach (IGH_Param item in sources)
                 {
@@ -199,7 +199,7 @@ namespace InfoGlasses.WinformControls
             }
         }
 
-        private ParamProxy FindOrCreateInfo(IGH_Param param)
+        private GooTypeProxy FindOrCreateInfo(IGH_Param param)
         {
             string typeFullName = param.Type.FullName;
 
@@ -247,7 +247,7 @@ namespace InfoGlasses.WinformControls
                     return info;
                 }
             }
-            ParamProxy newInfo = new ParamProxy(param.Type, Owner);
+            GooTypeProxy newInfo = new GooTypeProxy(param.Type, Owner);
             Owner.AllParamProxy.Add(newInfo);
             Owner.ShowProxy.Add(newInfo);
             return newInfo;

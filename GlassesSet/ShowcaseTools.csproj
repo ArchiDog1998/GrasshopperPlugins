@@ -104,7 +104,8 @@
     </Compile>
     <Compile Include="WPF\ExceptionProxy.cs" />
     <Compile Include="WPF\ObjectProxy.cs" />
-    <Compile Include="WPF\ParamProxy.cs" />
+    <Compile Include="WPF\GooTypeProxy.cs" />
+    <Compile Include="WPF\ParamGlassesProxy.cs" />
     <Compile Include="WPF\WireColorsWindow.xaml.cs">
       <DependentUpon>WireColorsWindow.xaml</DependentUpon>
     </Compile>

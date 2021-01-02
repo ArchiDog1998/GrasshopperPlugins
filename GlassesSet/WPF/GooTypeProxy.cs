@@ -16,10 +16,14 @@ using System.Threading.Tasks;
 
 namespace InfoGlasses.WPF
 {
-    public class ParamProxy : ISearchItem
+    public class GooTypeProxy : ISearchItem
     {
         public ParamGlassesComponent Owner { get; }
         public Color ShowColor => Owner.GetColor(this.TypeFullName);
+        /// <summary>
+        /// Null for no defination.
+        /// </summary>
+        public ParamGlassesProxy CreateProxy => Owner.GetCreateProxy(this.TypeFullName);
         public string TypeFullName { get; }
         public string TypeName{ get; }
         public bool IsPlugin = true;
@@ -27,7 +31,7 @@ namespace InfoGlasses.WPF
 
         public string FindDesc => TypeName + TypeFullName;
 
-        public ParamProxy(Type type, ParamGlassesComponent owner)
+        public GooTypeProxy(Type type, ParamGlassesComponent owner)
         {
             this.Owner = owner;
             this.TypeFullName = type.FullName;
@@ -39,6 +43,18 @@ namespace InfoGlasses.WPF
                     this.IsPlugin = !item.IsCoreLibrary;
                     break;
                 }
+            }
+        }
+
+        public IGH_DocumentObject CreateOnePlusObject()
+        {
+            if (this.CreateProxy != null)
+            {
+                return this.CreateProxy.CreateObejct.Invoke();
+            }
+            else
+            {
+                return null;
             }
         }
     }

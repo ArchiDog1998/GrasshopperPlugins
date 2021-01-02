@@ -123,7 +123,7 @@ namespace InfoGlasses.WinformControls
 
         }
 
-        private void DrawOneLegend(Graphics graphics, PointF pivot, ParamProxy info, float size, float mult)
+        private void DrawOneLegend(Graphics graphics, PointF pivot, GooTypeProxy info, float size, float mult)
         {
 
             float height = size * mult;
