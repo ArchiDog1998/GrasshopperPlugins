@@ -32,7 +32,15 @@ namespace ArchiTed_Grasshopper.WinformControls
 
         protected override string WholeToString(double value)
         {
-            return value.ToString("F3");
+            if(value.ToString().Split('.').Length == 1)
+            {
+                return value.ToString("F1");
+            }
+            else
+            {
+                return value.ToString();
+            }
+            
         }
 
         protected override double StringToT(string str)

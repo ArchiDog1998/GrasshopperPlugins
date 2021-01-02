@@ -225,8 +225,6 @@ namespace ArchiTed_Grasshopper
         }
 
 
-
-
         #endregion
 
         /// <summary>
@@ -357,7 +355,16 @@ namespace ArchiTed_Grasshopper
             menu.Items.Add(item);
         }
 
-        public static void AddClickItem(ToolStripDropDown menu, string itemName, string itemTip, Image itemIcon, EventHandler click, bool @default, bool enable = true)
+        public static void AddClickItem<T>(ToolStripDropDown menu, string itemName, string itemTip, Image itemIcon,T tag, Action<object, EventArgs, T> click, bool @default = false, bool enable = true)
+        {
+            void Item_Click(object sender, EventArgs e)
+            {
+                click.Invoke(sender, e, tag);
+            }
+            AddClickItem(menu, itemName, itemTip, itemIcon, Item_Click, @default, enable);
+        }
+
+        public static void AddClickItem(ToolStripDropDown menu, string itemName, string itemTip, Image itemIcon, EventHandler click, bool @default = false, bool enable = true)
         {
             ToolStripMenuItem item = new ToolStripMenuItem(itemName);
             item.ToolTipText = itemTip;

@@ -32,7 +32,7 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// <summary>
         /// how to find the string's Width.
         /// </summary>
-        public virtual int Width => GH_FontServer.StringWidth(WholeToString(GetValue()), GH_FontServer.StandardAdjusted);
+        public virtual int Width => (int)(GH_FontServer.StringWidth(WholeToString(GetValue()), GH_FontServer.StandardAdjusted) + 5);
 
         /// <summary>
         ///  Define a input box.

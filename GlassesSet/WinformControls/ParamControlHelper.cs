@@ -10,9 +10,11 @@ using Grasshopper.Kernel.Types;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TextBox = ArchiTed_Grasshopper.WinformControls.TextBox;
 
 namespace InfoGlasses.WinformControls
 {
@@ -111,6 +113,20 @@ namespace InfoGlasses.WinformControls
             return new RectangleF(pivot, new SizeF(rect.Width, rect.Height - 2 * dis));
         }
 
+        #endregion
+
+        #region ParamRender
+        public static void RenderParamButtonIcon(Graphics graphics, Bitmap icon, RectangleF bound, float size = 2)
+        {
+
+            RectangleF background = bound;
+            background.Inflate(size, size);
+            GraphicsPath path = TextBox.GetRoundRectangle(background, size);
+
+            graphics.FillPath(new SolidBrush(Color.FromArgb(150, Color.WhiteSmoke)), path);
+            graphics.DrawPath(new Pen(Color.DimGray, 1), path);
+            graphics.DrawImage(icon, bound);
+        }
         #endregion
         #endregion
     }

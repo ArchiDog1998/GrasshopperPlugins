@@ -17,11 +17,13 @@ using Microsoft.VisualBasic.CompilerServices;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TextBox = ArchiTed_Grasshopper.WinformControls.TextBox;
 
 namespace InfoGlasses.WinformControls
 {
@@ -29,6 +31,23 @@ namespace InfoGlasses.WinformControls
     {
         public GH_Param<TGoo> Target { get; }
         public int Width => 20;
+
+        private AddProxyParams[] _myProxies;
+
+        public new bool Enable => MyProxies.Length != 0;
+
+        public AddProxyParams[] MyProxies
+        {
+            get 
+            { 
+                if(_myProxies == null)
+                {
+                    FindProxies();
+                }
+                return _myProxies; 
+            }
+        }
+
 
         public new ParamGlassesComponent Owner { get; }
 
@@ -46,14 +65,30 @@ namespace InfoGlasses.WinformControls
             GH_Viewport vp = Grasshopper.Instances.ActiveCanvas.Viewport;
             if (vp.Zoom >= 0.5f && this.Bounds.Contains(vp.UnprojectPoint(e.Location)))
             {
-                this.CreateNewObject();
+                if(MyProxies.Length == 1)
+                {
+                    this.CreateNewObject(0);
+                }
+                else if(MyProxies.Length > 1)
+                {
+                    ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
+                    for (int i = 0; i < MyProxies.Length; i++)
+                    {
+                        void Item_Click(object sender1, EventArgs e1, int index)
+                        {
+                            this.CreateNewObject(index);
+                        }
+                        WinFormPlus.AddClickItem(menu, MyProxies[i].Name, null, MyProxies[i].Icon.GetIcon(true, true), i,Item_Click, false);
+                    }
+                    menu.Show(Grasshopper.Instances.ActiveCanvas, e.Location);
+                }
             }
         }
 
         protected override bool IsRender(GH_Canvas canvas, Graphics graphics, bool renderLittleZoom = false)
         {
             Grasshopper.Instances.ActiveCanvas.MouseClick -= ActiveCanvas_MouseClick;
-            if (Target.SourceCount > 0)
+            if (Target.SourceCount > 0 || !this.Enable)
             {
                 return false;
             }
@@ -69,12 +104,20 @@ namespace InfoGlasses.WinformControls
         {
             if (channel == GH_CanvasChannel.Objects)
             {
-                Color showColor = this.Enable ? ColorExtension.OffColor : ColorExtension.UnableColor;
-                Pen drawPen = new Pen(showColor, 3);
-                graphics.DrawLine(drawPen, new Point((int)this.Bounds.Left, (int)(this.Bounds.Top + this.Bounds.Height / 2)),
-                    new Point((int)this.Bounds.Right, (int)(this.Bounds.Top + this.Bounds.Height / 2)));
-                graphics.DrawLine(drawPen, new Point((int)(this.Bounds.Left + this.Bounds.Width / 2), (int)this.Bounds.Top),
-                     new Point((int)(this.Bounds.Left + this.Bounds.Width / 2), (int)this.Bounds.Bottom));
+                if (MyProxies.Length != 1)
+                {
+                    Color showColor = this.Enable ? ColorExtension.OffColor : ColorExtension.UnableColor;
+                    Pen drawPen = new Pen(showColor, 3);
+                    graphics.DrawLine(drawPen, new Point((int)this.Bounds.Left, (int)(this.Bounds.Top + this.Bounds.Height / 2)),
+                        new Point((int)this.Bounds.Right, (int)(this.Bounds.Top + this.Bounds.Height / 2)));
+                    graphics.DrawLine(drawPen, new Point((int)(this.Bounds.Left + this.Bounds.Width / 2), (int)this.Bounds.Top),
+                         new Point((int)(this.Bounds.Left + this.Bounds.Width / 2), (int)this.Bounds.Bottom));
+                }
+                else if(MyProxies.Length == 1)
+                {
+                    ParamControlHelper.RenderParamButtonIcon(graphics, MyProxies[0].Icon.GetIcon(!this.Target.Locked, true), this.Bounds);
+                }
+                
             }
         }
 
@@ -91,57 +134,87 @@ namespace InfoGlasses.WinformControls
             Grasshopper.Instances.ActiveCanvas.MouseClick -= ActiveCanvas_MouseClick;
         }
 
-        private void CreateNewObject()
+        private void FindProxies()
         {
-            float leftMove = 100;
-            //Finde the right action and invoke it!
             foreach (var set in Owner.CreateProxyDict)
             {
-                if(set.Key == this.Target.Type.FullName)
+                if (set.Key == this.Target.Type.FullName)
                 {
-
-                    IGH_DocumentObject obj = Grasshopper.Instances.ComponentServer.EmitObject(set.Value.Guid);
-                    if (obj == null)
-                    {
-                        return;
-                    }
-                    if (obj is GH_Component)
-                    {
-                        GH_Component com = obj as GH_Component;
-
-                        PointF comRightCenter = new PointF(Target.Attributes.Bounds.Left - leftMove,
-                                Target.Attributes.Bounds.Top + Target.Attributes.Bounds.Height / 2);
-
-                        this.AddAComponentToCanvas(com, comRightCenter, false);
-
-                        Target.AddSource(com.Params.Output[set.Value.OutIndex]);
-                        com.Params.Output[set.Value.OutIndex].Recipients.Add(this.Target);
-
-                        this.Target.OnPingDocument().NewSolution(false);
-                    }
-                    else
-                    {
-                        Target.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, LanguagableComponent.GetTransLation(new string[]
-                        {
-                                    "The added object is not a Component!", "添加的对象不是一个运算器！",
-                        }));
-                    }
+                    _myProxies = set.Value;
                     return;
                 }
             }
-
-            this.Target.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, LanguagableComponent.GetTransLation(new string[]
-            {
-                "Need to define which component should be created!", "需要定义哪个运算器是用来添加的！",
-            }));
+            _myProxies = new AddProxyParams[] { };
         }
 
-        private void AddAComponentToCanvas(IGH_DocumentObject obj, PointF pivot, bool update)
+        private void CreateNewObject(int index)
+        {
+            CreateNewObject(this.MyProxies, this.Target, index);
+        }
+
+
+        internal static void CreateNewObject(AddProxyParams[] proxies, IGH_Param target, int index = 0)
+        {
+            if (proxies.Length < index) return;
+
+
+            IGH_DocumentObject obj = Grasshopper.Instances.ComponentServer.EmitObject(proxies[index].Guid);
+            if (obj == null)
+            {
+                return;
+            }
+
+            CreateNewObject(obj, target, proxies[index].OutIndex);
+        }
+
+        internal static void CreateNewObject(IGH_DocumentObject obj, IGH_Param target, int outIndex = 0, float leftMove = 100, string init = null)
+        {
+
+            if (obj == null)
+            {
+                return;
+            }
+
+            PointF comRightCenter = new PointF(target.Attributes.Bounds.Left - leftMove,
+                target.Attributes.Bounds.Top + target.Attributes.Bounds.Height / 2);
+            if (obj is GH_Component)
+            {
+                GH_Component com = obj as GH_Component;
+
+                AddAObjectToCanvas(com, comRightCenter, false, init);
+
+                target.AddSource(com.Params.Output[outIndex]);
+                com.Params.Output[outIndex].Recipients.Add(target);
+
+                target.OnPingDocument().NewSolution(false);
+            }
+            else if (obj is IGH_Param)
+            {
+                IGH_Param param = obj as IGH_Param;
+
+                AddAObjectToCanvas(param, comRightCenter, false, init);
+
+                target.AddSource(param);
+                param.Recipients.Add(target);
+
+                target.OnPingDocument().NewSolution(false);
+            }
+            else
+            {
+                target.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, LanguagableComponent.GetTransLation(new string[]
+                {
+                    "The added object is not a Component or Parameters!", "添加的对象不是一个运算器或参数！",
+                }));
+            }
+        }
+
+
+        internal static void AddAObjectToCanvas(IGH_DocumentObject obj, PointF pivot, bool update, string init = null)
         {
             var functions = typeof(GH_Canvas).GetRuntimeMethods().Where(m => m.Name.Contains("InstantiateNewObject") && !m.IsPublic).ToArray();
             if(functions.Length > 0)
             {
-                functions[0].Invoke(Grasshopper.Instances.ActiveCanvas, new object[] { obj, null, pivot, update });
+                functions[0].Invoke(Grasshopper.Instances.ActiveCanvas, new object[] { obj, init, pivot, update });
             }
         }
     }

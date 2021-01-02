@@ -8,6 +8,7 @@
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
+using Grasshopper.Kernel.Special;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -26,7 +27,17 @@ namespace InfoGlasses.WinformControls
 
         public GH_ParamAccess Access { get; set; }
 
-        //public string Suffix => WinformControlHelper.GetSuffix(this.Access);
+        public RectangleF  IconButtonLayout 
+        { 
+            get 
+            {
+                float spacing = 6;
+                float dis = this.Bounds.Height;
+                return new RectangleF(this.Bounds.X - dis - spacing, this.Bounds.Y, dis, dis);
+            } 
+        }
+
+        private Bitmap icon = new GH_NumberSlider().Icon_24x24;
 
         public InputBoxIntParam(GH_PersistentParam<TGoo> target, ControllableComponent owner, bool enable,
             string[] tips = null, int tipsRelay = 5000, bool renderLittleZoom = false)
@@ -48,9 +59,17 @@ namespace InfoGlasses.WinformControls
         private void ActiveCanvas_MouseClick(object sender, MouseEventArgs e)
         {
             GH_Viewport vp = Grasshopper.Instances.ActiveCanvas.Viewport;
-            if (vp.Zoom >= 0.5f && this.Bounds.Contains(vp.UnprojectPoint(e.Location)))
+            if (vp.Zoom >= 0.5f)
             {
-                this.RespondToMouseDoubleClick(Grasshopper.Instances.ActiveCanvas, new Grasshopper.GUI.GH_CanvasMouseEvent(vp, e));
+                PointF mouseLoc = vp.UnprojectPoint(e.Location);
+                if (this.Bounds.Contains(mouseLoc))
+                {
+                    this.RespondToMouseDoubleClick(Grasshopper.Instances.ActiveCanvas, new Grasshopper.GUI.GH_CanvasMouseEvent(vp, e));
+                }
+                else if (this.IconButtonLayout.Contains(mouseLoc))
+                {
+                    CheckBoxAddObject<GH_Interval>.CreateNewObject(new GH_NumberSlider(), this.Target, leftMove: 150, init: WholeToString(GetValue()));
+                }
             }
         }
 
@@ -72,6 +91,15 @@ namespace InfoGlasses.WinformControls
             }
             Layout(new RectangleF(), Target.Attributes.Bounds);
             return base.IsRender(canvas, graphics, renderLittleZoom);
+        }
+
+        protected override void Render(GH_Canvas canvas, Graphics graphics, GH_CanvasChannel channel)
+        {
+            if(channel == GH_CanvasChannel.Objects)
+            {
+                ParamControlHelper.RenderParamButtonIcon(graphics,icon, IconButtonLayout);
+            }
+            base.Render(canvas, graphics, channel);
         }
 
         protected override int GetValue()
