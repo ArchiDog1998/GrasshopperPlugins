@@ -150,7 +150,7 @@ namespace InfoGlasses
         #endregion
 
         private const string _showControl = "showControl";
-        private const bool _showControlDefault = false;
+        private const bool _showControlDefault = true;
         public bool IsShowControl => GetValue(_showControl, _showControlDefault);
 
         private const string _showBoolControl = "showBoolControl";
@@ -173,6 +173,9 @@ namespace InfoGlasses
         private const bool _showStringControlDefault = true;
         public bool IsShowStringControl => GetValue(_showStringControl, _showStringControlDefault);
 
+        private const string _showOtherControl = "showOtherControl";
+        private const bool _showOtherControlDefault = true;
+        public bool IsShowOtherControl => GetValue(_showOtherControl, _showOtherControlDefault);
         #endregion
 
         private bool _run = true;
@@ -374,11 +377,12 @@ namespace InfoGlasses
                 {
                     ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
 
-                    WinFormPlus.AddCheckBoxItem(menu, LanguagableComponent.GetTransLation(new string[] { "Show Bool Control", "显示布尔控制项" }), null, null, this, _showBoolControl, _showBoolControlDefault);
-                    WinFormPlus.AddCheckBoxItem(menu, LanguagableComponent.GetTransLation(new string[] { "Show Colour Control", "显示颜色控制项" }), null, null, this, _showColorControl, _showColorControlDefault);
-                    WinFormPlus.AddCheckBoxItem(menu, LanguagableComponent.GetTransLation(new string[] { "Show Number Control", "显示数值控制项" }), null, null, this, _showDoubleControl, _showDoubleControlDefault);
-                    WinFormPlus.AddCheckBoxItem(menu, LanguagableComponent.GetTransLation(new string[] { "Show Int Control", "显示整数控制项" }), null, null, this, _showIntControl, _showIntControlDefault);
-                    WinFormPlus.AddCheckBoxItem(menu, LanguagableComponent.GetTransLation(new string[] { "Show Text Control", "显示文字控制项" }), null, null, this, _showStringControl, _showStringControlDefault);
+                    WinFormPlus.AddCheckBoxItem(menu, LanguagableComponent.GetTransLation(new string[] { "Bool Control", "布尔控制项" }), null, null, this, _showBoolControl, _showBoolControlDefault);
+                    WinFormPlus.AddCheckBoxItem(menu, LanguagableComponent.GetTransLation(new string[] { "Colour Control", "颜色控制项" }), null, null, this, _showColorControl, _showColorControlDefault);
+                    WinFormPlus.AddCheckBoxItem(menu, LanguagableComponent.GetTransLation(new string[] { "Number Control", "数值控制项" }), null, null, this, _showDoubleControl, _showDoubleControlDefault);
+                    WinFormPlus.AddCheckBoxItem(menu, LanguagableComponent.GetTransLation(new string[] { "Int Control", "整数控制项" }), null, null, this, _showIntControl, _showIntControlDefault);
+                    WinFormPlus.AddCheckBoxItem(menu, LanguagableComponent.GetTransLation(new string[] { "Text Control", "文字控制项" }), null, null, this, _showStringControl, _showStringControlDefault);
+                    WinFormPlus.AddCheckBoxItem(menu, LanguagableComponent.GetTransLation(new string[] { "Other Control", "其他控制项" }), null, null, this, _showOtherControl, _showOtherControlDefault);
 
                     return menu;
                 });
@@ -666,7 +670,7 @@ namespace InfoGlasses
                 }
  
             }
-            if (param.Attributes.HasInputGrip && true)
+            if (param.Attributes.HasInputGrip && this.IsShowOtherControl)
             {
                 Type paramType = typeof(CheckBoxAddObject<>).MakeGenericType(type);
                 this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, null, true, false));
