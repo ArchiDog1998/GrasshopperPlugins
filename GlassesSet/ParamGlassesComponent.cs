@@ -227,7 +227,33 @@ namespace InfoGlasses
             //For test
             CreateProxyDict = new Dictionary<string, AddProxyParams>() 
             {
-                {"Grasshopper.Kernel.Types.GH_Point", new AddProxyParams(new Guid("{3581F42A-9592-4549-BD6B-1C0FC39D067B}"), 0) }
+                {"Grasshopper.Kernel.Types.GH_Point", new AddProxyParams(new Guid("{3581F42A-9592-4549-BD6B-1C0FC39D067B}"), 0) },
+                {"Grasshopper.Kernel.Types.GH_Vector", new AddProxyParams(new Guid("{56b92eab-d121-43f7-94d3-6cd8f0ddead8}"), 0) },
+
+                {"Grasshopper.Kernel.Types.GH_Circle", new AddProxyParams(new Guid("{807b86e3-be8d-4970-92b5-f8cdcb45b06b}"), 0) },
+                {"Grasshopper.Kernel.Types.GH_Arc", new AddProxyParams(new Guid("{bb59bffc-f54c-4682-9778-f6c3fe74fce3}"), 0) },
+                {"Grasshopper.Kernel.Types.GH_Curve", new AddProxyParams(new Guid("{2b2a4145-3dff-41d4-a8de-1ea9d29eef33}"), 0) },
+                {"Grasshopper.Kernel.Types.GH_Line", new AddProxyParams(new Guid("{4c4e56eb-2f04-43f9-95a3-cc46a14f495a}"), 0) },
+                {"Grasshopper.Kernel.Types.GH_Plane", new AddProxyParams(new Guid("{bc3e379e-7206-4e7b-b63a-ff61f4b38a3e}"), 0) },
+                {"Grasshopper.Kernel.Types.GH_Rectangle", new AddProxyParams(new Guid("{d93100b6-d50b-40b2-831a-814659dc38e3}"), 0) },
+
+                {"Grasshopper.Kernel.Types.GH_Box", new AddProxyParams(new Guid("{28061aae-04fb-4cb5-ac45-16f3b66bc0a4}"), 0) },
+                {"Grasshopper.Kernel.Types.GH_Mesh", new AddProxyParams(new Guid("{e2c0f9db-a862-4bd9-810c-ef2610e7a56f}"), 0) },
+                {"Grasshopper.Kernel.Types.GH_MeshFace", new AddProxyParams(new Guid("{1cb59c86-7f6b-4e52-9a0c-6441850e9520}"), 0) },
+                {"Grasshopper.Kernel.Types.GH_SubD", new AddProxyParams(new Guid("{855a2c73-31c0-41d2-b061-57d54229d11b}"), 0) },
+                {"Grasshopper.Kernel.Types.GH_Surface", new AddProxyParams(new Guid("{6e5de495-ba76-42d0-9985-a5c265e9aeca}"), 0) },
+                {"SquishyXMorphs.GH_TwistedBox", new AddProxyParams(new Guid("{124de0f5-65f8-4ae0-8f61-8fb066e2ba02}"), 0) },
+
+                {"Grasshopper.Kernel.Types.GH_Field", new AddProxyParams(new Guid("{8cc9eb88-26a7-4baa-a896-13e5fc12416a}"), 0) },
+                {"Grasshopper.Kernel.Types.GH_GeometryGroup", new AddProxyParams(new Guid("{874eebe7-835b-4f4f-9811-97e031c41597}"), 0) },
+
+                {"Grasshopper.Kernel.Types.GH_ComplexNumber", new AddProxyParams(new Guid("{63d12974-2915-4ccf-ac26-5d566c3bac92}"), 0) },
+                {"Grasshopper.Kernel.Types.GH_Interval", new AddProxyParams(new Guid("{d1a28e95-cf96-4936-bf34-8bf142d731bf}"), 0) },
+                {"Grasshopper.Kernel.Types.GH_Interval2D", new AddProxyParams(new Guid("{8555a743-36c1-42b8-abcc-06d9cb94519f}"), 0) },
+                {"Grasshopper.Kernel.Types.GH_Matrix", new AddProxyParams(new Guid("{54ac80cf-74f3-43f7-834c-0e3fe94632c6}"), 0) },
+                {"Grasshopper.Kernel.Types.GH_Time", new AddProxyParams(new Guid("{31534405-6573-4be6-8bf8-262e55847a3a}"), 0) },
+                {"Grasshopper.Kernel.Types.GH_StructurePath", new AddProxyParams(new Guid("{946cb61e-18d2-45e3-8840-67b0efa26528}"), 0) },
+                {"Grasshopper.Kernel.Types.GH_Material", new AddProxyParams(new Guid("{76975309-75a6-446a-afed-f8653720a9f2}"), 0) },
             };
 
             int width = 24;
@@ -569,41 +595,48 @@ namespace InfoGlasses
         {
             this.RenderObjs.Add(new WireConnectRenderItem(param, this));
             if (!this.IsShowControl || !addControl) return;
+            Type type = param.Type;
 
-            if(IsPersistentParam(param.GetType()))
+            if (IsPersistentParam(param.GetType()))
             {
-                Type type = param.Type;
 
                 if (this.IsShowBoolControl && typeof(GH_Goo<bool>).IsAssignableFrom(type))
                 {
                     Type paramType = typeof(CheckBoxParam<>).MakeGenericType(type);
                     this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, null, true, false));
+                    return;
                 }    
                 else if (this.IsShowColorControl && typeof(GH_Goo<Color>).IsAssignableFrom(type))
                 {
                     Type paramType = typeof(ColourSwatchParam<>).MakeGenericType(type);
                     this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 1000, false));
+                    return;
                 }
                 else if (this.IsShowDoubleControl && typeof(GH_Goo<double>).IsAssignableFrom(type))
                 {
                     Type paramType = typeof(InputBoxDoubleParam<>).MakeGenericType(type);
                     this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, false));
+                    return;
                 }
                 else if (this.IsShowIntControl &&  typeof(GH_Goo<int>).IsAssignableFrom(type))
                 {
                     Type paramType = typeof(InputBoxIntParam<>).MakeGenericType(type);
                     this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, false));
+                    return;
                 }
                 else if (this.IsShowStringControl && typeof(GH_Goo<string>).IsAssignableFrom(type))
                 {
                     Type paramType = typeof(InputBoxStringParam<>).MakeGenericType(type);
                     this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, false));
+                    return;
                 }
-                else if (true)
-                {
-                    Type paramType = typeof(CheckBoxAddObject<>).MakeGenericType(type);
-                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, null, true, false));
-                }
+ 
+            }
+            if (param.Attributes.HasInputGrip && true)
+            {
+                Type paramType = typeof(CheckBoxAddObject<>).MakeGenericType(type);
+                this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, null, true, false));
+                return;
             }
         }
 

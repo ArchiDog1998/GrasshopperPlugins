@@ -27,12 +27,12 @@ namespace InfoGlasses.WinformControls
 {
     class CheckBoxAddObject<TGoo>: ClickButtonBase<LangWindow>, IDisposable where TGoo : class, IGH_Goo
     {
-        public GH_PersistentParam<TGoo> Target { get; }
+        public GH_Param<TGoo> Target { get; }
         public int Width => 20;
 
         public new ParamGlassesComponent Owner { get; }
 
-        public CheckBoxAddObject(GH_PersistentParam<TGoo> target, ParamGlassesComponent owner, bool enable,
+        public CheckBoxAddObject(GH_Param<TGoo> target, ParamGlassesComponent owner, bool enable,
             string[] tips = null, int tipsRelay = 5000, Func<ToolStripDropDownMenu> createMenu = null, bool isToggle = true,
             bool renderLittleZoom = false)
             : base(null, owner, null, enable, true, tips, tipsRelay, createMenu, isToggle, renderLittleZoom)
@@ -80,7 +80,10 @@ namespace InfoGlasses.WinformControls
 
         public override void Layout(RectangleF innerRect, RectangleF outerRect)
         {
-            this.Bounds = CanvasRenderEngine.MaxSquare(ParamControlHelper.ParamLayoutBase(this.Target.Attributes, Width, outerRect));
+            float small = -2;
+            RectangleF rect = CanvasRenderEngine.MaxSquare(ParamControlHelper.ParamLayoutBase(this.Target.Attributes, Width, outerRect));
+            rect.Inflate(small, small);
+            this.Bounds = rect;
         }
 
         public void Dispose()
@@ -115,7 +118,6 @@ namespace InfoGlasses.WinformControls
                         com.Params.Output[set.Value.OutIndex].Recipients.Add(this.Target);
 
                         this.Target.OnPingDocument().NewSolution(false);
-
                     }
                     else
                     {
