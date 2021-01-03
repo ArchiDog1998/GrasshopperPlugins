@@ -52,9 +52,6 @@ namespace InfoGlasses.WinformControls
         public RectangleF IconButtonBound => ParamControlHelper.GetIconBound(this.Bounds);
         public int Width => 20;
 
-
-
-
         public CheckBoxParam(GH_PersistentParam<TGoo> target, ParamGlassesComponent owner, bool enable,
             string[] tips = null, int tipsRelay = 5000, Func<ToolStripDropDownMenu> createMenu = null, bool isToggle = true,
             bool renderLittleZoom = false)

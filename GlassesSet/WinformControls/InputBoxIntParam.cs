@@ -1,120 +1,105 @@
-﻿///*  Copyright 2020 RadiRhino-秋水. All Rights Reserved.
+﻿/*  Copyright 2020 RadiRhino-秋水. All Rights Reserved.
 
-//    Distributed under MIT license.
+    Distributed under MIT license.
 
-//    See file LICENSE for detail or copy at http://opensource.org/licenses/MIT
-//*/
+    See file LICENSE for detail or copy at http://opensource.org/licenses/MIT
+*/
 
-//using Grasshopper.GUI.Canvas;
-//using Grasshopper.Kernel;
-//using Grasshopper.Kernel.Types;
-//using Grasshopper.Kernel.Special;
-//using System;
-//using System.Collections.Generic;
-//using System.Drawing;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
-//using System.Windows.Forms;
-//using ArchiTed_Grasshopper.WinformControls;
-//using ArchiTed_Grasshopper;
+using Grasshopper.GUI.Canvas;
+using Grasshopper.Kernel;
+using Grasshopper.Kernel.Types;
+using Grasshopper.Kernel.Special;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using ArchiTed_Grasshopper.WinformControls;
+using ArchiTed_Grasshopper;
 
-//namespace InfoGlasses.WinformControls
-//{
-//    class InputBoxIntParam<TGoo> : InputBoxInt, ITargetParam<TGoo, int>, IDisposable where TGoo : GH_Goo<int>
-//    {
-//        public GH_PersistentParam<TGoo> Target { get; }
+namespace InfoGlasses.WinformControls
+{
+    class InputBoxIntParam<TGoo> : InputBoxInt, ITargetParam<TGoo, int>, IDisposable where TGoo : GH_Goo<int>
+    {
+        public GH_PersistentParam<TGoo> Target { get; }
+        GH_Param<TGoo> IParamControlBase<TGoo>.Target => this.Target;
+        public GH_ParamAccess Access { get; set; }
 
-//        public GH_ParamAccess Access { get; set; }
+        private AddProxyParams[] _myProxies;
+        public AddProxyParams[] MyProxies
+        {
+            get
+            {
+                if (_myProxies == null)
+                {
+                    foreach (var set in Owner.CreateProxyDict)
+                    {
+                        if (set.Key == this.Target.Type.FullName)
+                        {
+                            _myProxies = set.Value;
+                            return _myProxies;
+                        }
+                    }
+                    _myProxies = new AddProxyParams[] { };
+                }
+                return _myProxies;
+            }
+        }
+        public new ParamGlassesComponent Owner { get; }
+        public RectangleF IconButtonBound => ParamControlHelper.GetIconBound(this.Bounds);
 
-//        public RectangleF IconButtonLayout => ParamControlHelper.GetIconBound(this.Bounds);
+        public InputBoxIntParam(GH_PersistentParam<TGoo> target, ParamGlassesComponent owner, bool enable,
+            string[] tips = null, int tipsRelay = 5000, bool renderLittleZoom = false)
+            : base(null, owner, null, enable, 0, int.MinValue, int.MaxValue, tips, tipsRelay, null, renderLittleZoom)
+        {
+            this.Target = target;
+            this.Owner = owner;
+            ParamControlHelper.SetDefaultValue(this, 0);
+        }
 
+        public void RespondToMouseDown(object sender, MouseEventArgs e)
+        {
+            ParamControlHelper.ParamMouseDown(this, this.RespondToMouseDoubleClick, sender, e, init: GetValue().ToString());
+        }
 
-//        private Bitmap icon = new GH_NumberSlider().Icon_24x24;
+        public override void Layout(RectangleF innerRect, RectangleF outerRect)
+        {
+            this.Bounds = ParamControlHelper.UpDownSmallRect(ParamControlHelper.ParamLayoutBase(this.Target.Attributes, Width, outerRect, inflate: false));
+        }
 
-//        public InputBoxIntParam(GH_PersistentParam<TGoo> target, ControllableComponent owner, bool enable,
-//            string[] tips = null, int tipsRelay = 5000, bool renderLittleZoom = false)
-//            : base(null, owner, null, enable, 0, int.MinValue, int.MaxValue, tips, tipsRelay, null, renderLittleZoom)
-//        {
-//            this.Target = target;
-//            try
-//            {
-//                this.Default = ((TGoo)target.PersistentData.AllData(true).ElementAt(0)).Value;
-//            }
-//            catch
-//            {
-//                this.Default = 0;
-//                SetValue(this.Default);
-//            }
+        protected override bool IsRender(GH_Canvas canvas, Graphics graphics, bool renderLittleZoom = false)
+        {
+            return ParamControlHelper.IsRender(this, canvas, graphics, renderLittleZoom) && base.IsRender(canvas, graphics, renderLittleZoom);
+        }
 
-//        }
+        protected override void Render(GH_Canvas canvas, Graphics graphics, GH_CanvasChannel channel)
+        {
+            ParamControlHelper.IconRender(this, canvas, graphics, channel);
+            base.Render(canvas, graphics, channel);
+        }
 
-//        private void ActiveCanvas_MouseClick(object sender, MouseEventArgs e)
-//        {
-//            GH_Viewport vp = Grasshopper.Instances.ActiveCanvas.Viewport;
-//            if (vp.Zoom >= 0.5f)
-//            {
-//                PointF mouseLoc = vp.UnprojectPoint(e.Location);
-//                if (this.Bounds.Contains(mouseLoc))
-//                {
-//                    this.RespondToMouseDoubleClick(Grasshopper.Instances.ActiveCanvas, new Grasshopper.GUI.GH_CanvasMouseEvent(vp, e));
-//                }
-//                else if (this.IconButtonLayout.Contains(mouseLoc))
-//                {
-//                    ParamControlHelper.CreateNewObject(new GH_NumberSlider(), this.Target, leftMove: 150, init: WholeToString(GetValue()));
-//                }
-//            }
-//        }
+        public override int GetValue()
+        {
+            GH_ParamAccess access = GH_ParamAccess.item;
+            var result = ParamControlHelper.GetData<TGoo, int>(this, out access);
+            this.Access = access;
+            return result;
+        }
 
-//        public override void Layout(RectangleF innerRect, RectangleF outerRect)
-//        {
-//            this.Bounds = ParamControlHelper.UpDownSmallRect(ParamControlHelper.ParamLayoutBase(this.Target.Attributes, Width, outerRect, inflate: false));
-//        }
+        public override void SetValue(int valueIn, bool record = true)
+        {
+            if (record)
+            {
+                Target.RecordUndoEvent("Set the Integer");
+            }
+            ParamControlHelper.SetData<TGoo, int>(this, valueIn);
+        }
 
-//        protected override bool IsRender(GH_Canvas canvas, Graphics graphics, bool renderLittleZoom = false)
-//        {
-//            Grasshopper.Instances.ActiveCanvas.MouseDown -= ActiveCanvas_MouseClick;
-//            if (Target.SourceCount > 0)
-//            {
-//                return false;
-//            }
-//            else
-//            {
-//                Grasshopper.Instances.ActiveCanvas.MouseDown += ActiveCanvas_MouseClick;
-//            }
-//            Layout(new RectangleF(), Target.Attributes.Bounds);
-//            return base.IsRender(canvas, graphics, renderLittleZoom);
-//        }
-
-//        protected override void Render(GH_Canvas canvas, Graphics graphics, GH_CanvasChannel channel)
-//        {
-//            if(channel == GH_CanvasChannel.Objects)
-//            {
-//                ParamControlHelper.RenderParamButtonIcon(graphics,icon, IconButtonLayout);
-//            }
-//            base.Render(canvas, graphics, channel);
-//        }
-
-//        protected override int GetValue()
-//        {
-//            GH_ParamAccess access = GH_ParamAccess.item;
-//            var result = ParamControlHelper.GetData<TGoo, int>(this, out access);
-//            this.Access = access;
-//            return result;
-//        }
-
-//        protected override void SetValue(int valueIn, bool record = true)
-//        {
-//            if (record)
-//            {
-//                Target.RecordUndoEvent("Set the Integer");
-//            }
-//            ParamControlHelper.SetData<TGoo, int>(this, valueIn);
-//        }
-
-//        public void Dispose()
-//        {
-//            Grasshopper.Instances.ActiveCanvas.MouseDown -= ActiveCanvas_MouseClick;
-//        }
-//    }
-//}
+        public void Dispose()
+        {
+            Grasshopper.Instances.ActiveCanvas.MouseDown -= RespondToMouseDown;
+        }
+    }
+}

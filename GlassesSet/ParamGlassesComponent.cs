@@ -281,7 +281,23 @@ namespace InfoGlasses
                     new AddProxyParams(new Guid("{2e78987b-9dfb-42a2-8b76-3923ac8bd91a}"), 0),
                     new AddProxyParams(new Guid("{a8b97322-2d53-47cd-905e-b932c3ccd74e}"), 0),
                 } },
+                {"Grasshopper.Kernel.Types.GH_Integer",new AddProxyParams[]{
+                    new AddProxyParams(new Guid("{57da07bd-ecab-415d-9d86-af36d7073abc}"), 0),
+                    new AddProxyParams(new Guid("{bcac2747-348b-4edd-ae1f-77a782cebbdd}"), 0),
+                    new AddProxyParams(new Guid("{33bcf975-a0b2-4b54-99fd-585c893b9e88}"), 0),
+                } },
+                {"Grasshopper.Kernel.Types.GH_Number",new AddProxyParams[]{
+                    new AddProxyParams(new Guid("{57da07bd-ecab-415d-9d86-af36d7073abc}"), 0),
+                    new AddProxyParams(new Guid("{bcac2747-348b-4edd-ae1f-77a782cebbdd}"), 0),
+                    new AddProxyParams(new Guid("{33bcf975-a0b2-4b54-99fd-585c893b9e88}"), 0),
+                } },
 
+                {"Grasshopper.Kernel.Types.GH_Colour",new AddProxyParams[]{
+                    new AddProxyParams(new Guid("{9c53bac0-ba66-40bd-8154-ce9829b9db1a}"), 0),
+                    new AddProxyParams(new Guid("{339c0ee1-cf11-444f-8e10-65c9150ea755}"), 0),
+                    new AddProxyParams(new Guid("{6da9f120-3ad0-4b6e-9fe0-f8cde3a649b7}"), 0),
+                    new AddProxyParams(new Guid("{51a2ede9-8f8c-4fdf-a375-999c2062eab7}"), 0),
+                } },
                 {"Grasshopper.Kernel.Types.GH_ComplexNumber",new AddProxyParams[]{ new AddProxyParams(new Guid("{63d12974-2915-4ccf-ac26-5d566c3bac92}"), 0) } },
                 {"Grasshopper.Kernel.Types.GH_Interval", new AddProxyParams[]{new AddProxyParams(new Guid("{d1a28e95-cf96-4936-bf34-8bf142d731bf}"), 0) } },
                 {"Grasshopper.Kernel.Types.GH_Interval2D", new AddProxyParams[]{
@@ -648,32 +664,32 @@ namespace InfoGlasses
                     Type paramType = typeof(CheckBoxParam<>).MakeGenericType(type);
                     this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, null, true, false));
                     return;
-                }    
-                //else if (this.IsShowColorControl && typeof(GH_Goo<Color>).IsAssignableFrom(type))
-                //{
-                //    Type paramType = typeof(ColourSwatchParam<>).MakeGenericType(type);
-                //    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 1000, false));
-                //    return;
-                //}
-                //else if (this.IsShowDoubleControl && typeof(GH_Goo<double>).IsAssignableFrom(type))
-                //{
-                //    Type paramType = typeof(InputBoxDoubleParam<>).MakeGenericType(type);
-                //    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, false));
-                //    return;
-                //}
-                //else if (this.IsShowIntControl &&  typeof(GH_Goo<int>).IsAssignableFrom(type))
-                //{
-                //    Type paramType = typeof(InputBoxIntParam<>).MakeGenericType(type);
-                //    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, false));
-                //    return;
-                //}
-                //else if (this.IsShowStringControl && typeof(GH_Goo<string>).IsAssignableFrom(type))
-                //{
-                //    Type paramType = typeof(InputBoxStringParam<>).MakeGenericType(type);
-                //    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, false));
-                //    return;
-                //}
- 
+                }
+                else if (this.IsShowColorControl && typeof(GH_Goo<Color>).IsAssignableFrom(type))
+                {
+                    Type paramType = typeof(ColourSwatchParam<>).MakeGenericType(type);
+                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 1000, false));
+                    return;
+                }
+                else if (this.IsShowDoubleControl && typeof(GH_Goo<double>).IsAssignableFrom(type))
+                {
+                    Type paramType = typeof(InputBoxDoubleParam<>).MakeGenericType(type);
+                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, false));
+                    return;
+                }
+                else if (this.IsShowIntControl && typeof(GH_Goo<int>).IsAssignableFrom(type))
+                {
+                    Type paramType = typeof(InputBoxIntParam<>).MakeGenericType(type);
+                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, false));
+                    return;
+                }
+                else if (this.IsShowStringControl && typeof(GH_Goo<string>).IsAssignableFrom(type))
+                {
+                    Type paramType = typeof(InputBoxStringParam<>).MakeGenericType(type);
+                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, false));
+                    return;
+                }
+
             }
             if (param.Attributes.HasInputGrip && this.IsShowOtherControl)
             {
