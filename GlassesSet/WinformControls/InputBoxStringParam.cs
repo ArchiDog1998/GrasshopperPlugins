@@ -48,7 +48,7 @@ namespace InfoGlasses.WinformControls
         {
             this.Target = target;
             this.Owner = owner;
-            ParamControlHelper.SetDefaultValue(this, "");
+            ParamControlHelper.SetDefaultValue(this, LanguagableComponent.GetTransLation(new string[] { "Click Me To Set!", "点我以设置！"}));
         }
 
         public void RespondToMouseDown(object sender, MouseEventArgs e)

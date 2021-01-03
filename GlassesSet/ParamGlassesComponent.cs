@@ -899,10 +899,8 @@ namespace InfoGlasses
                 return null;
             }
         }
-
-        internal void WriteColorTxt(string name = "WireColors_Default")
+        public void WriteColorTxt(string path)
         {
-            string path = IO_Helper.GetNamedPath(this, name);
             if (path == null) return;
 
             FileStream fs = new FileStream(path, FileMode.Create);
@@ -921,9 +919,15 @@ namespace InfoGlasses
             fs.Close();
         }
 
-        private void ReadColorTxt(string name = "WireColors_Default")
+        internal void WriteColorTxt()
         {
+            string name = "WireColors_Default";
             string path = IO_Helper.GetNamedPath(this, name);
+            WriteColorTxt(path);
+        }
+
+        public void ReadColorTxt(string path)
+        {
             if (path == null) return;
 
 
@@ -953,37 +957,113 @@ namespace InfoGlasses
             {
 
             }
+        }
 
+        private void ReadColorTxt()
+        {
+            string name = "WireColors_Default";
+            string path = IO_Helper.GetNamedPath(this, name);
+            ReadColorTxt(path);
         }
 
         public override bool Write(GH_IWriter writer)
         {
+            //Write Color
             if(ColorDict.Count != 0)
             {
                 writer.SetInt32("ColorCount", ColorDict.Count);
                 int n = 0;
                 foreach (string key in ColorDict.Keys)
                 {
-                    writer.SetString("name" + n.ToString(), key);
+                    writer.SetString("colorName" + n.ToString(), key);
                     writer.SetDrawingColor("color" + n.ToString(), ColorDict[key]);
                     n++;
                 }
             }
+
+            //WieteCreate
+            if(CreateProxyDict.Count != 0)
+            {
+                writer.SetInt32("AutoAddCount", CreateProxyDict.Count);
+                int n = 0;
+                foreach (string key in CreateProxyDict.Keys)
+                {
+                    writer.SetString("autoName" + n.ToString(), key);
+
+                    int valueCount = CreateProxyDict[key].Length;
+                    writer.SetInt32("autoValueCount" + n.ToString(), valueCount);
+                    for (int m = 0; m < valueCount; m++)
+                    {
+                        var set = CreateProxyDict[key][m];
+                        writer.SetGuid("autoValueGuid" + n.ToString("D5") + m.ToString(), set.Guid);
+                        writer.SetInt32("autoValueInt" + n.ToString("D5") + m.ToString(), set.OutIndex);
+                    }
+                    n++;
+                }
+            }
+
+            //Write Replace
+            if(ProxyReplaceDict.Count != 0)
+            {
+                writer.SetInt32("ReplaceCount", ProxyReplaceDict.Count);
+                int n = 0;
+                foreach (Guid key in ProxyReplaceDict.Keys)
+                {
+                    writer.SetGuid("ReplaceGuid" + n.ToString(), key);
+                    writer.SetString("ReplaceName" + n.ToString(), ProxyReplaceDict[key]);
+                    n++;
+                }
+            }
+
             return base.Write(writer);
         }
 
         public override bool Read(GH_IReader reader)
         {
             ColorDict = new Dictionary<string, Color>();
-            int count = 0;
-            if( reader.TryGetInt32("ColorCount", ref count))
+            CreateProxyDict = new Dictionary<string, AddProxyParams[]>();
+            ProxyReplaceDict = new Dictionary<Guid, string>();
+
+            //Read Color
+            int colorCount = 0;
+            if( reader.TryGetInt32("ColorCount", ref colorCount))
             {
-                for (int n = 0; n < count; n++)
+                for (int n = 0; n < colorCount; n++)
                 {
-                    ColorDict[reader.GetString("name" + n.ToString())] =
+                    ColorDict[reader.GetString("colorName" + n.ToString())] =
                         reader.GetDrawingColor("color" + n.ToString());
                 }
                 
+            }
+
+            //Read Create
+            int autoCount = 0;
+            if(reader.TryGetInt32("AutoAddCount", ref autoCount))
+            {
+                for (int n = 0; n < autoCount; n++)
+                {
+                    int valueCount = reader.GetInt32("autoValueCount" + n.ToString());
+                    AddProxyParams[] value = new AddProxyParams[valueCount];
+                    for (int m = 0; m < valueCount; m++)
+                    {
+                        Guid guid = reader.GetGuid("autoValueGuid" + n.ToString("D5") + m.ToString());
+                        int outIndex = reader.GetInt32("autoValueInt" + n.ToString("D5") + m.ToString());
+                        value[m] = new AddProxyParams(guid, outIndex);
+                    }
+
+                    CreateProxyDict[reader.GetString("autoName" + n.ToString())] = value;
+                }
+            }
+
+            //Read Replace
+            int replaceCount = 0;
+            if(reader.TryGetInt32("ReplaceCount", ref replaceCount))
+            {
+                for (int n = 0; n < colorCount; n++)
+                {
+                    ProxyReplaceDict[reader.GetGuid("ReplaceGuid" + n.ToString())] =
+                        reader.GetString("ReplaceName" + n.ToString());
+                }
             }
 
             return base.Read(reader);
