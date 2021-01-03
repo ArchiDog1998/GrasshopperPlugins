@@ -28,7 +28,7 @@ namespace InfoGlasses.WinformControls
 
         public GH_ParamAccess Access { get; set; }
 
-        public RectangleF IconButtonLayout => AddObjectHelper.GetIconBound(this.Bounds);
+        public RectangleF IconButtonLayout => ParamControlHelper.GetIconBound(this.Bounds);
 
         private Bitmap icon = new GH_BooleanToggle().Icon_24x24;
         public int Width => 20;
@@ -64,7 +64,7 @@ namespace InfoGlasses.WinformControls
                 {
                     GH_BooleanToggle toggle = new GH_BooleanToggle();
                     toggle.Value = GetValue();
-                    AddObjectHelper.CreateNewObject(toggle, this.Target, leftMove: 150);
+                    ParamControlHelper.CreateNewObject(toggle, this.Target, leftMove: 150);
                 }
             }
         }

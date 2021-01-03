@@ -27,7 +27,7 @@ namespace InfoGlasses.WinformControls
 
         public GH_ParamAccess Access { get; set; }
 
-        public RectangleF IconButtonLayout => AddObjectHelper.GetIconBound(this.Bounds);
+        public RectangleF IconButtonLayout => ParamControlHelper.GetIconBound(this.Bounds);
 
 
         private Bitmap icon = new GH_NumberSlider().Icon_24x24;
@@ -61,7 +61,7 @@ namespace InfoGlasses.WinformControls
                 }
                 else if (this.IconButtonLayout.Contains(mouseLoc))
                 {
-                    AddObjectHelper.CreateNewObject(new GH_NumberSlider(), this.Target, leftMove: 150, init: WholeToString(GetValue()));
+                    ParamControlHelper.CreateNewObject(new GH_NumberSlider(), this.Target, leftMove: 150, init: WholeToString(GetValue()));
                 }
             }
         }

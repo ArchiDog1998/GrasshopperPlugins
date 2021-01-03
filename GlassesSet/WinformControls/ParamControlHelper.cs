@@ -5,6 +5,8 @@
     See file LICENSE for detail or copy at http://opensource.org/licenses/MIT
 */
 
+using ArchiTed_Grasshopper;
+using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using System;
@@ -12,8 +14,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TextBox = ArchiTed_Grasshopper.WinformControls.TextBox;
 
 namespace InfoGlasses.WinformControls
@@ -124,6 +128,134 @@ namespace InfoGlasses.WinformControls
             graphics.FillPath(new SolidBrush(Color.FromArgb(150, Color.WhiteSmoke)), path);
             graphics.DrawPath(new Pen(Color.DimGray, 1), path);
             graphics.DrawImage(icon, bound);
+        }
+        #endregion
+        #endregion
+
+        #region Add Object
+        #region AddObjectIcon
+        public static float IconSize => 12;
+        public static float IconSpacing => 6;
+        public static RectangleF GetIconBound(RectangleF bound, float multy = 1)
+        {
+            return new RectangleF(bound.X - ParamControlHelper.IconSize - ParamControlHelper.IconSpacing * multy, bound.Y + bound.Height / 2 - ParamControlHelper.IconSize / 2,
+                ParamControlHelper.IconSize, ParamControlHelper.IconSize);
+        }
+
+        public static void IconRender<TGoo>(IAddObjectParam<TGoo> paramcontrol, GH_Canvas canvas, Graphics graphics, GH_CanvasChannel channel) where TGoo : class, IGH_Goo
+        {
+            if (channel == GH_CanvasChannel.Objects)
+            {
+                if (paramcontrol.MyProxies.Length != 1)
+                {
+                    ParamControlHelper.RenderParamButtonIcon(graphics, paramcontrol.Target.Icon_24x24, paramcontrol.IconButtonBound);
+                }
+                else if (paramcontrol.MyProxies.Length == 1)
+                {
+                    ParamControlHelper.RenderParamButtonIcon(graphics, paramcontrol.MyProxies[0].Icon.GetIcon(!paramcontrol.Target.Locked, true), paramcontrol.IconButtonBound);
+                }
+            }
+        }
+        #endregion
+
+        #region Respond
+        public static void AddObjectMouseDown<TGoo>(IAddObjectParam<TGoo> paramcontrol, object sender, MouseEventArgs e) where TGoo : class, IGH_Goo
+        {
+            GH_Viewport vp = Grasshopper.Instances.ActiveCanvas.Viewport;
+            if (vp.Zoom >= 0.5f && paramcontrol.IconButtonBound.Contains(vp.UnprojectPoint(e.Location)))
+            {
+                if (paramcontrol.MyProxies.Length == 1)
+                {
+                    CreateNewObject(paramcontrol, 0);
+                }
+                else if (paramcontrol.MyProxies.Length > 1)
+                {
+                    ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
+                    for (int i = 0; i < paramcontrol.MyProxies.Length; i++)
+                    {
+                        void Item_Click(object sender1, EventArgs e1, int index)
+                        {
+                            CreateNewObject(paramcontrol, index);
+                        }
+                        WinFormPlus.AddClickItem(menu, paramcontrol.MyProxies[i].Name, null, paramcontrol.MyProxies[i].Icon.GetIcon(true, true), i, Item_Click, false);
+                    }
+                    menu.Show(Grasshopper.Instances.ActiveCanvas, e.Location);
+                }
+            }
+        }
+
+        #endregion
+
+
+        #region Create Object
+        public static void CreateNewObject<TGoo>(IAddObjectParam<TGoo> paramcontrol, int index = 0) where TGoo : class, IGH_Goo
+        {
+            CreateNewObject(paramcontrol.MyProxies, paramcontrol.Target, index);
+        }
+
+
+        public static void CreateNewObject(AddProxyParams[] proxies, IGH_Param target, int index = 0)
+        {
+            if (proxies.Length < index) return;
+
+            IGH_DocumentObject obj = Grasshopper.Instances.ComponentServer.EmitObject(proxies[index].Guid);
+            if (obj == null)
+            {
+                return;
+            }
+
+            CreateNewObject(obj, target, proxies[index].OutIndex);
+        }
+
+        public static void CreateNewObject(IGH_DocumentObject obj, IGH_Param target, int outIndex = 0, float leftMove = 100, string init = null)
+        {
+
+            if (obj == null)
+            {
+                return;
+            }
+
+            PointF comRightCenter = new PointF(target.Attributes.Bounds.Left - leftMove,
+                target.Attributes.Bounds.Top + target.Attributes.Bounds.Height / 2);
+            if (obj is GH_Component)
+            {
+                GH_Component com = obj as GH_Component;
+
+                AddAObjectToCanvas(com, comRightCenter, false, init);
+
+                target.AddSource(com.Params.Output[outIndex]);
+                com.Params.Output[outIndex].Recipients.Add(target);
+
+                target.OnPingDocument().NewSolution(false);
+            }
+            else if (obj is IGH_Param)
+            {
+                IGH_Param param = obj as IGH_Param;
+
+                AddAObjectToCanvas(param, comRightCenter, false, init);
+
+                target.AddSource(param);
+                param.Recipients.Add(target);
+
+                target.OnPingDocument().NewSolution(false);
+            }
+            else
+            {
+                target.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, LanguagableComponent.GetTransLation(new string[]
+                {
+                    "The added object is not a Component or Parameters!", "添加的对象不是一个运算器或参数！",
+                }));
+            }
+        }
+
+
+        public static void AddAObjectToCanvas(IGH_DocumentObject obj, PointF pivot, bool update, string init = null)
+        {
+            var functions = typeof(GH_Canvas).GetRuntimeMethods().Where(m => m.Name.Contains("InstantiateNewObject") && !m.IsPublic).ToArray();
+            if (functions.Length > 0)
+            {
+                functions[0].Invoke(Grasshopper.Instances.ActiveCanvas, new object[] { obj, init, pivot, update });
+            }
         }
         #endregion
         #endregion

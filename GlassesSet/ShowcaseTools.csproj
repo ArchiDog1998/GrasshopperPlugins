@@ -78,7 +78,6 @@
     <Compile Include="AddProxyParams.cs" />
     <Compile Include="ComTypeInfo.cs" />
     <Compile Include="ParamGlassesComponent.cs" />
-    <Compile Include="WinformControls\AddObjectHelper.cs" />
     <Compile Include="WinformControls\CheckBoxAddObject.cs" />
     <Compile Include="WinformControls\CheckBoxParam.cs" />
     <Compile Include="WinformControls\ColourSwatchParam.cs" />
