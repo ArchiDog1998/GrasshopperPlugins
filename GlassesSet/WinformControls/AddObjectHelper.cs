@@ -20,7 +20,19 @@ namespace InfoGlasses.WinformControls
 {
     public static class AddObjectHelper
     {
-        internal static void CreateNewObject(AddProxyParams[] proxies, IGH_Param target, int index = 0)
+        #region AddObjectIcon
+        public static float IconSize => 12;
+        public static float IconSpacing => 6;
+        public static RectangleF GetIconBound(RectangleF bound, float multy = 1)
+        {
+            return new RectangleF(bound.X - AddObjectHelper.IconSize - AddObjectHelper.IconSpacing * multy, bound.Y + bound.Height / 2 - AddObjectHelper.IconSize / 2,
+                AddObjectHelper.IconSize, AddObjectHelper.IconSize);
+        }
+        #endregion
+
+
+        #region Create Object
+        public static void CreateNewObject(AddProxyParams[] proxies, IGH_Param target, int index = 0)
         {
             if (proxies.Length < index) return;
 
@@ -33,7 +45,7 @@ namespace InfoGlasses.WinformControls
             CreateNewObject(obj, target, proxies[index].OutIndex);
         }
 
-        internal static void CreateNewObject(IGH_DocumentObject obj, IGH_Param target, int outIndex = 0, float leftMove = 100, string init = null)
+        public static void CreateNewObject(IGH_DocumentObject obj, IGH_Param target, int outIndex = 0, float leftMove = 100, string init = null)
         {
 
             if (obj == null)
@@ -75,7 +87,7 @@ namespace InfoGlasses.WinformControls
         }
 
 
-        internal static void AddAObjectToCanvas(IGH_DocumentObject obj, PointF pivot, bool update, string init = null)
+        public static void AddAObjectToCanvas(IGH_DocumentObject obj, PointF pivot, bool update, string init = null)
         {
             var functions = typeof(GH_Canvas).GetRuntimeMethods().Where(m => m.Name.Contains("InstantiateNewObject") && !m.IsPublic).ToArray();
             if (functions.Length > 0)
@@ -83,5 +95,6 @@ namespace InfoGlasses.WinformControls
                 functions[0].Invoke(Grasshopper.Instances.ActiveCanvas, new object[] { obj, init, pivot, update });
             }
         }
+        #endregion
     }
 }

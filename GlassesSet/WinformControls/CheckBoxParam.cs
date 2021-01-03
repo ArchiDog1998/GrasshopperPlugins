@@ -28,15 +28,7 @@ namespace InfoGlasses.WinformControls
 
         public GH_ParamAccess Access { get; set; }
 
-        public RectangleF IconButtonLayout
-        {
-            get
-            {
-                float spacing = 6;
-                float dis = this.Bounds.Height;
-                return new RectangleF(this.Bounds.X - dis - spacing, this.Bounds.Y, dis, dis);
-            }
-        }
+        public RectangleF IconButtonLayout => AddObjectHelper.GetIconBound(this.Bounds);
 
         private Bitmap icon = new GH_BooleanToggle().Icon_24x24;
         public int Width => 20;
@@ -87,14 +79,14 @@ namespace InfoGlasses.WinformControls
 
         protected override bool IsRender(GH_Canvas canvas, Graphics graphics, bool renderLittleZoom = false)
         {
-            Grasshopper.Instances.ActiveCanvas.MouseClick -= ActiveCanvas_MouseClick;
+            Grasshopper.Instances.ActiveCanvas.MouseDown -= ActiveCanvas_MouseClick;
             if (Target.SourceCount > 0)
             {
                 return false;
             }
             else
             {
-                Grasshopper.Instances.ActiveCanvas.MouseClick += ActiveCanvas_MouseClick;
+                Grasshopper.Instances.ActiveCanvas.MouseDown += ActiveCanvas_MouseClick;
             }
             Layout(new RectangleF(), Target.Attributes.Bounds);
             return  base.IsRender(canvas, graphics, renderLittleZoom);
@@ -128,7 +120,7 @@ namespace InfoGlasses.WinformControls
 
         public void Dispose()
         {
-            Grasshopper.Instances.ActiveCanvas.MouseClick -= ActiveCanvas_MouseClick;
+            Grasshopper.Instances.ActiveCanvas.MouseDown -= ActiveCanvas_MouseClick;
         }
     }
 }
