@@ -34,6 +34,9 @@ namespace InfoGlasses.WinformControls
 
         public new bool Enable => MyProxies.Length != 0;
 
+        public string initStr => GetValue().ToString();
+
+
         private AddProxyParams[] _myProxies;
         public AddProxyParams[] MyProxies
         {
@@ -44,7 +47,6 @@ namespace InfoGlasses.WinformControls
             }
         }
         public RectangleF IconButtonBound => ParamControlHelper.GetIconBound(this.Bounds, 2);
-
         public new ParamGlassesComponent Owner { get; }
 
         public CheckBoxAddObject(GH_Param<TGoo> target, ParamGlassesComponent owner, bool enable,
@@ -58,7 +60,7 @@ namespace InfoGlasses.WinformControls
 
         public void RespondToMouseDown(object sender, MouseEventArgs e)
         {
-            ParamControlHelper.AddObjectMouseDown(this, sender, e);
+            ParamControlHelper.AddObjectMouseDown(this, sender, e, init: initStr);
         }
 
         protected override bool IsRender(GH_Canvas canvas, Graphics graphics, bool renderLittleZoom = false)

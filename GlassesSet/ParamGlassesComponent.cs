@@ -237,6 +237,8 @@ namespace InfoGlasses
             //For test
             ProxyReplaceDict = new Dictionary<Guid, string>()
             {
+                {new Guid("{51a2ede9-8f8c-4fdf-a375-999c2062eab7}"), "Grasshopper.Kernel.Types.GH_Integer" },
+                {new Guid("{bc984576-7aa6-491f-a91d-e444c33675a7}"), "Grasshopper.Kernel.Types.GH_Number" },
             };
 
             CreateProxyDict = new Dictionary<string, AddProxyParams[]>() 

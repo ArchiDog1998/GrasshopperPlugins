@@ -27,6 +27,9 @@ namespace InfoGlasses.WinformControls
         GH_Param<TGoo> IParamControlBase<TGoo>.Target => this.Target;
         public GH_ParamAccess Access { get; set; }
 
+        public string initStr => GetValue().ToString();
+
+
         private AddProxyParams[] _myProxies;
         public AddProxyParams[] MyProxies
         {
@@ -51,7 +54,7 @@ namespace InfoGlasses.WinformControls
 
         public void RespondToMouseDown(object sender, MouseEventArgs e)
         {
-            ParamControlHelper.ParamMouseDown(this, this.RespondToMouseUp, sender, e, init: GetValue().ToString());
+            ParamControlHelper.ParamMouseDown(this, this.RespondToMouseUp, sender, e, init: initStr);
         }
 
         public override void Layout(RectangleF innerRect, RectangleF outerRect)

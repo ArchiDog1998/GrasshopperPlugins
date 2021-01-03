@@ -23,6 +23,8 @@ namespace InfoGlasses.WinformControls
         AddProxyParams[] MyProxies { get; }
         RectangleF IconButtonBound { get; }
 
+        string initStr { get; }
+
         new ParamGlassesComponent Owner { get; }
     }
 }
