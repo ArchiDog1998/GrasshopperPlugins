@@ -23,10 +23,32 @@ namespace InfoGlasses.WinformControls
     class InputBoxStringParam<TGoo> : InputBoxString, ITargetParam<TGoo, string>, IDisposable where TGoo : GH_Goo<string>
     {
         public GH_PersistentParam<TGoo> Target { get; }
-
+        GH_Param<TGoo> IParamControlBase<TGoo>.Target => this.Target;
         public GH_ParamAccess Access { get; set; }
 
-        //public string Suffix => WinformControlHelper.GetSuffix(this.Access);
+        private AddProxyParams[] _myProxies;
+        public AddProxyParams[] MyProxies
+        {
+            get
+            {
+                if (_myProxies == null)
+                {
+                    foreach (var set in Owner.CreateProxyDict)
+                    {
+                        if (set.Key == this.Target.Type.FullName)
+                        {
+                            _myProxies = set.Value;
+                            return _myProxies;
+                        }
+                    }
+                    _myProxies = new AddProxyParams[] { };
+                }
+                return _myProxies;
+            }
+        }
+        public new ParamGlassesComponent Owner { get; }
+        public RectangleF IconButtonBound => ParamControlHelper.GetIconBound(this.Bounds);
+
 
         public InputBoxStringParam(GH_PersistentParam<TGoo> target, ParamGlassesComponent owner, bool enable,
             string[] tips = null, int tipsRelay = 5000, bool renderLittleZoom = false)
