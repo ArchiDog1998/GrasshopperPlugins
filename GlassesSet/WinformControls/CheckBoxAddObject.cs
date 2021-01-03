@@ -36,7 +36,6 @@ namespace InfoGlasses.WinformControls
 
         public string initStr => GetValue().ToString();
 
-
         private AddProxyParams[] _myProxies;
         public AddProxyParams[] MyProxies
         {

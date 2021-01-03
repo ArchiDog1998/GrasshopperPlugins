@@ -552,7 +552,7 @@ namespace InfoGlasses
 
                 if(ColorDict == null)
                 {
-                    Readtxt();
+                    ReadColorTxt();
                 }
 
                 _isFirst = false;
@@ -900,22 +900,10 @@ namespace InfoGlasses
             }
         }
 
-        internal void WriteTxt()
+        internal void WriteColorTxt(string name = "WireColors_Default")
         {
-            string name = "WireGlasses_Default";
-            string path = "";
-            try
-            {
-                path = System.IO.Path.GetDirectoryName(this.GetType().Assembly.Location) + "\\" + name + ".txt";
-            }
-            catch
-            {
-                var result = (Directory.EnumerateFiles(Grasshopper.Folders.DefaultAssemblyFolder, "*" + name + ".txt", SearchOption.TopDirectoryOnly));
-                if (result.Count() > 0)
-                {
-                    path = result.ElementAt(0);
-                }
-            }
+            string path = IO_Helper.GetNamedPath(this, name);
+            if (path == null) return;
 
             FileStream fs = new FileStream(path, FileMode.Create);
             StreamWriter sw = new StreamWriter(fs);
@@ -933,22 +921,10 @@ namespace InfoGlasses
             fs.Close();
         }
 
-        private void Readtxt()
+        private void ReadColorTxt(string name = "WireColors_Default")
         {
-            string name = "WireGlasses_Default";
-            string path = "";
-            try
-            {
-                path = System.IO.Path.GetDirectoryName(this.GetType().Assembly.Location) + "\\" + name + ".txt";
-            }
-            catch
-            {
-                var result = (Directory.EnumerateFiles(Grasshopper.Folders.DefaultAssemblyFolder, "*" + name + ".txt", SearchOption.TopDirectoryOnly));
-                if(result.Count() > 0)
-                {
-                    path = result.ElementAt(0);
-                }
-            }
+            string path = IO_Helper.GetNamedPath(this, name);
+            if (path == null) return;
 
 
             ColorDict = new Dictionary<string, Color>();

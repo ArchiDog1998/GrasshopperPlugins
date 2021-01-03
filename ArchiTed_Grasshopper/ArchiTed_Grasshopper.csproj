@@ -62,6 +62,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IO_Helper.cs" />
     <Compile Include="WinformControls\HighLightRect.cs" />
     <Compile Include="WinformControls\NickNameOrNameTextBox.cs" />
     <Compile Include="WinformControls\RenderItem.cs" />
