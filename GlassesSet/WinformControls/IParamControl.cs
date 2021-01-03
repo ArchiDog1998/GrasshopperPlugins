@@ -10,7 +10,6 @@ using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,11 +17,9 @@ using System.Windows.Forms;
 
 namespace InfoGlasses.WinformControls
 {
-    public interface IAddObjectParam<TGoo>: IParamControl<TGoo> where TGoo : class, IGH_Goo
+    public interface IParamControl<TGoo> : IRespond where TGoo : class, IGH_Goo
     {
-        AddProxyParams[] MyProxies { get; }
-        RectangleF IconButtonBound { get; }
-
-
+        GH_Param<TGoo> Target { get; }
+        void RespondToMouseDown(object sender, MouseEventArgs e);
     }
 }

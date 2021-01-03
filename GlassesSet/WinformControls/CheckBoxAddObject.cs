@@ -75,17 +75,7 @@ namespace InfoGlasses.WinformControls
 
         protected override bool IsRender(GH_Canvas canvas, Graphics graphics, bool renderLittleZoom = false)
         {
-            Grasshopper.Instances.ActiveCanvas.MouseDown -= RespondToMouseDown;
-            if (Target.SourceCount > 0 || !this.Enable)
-            {
-                return false;
-            }
-            else
-            {
-                Grasshopper.Instances.ActiveCanvas.MouseDown += RespondToMouseDown;
-            }
-            Layout(new RectangleF(), Target.Attributes.Bounds);
-            return base.IsRender(canvas, graphics, renderLittleZoom);
+            return ParamControlHelper.IsRender(this, canvas, graphics, renderLittleZoom) && base.IsRender(canvas, graphics, renderLittleZoom);
         }
 
         protected override void Render(GH_Canvas canvas, Graphics graphics, GH_CanvasChannel channel)
