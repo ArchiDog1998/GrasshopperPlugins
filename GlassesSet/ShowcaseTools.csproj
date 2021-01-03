@@ -121,6 +121,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
     <None Include="Resources\Assembly_Locked.png" />
   </ItemGroup>
   <ItemGroup>
