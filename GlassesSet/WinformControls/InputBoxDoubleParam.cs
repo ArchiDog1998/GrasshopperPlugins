@@ -69,7 +69,7 @@ namespace InfoGlasses.WinformControls
                 }
                 else if (this.IconButtonLayout.Contains(mouseLoc))
                 {
-                    CheckBoxAddObject<GH_Interval>.CreateNewObject(new GH_NumberSlider(), this.Target, leftMove: 150, init: WholeToString( GetValue()));
+                    AddObjectHelper.CreateNewObject(new GH_NumberSlider(), this.Target, leftMove: 150, init: WholeToString( GetValue()));
                 }
             }
         }

@@ -72,7 +72,7 @@ namespace InfoGlasses.WinformControls
                 {
                     GH_BooleanToggle toggle = new GH_BooleanToggle();
                     toggle.Value = GetValue();
-                    CheckBoxAddObject<GH_Interval>.CreateNewObject(toggle, this.Target, leftMove: 150);
+                    AddObjectHelper.CreateNewObject(toggle, this.Target, leftMove: 150);
                 }
             }
         }
