@@ -196,7 +196,7 @@ namespace InfoGlasses.WinformControls
         {
             if (channel == GH_CanvasChannel.Objects)
             {
-                if (paramcontrol.MyProxies.Length != 1)
+                if (paramcontrol.MyProxies.Length > 1)
                 {
                     ParamControlHelper.RenderParamButtonIcon(graphics, paramcontrol.Target.Icon_24x24, paramcontrol.IconButtonBound);
                 }
