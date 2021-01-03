@@ -17,7 +17,7 @@ using System.Windows.Forms;
 
 namespace InfoGlasses.WinformControls
 {
-    public interface IParamControl<TGoo> : IRespond where TGoo : class, IGH_Goo
+    public interface IParamControlBase<TGoo> : IRespond, IDisposable where TGoo : class, IGH_Goo
     {
         GH_Param<TGoo> Target { get; }
         void RespondToMouseDown(object sender, MouseEventArgs e);

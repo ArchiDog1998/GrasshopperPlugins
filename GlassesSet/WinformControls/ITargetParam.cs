@@ -16,10 +16,9 @@ using System.Threading.Tasks;
 
 namespace InfoGlasses.WinformControls
 {
-    public interface ITargetParam<TGoo, T> : IControlState<T>, INeedWidth, IRespond where TGoo : GH_Goo<T>
+    public interface ITargetParam<TGoo, T> : IAddObjectParam<TGoo>, IControlState<T>, INeedWidth where TGoo : GH_Goo<T>
     {
-        GH_PersistentParam<TGoo> Target { get; }
+        new GH_PersistentParam<TGoo> Target { get; }
         GH_ParamAccess Access { get; set; }
-        //string Suffix { get; }
     }
 }

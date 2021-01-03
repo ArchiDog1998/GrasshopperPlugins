@@ -26,12 +26,12 @@ namespace ArchiTed_Grasshopper.WinformControls
             this.Default = @default;
         }
 
-        protected override string GetValue()
+        public override string GetValue()
         {
             return Owner.GetValuePub(ValueName, Default);
         }
 
-        protected override void SetValue(string valueIn, bool record)
+        public override void SetValue(string valueIn, bool record)
         {
             Owner.SetValuePub(ValueName, valueIn, record);
         }

@@ -85,7 +85,7 @@
     <Compile Include="WinformControls\InputBoxDoubleParam.cs" />
     <Compile Include="WinformControls\InputBoxIntParam.cs" />
     <Compile Include="WinformControls\InputBoxStringParam.cs" />
-    <Compile Include="WinformControls\IParamControl.cs" />
+    <Compile Include="WinformControls\IParamControlBase.cs" />
     <Compile Include="WinformControls\ITargetParam.cs" />
     <Compile Include="WinformControls\ParamControlHelper.cs" />
     <Compile Include="WinformControls\ParamLegend.cs" />

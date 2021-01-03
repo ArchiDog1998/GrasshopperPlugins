@@ -17,5 +17,17 @@ namespace ArchiTed_Grasshopper.WinformControls
     {
         T Default { get; set; }
         string ValueName { get; }
+
+        /// <summary>
+        /// Get value that in controllableComponent.
+        /// </summary>
+        /// <returns>Value.</returns>
+        T GetValue();
+
+        /// <summary>
+        /// Set value that in controllableComponent.
+        /// </summary>
+        /// <param name="valueIn">Value.</param>
+        void SetValue(T valueIn, bool record = true);
     }
 }

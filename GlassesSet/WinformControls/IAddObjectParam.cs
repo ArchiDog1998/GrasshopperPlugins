@@ -18,11 +18,11 @@ using System.Windows.Forms;
 
 namespace InfoGlasses.WinformControls
 {
-    public interface IAddObjectParam<TGoo>: IParamControl<TGoo> where TGoo : class, IGH_Goo
+    public interface IAddObjectParam<TGoo>: IParamControlBase<TGoo> where TGoo : class, IGH_Goo
     {
         AddProxyParams[] MyProxies { get; }
         RectangleF IconButtonBound { get; }
 
-
+        new ParamGlassesComponent Owner { get; }
     }
 }

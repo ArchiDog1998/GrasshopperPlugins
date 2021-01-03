@@ -6,6 +6,7 @@
 */
 
 using ArchiTed_Grasshopper;
+using Grasshopper.GUI;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
@@ -129,7 +130,7 @@ namespace InfoGlasses.WinformControls
             graphics.DrawPath(new Pen(Color.DimGray, 1), path);
             graphics.DrawImage(icon, bound);
         }
-        public static bool IsRender<TGoo>(IParamControl<TGoo> paramcontrol, GH_Canvas canvas, Graphics graphics, bool renderLittleZoom = false) where TGoo : class, IGH_Goo
+        public static bool IsRender<TGoo>(IParamControlBase<TGoo> paramcontrol, GH_Canvas canvas, Graphics graphics, bool renderLittleZoom = false) where TGoo : class, IGH_Goo
         {
             Grasshopper.Instances.ActiveCanvas.MouseDown -= paramcontrol.RespondToMouseDown;
             if (paramcontrol.Target.SourceCount > 0 || !paramcontrol.Enable)
@@ -144,6 +145,41 @@ namespace InfoGlasses.WinformControls
             return true;
         }
         #endregion
+
+        #region ParamRespond
+        public static void ParamMouseDown<TGoo>(IAddObjectParam<TGoo> paramcontrol,Action<GH_Canvas, GH_CanvasMouseEvent> mouseEvent,object sender, MouseEventArgs e, float leftMove = 100, string init = null) 
+            where TGoo : class, IGH_Goo
+        {
+            GH_Viewport vp = Grasshopper.Instances.ActiveCanvas.Viewport;
+            if (vp.Zoom >= 0.5f)
+            {
+                PointF mouseLoc = vp.UnprojectPoint(e.Location);
+                if (paramcontrol.Bounds.Contains(mouseLoc))
+                {
+                    mouseEvent.Invoke(Grasshopper.Instances.ActiveCanvas, new GH_CanvasMouseEvent(vp, e));
+                }
+                else
+                {
+                    ParamControlHelper.AddObjectMouseDown(vp, paramcontrol, sender, e, leftMove, init);
+                }
+            }
+        }
+
+        #endregion
+
+        public static void SetDefaultValue<TGoo, T>(ITargetParam<TGoo, T> paramControl, T @default) where TGoo : GH_Goo<T>
+        {
+            try
+            {
+                paramControl.Default = ((TGoo)paramControl.Target.PersistentData.AllData(true).ElementAt(0)).Value;
+            }
+            catch
+            {
+                paramControl.Default = @default;
+                paramControl.SetValue(paramControl.Default);
+            }
+        }
+
         #endregion
 
         #region Add Object
@@ -173,10 +209,20 @@ namespace InfoGlasses.WinformControls
         #endregion
 
         #region Respond
-        public static void AddObjectMouseDown<TGoo>(IAddObjectParam<TGoo> paramcontrol, object sender, MouseEventArgs e) where TGoo : class, IGH_Goo
+        public static void AddObjectMouseDown<TGoo>(IAddObjectParam<TGoo> paramcontrol, object sender, MouseEventArgs e, float leftMove = 100, string init = null) 
+            where TGoo : class, IGH_Goo
         {
             GH_Viewport vp = Grasshopper.Instances.ActiveCanvas.Viewport;
-            if (vp.Zoom >= 0.5f && paramcontrol.IconButtonBound.Contains(vp.UnprojectPoint(e.Location)))
+            if (vp.Zoom >= 0.5f)
+            {
+                AddObjectMouseDown(vp, paramcontrol, sender, e, leftMove, init);
+            }
+        }
+
+        public static void AddObjectMouseDown<TGoo>(GH_Viewport vp, IAddObjectParam<TGoo> paramcontrol, object sender, MouseEventArgs e, float leftMove = 100, string init = null) 
+            where TGoo : class, IGH_Goo
+        {
+            if (paramcontrol.IconButtonBound.Contains(vp.UnprojectPoint(e.Location)))
             {
                 if (paramcontrol.MyProxies.Length == 1)
                 {
@@ -189,7 +235,7 @@ namespace InfoGlasses.WinformControls
                     {
                         void Item_Click(object sender1, EventArgs e1, int index)
                         {
-                            CreateNewObject(paramcontrol, index);
+                            CreateNewObject(paramcontrol, index, leftMove, init);
                         }
                         WinFormPlus.AddClickItem(menu, paramcontrol.MyProxies[i].Name, null, paramcontrol.MyProxies[i].Icon.GetIcon(true, true), i, Item_Click, false);
                     }
@@ -202,13 +248,13 @@ namespace InfoGlasses.WinformControls
 
 
         #region Create Object
-        public static void CreateNewObject<TGoo>(IAddObjectParam<TGoo> paramcontrol, int index = 0) where TGoo : class, IGH_Goo
+        public static void CreateNewObject<TGoo>(IAddObjectParam<TGoo> paramcontrol, int index = 0, float leftMove = 100, string init = null) where TGoo : class, IGH_Goo
         {
-            CreateNewObject(paramcontrol.MyProxies, paramcontrol.Target, index);
+            CreateNewObject(paramcontrol.MyProxies, paramcontrol.Target, index, leftMove, init);
         }
 
 
-        public static void CreateNewObject(AddProxyParams[] proxies, IGH_Param target, int index = 0)
+        public static void CreateNewObject(AddProxyParams[] proxies, IGH_Param target, int index = 0, float leftMove = 100, string init = null)
         {
             if (proxies.Length < index) return;
 
@@ -218,7 +264,7 @@ namespace InfoGlasses.WinformControls
                 return;
             }
 
-            CreateNewObject(obj, target, proxies[index].OutIndex);
+            CreateNewObject(obj, target, proxies[index].OutIndex, leftMove, init);
         }
 
         public static void CreateNewObject(IGH_DocumentObject obj, IGH_Param target, int outIndex = 0, float leftMove = 100, string init = null)

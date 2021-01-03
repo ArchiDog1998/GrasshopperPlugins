@@ -50,12 +50,12 @@ namespace ArchiTed_Grasshopper.WinformControls
             return result;
         }
 
-        protected override int GetValue()
+        public override int GetValue()
         {
             return Owner.GetValuePub(ValueName, Default);
         }
 
-        protected override void SetValue(int valueIn, bool record)
+        public override void SetValue(int valueIn, bool record)
         {
             Owner.SetValuePub(ValueName, valueIn, record);
         }

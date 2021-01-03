@@ -22,51 +22,52 @@ using CheckBox = ArchiTed_Grasshopper.WinformControls.CheckBox;
 
 namespace InfoGlasses.WinformControls
 {
-    class CheckBoxParam<TGoo>: CheckBox, ITargetParam<TGoo, bool>, IDisposable where TGoo: GH_Goo<bool>
+    class CheckBoxParam<TGoo>: CheckBox, ITargetParam<TGoo, bool> where TGoo: GH_Goo<bool>
     {
         public GH_PersistentParam<TGoo> Target { get; }
-
+        GH_Param<TGoo> IParamControlBase<TGoo>.Target => this.Target;
         public GH_ParamAccess Access { get; set; }
 
-        public RectangleF IconButtonLayout => ParamControlHelper.GetIconBound(this.Bounds);
-
-        private Bitmap icon = new GH_BooleanToggle().Icon_24x24;
+        private AddProxyParams[] _myProxies;
+        public AddProxyParams[] MyProxies
+        {
+            get
+            {
+                if (_myProxies == null)
+                {
+                    foreach (var set in Owner.CreateProxyDict)
+                    {
+                        if (set.Key == this.Target.Type.FullName)
+                        {
+                            _myProxies = set.Value;
+                            return _myProxies;
+                        }
+                    }
+                    _myProxies = new AddProxyParams[] { };
+                }
+                return _myProxies;
+            }
+        }
+        public new ParamGlassesComponent Owner { get; }
+        public RectangleF IconButtonBound => ParamControlHelper.GetIconBound(this.Bounds);
         public int Width => 20;
 
-        public CheckBoxParam(GH_PersistentParam<TGoo> target, ControllableComponent owner, bool enable,
+
+
+
+        public CheckBoxParam(GH_PersistentParam<TGoo> target, ParamGlassesComponent owner, bool enable,
             string[] tips = null, int tipsRelay = 5000, Func<ToolStripDropDownMenu> createMenu = null, bool isToggle = true,
             bool renderLittleZoom = false)
             : base(null, owner, null, enable, false, tips, tipsRelay, createMenu, isToggle, renderLittleZoom)
         {
             this.Target = target;
-            try
-            {
-                this.Default = ((TGoo)target.PersistentData.AllData(true).ElementAt(0)).Value;
-            }
-            catch
-            {
-                this.Default = false;
-                SetValue(this.Default);
-            }
+            this.Owner = owner;
+            ParamControlHelper.SetDefaultValue(this, false);
         }
 
-        private void ActiveCanvas_MouseClick(object sender, MouseEventArgs e)
+        public void RespondToMouseDown(object sender, MouseEventArgs e)
         {
-            GH_Viewport vp = Grasshopper.Instances.ActiveCanvas.Viewport;
-            if (vp.Zoom >= 0.5f)
-            {
-                PointF mouseLoc = vp.UnprojectPoint(e.Location);
-                if (this.Bounds.Contains(mouseLoc))
-                {
-                    this.RespondToMouseUp(Grasshopper.Instances.ActiveCanvas, new Grasshopper.GUI.GH_CanvasMouseEvent(vp, e));
-                }
-                else if (this.IconButtonLayout.Contains(mouseLoc))
-                {
-                    GH_BooleanToggle toggle = new GH_BooleanToggle();
-                    toggle.Value = GetValue();
-                    ParamControlHelper.CreateNewObject(toggle, this.Target, leftMove: 150);
-                }
-            }
+            ParamControlHelper.ParamMouseDown(this, this.RespondToMouseUp, sender, e, init: GetValue().ToString());
         }
 
         public override void Layout(RectangleF innerRect, RectangleF outerRect)
@@ -79,29 +80,16 @@ namespace InfoGlasses.WinformControls
 
         protected override bool IsRender(GH_Canvas canvas, Graphics graphics, bool renderLittleZoom = false)
         {
-            Grasshopper.Instances.ActiveCanvas.MouseDown -= ActiveCanvas_MouseClick;
-            if (Target.SourceCount > 0)
-            {
-                return false;
-            }
-            else
-            {
-                Grasshopper.Instances.ActiveCanvas.MouseDown += ActiveCanvas_MouseClick;
-            }
-            Layout(new RectangleF(), Target.Attributes.Bounds);
-            return  base.IsRender(canvas, graphics, renderLittleZoom);
+            return ParamControlHelper.IsRender(this, canvas, graphics, renderLittleZoom) && base.IsRender(canvas, graphics, renderLittleZoom);
         }
 
         protected override void Render(GH_Canvas canvas, Graphics graphics, GH_CanvasChannel channel)
         {
-            if (channel == GH_CanvasChannel.Objects)
-            {
-                ParamControlHelper.RenderParamButtonIcon(graphics, icon, IconButtonLayout);
-            }
+            ParamControlHelper.IconRender(this, canvas, graphics, channel);
             base.Render(canvas, graphics, channel);
         }
 
-        protected override bool GetValue()
+        public override bool GetValue()
         {
             GH_ParamAccess access = GH_ParamAccess.item;
             var result = ParamControlHelper.GetData<TGoo, bool>(this, out access);
@@ -109,7 +97,7 @@ namespace InfoGlasses.WinformControls
             return result;
         }
 
-        protected override void SetValue(bool valueIn, bool record = true)
+        public override void SetValue(bool valueIn, bool record = true)
         {
             if (record)
             {
@@ -120,7 +108,7 @@ namespace InfoGlasses.WinformControls
 
         public void Dispose()
         {
-            Grasshopper.Instances.ActiveCanvas.MouseDown -= ActiveCanvas_MouseClick;
+            Grasshopper.Instances.ActiveCanvas.MouseDown -= RespondToMouseDown;
         }
     }
 }

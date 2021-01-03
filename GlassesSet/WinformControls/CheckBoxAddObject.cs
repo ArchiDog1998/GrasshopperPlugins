@@ -56,7 +56,6 @@ namespace InfoGlasses.WinformControls
         }
         public RectangleF IconButtonBound => ParamControlHelper.GetIconBound(this.Bounds, 2);
 
-
         public new ParamGlassesComponent Owner { get; }
 
         public CheckBoxAddObject(GH_Param<TGoo> target, ParamGlassesComponent owner, bool enable,

@@ -236,12 +236,15 @@
   </Class>
   <Class Name="ArchiTed_Grasshopper.WinformControls.ControlItem&lt;T&gt;">
     <Position X="20" Y="8.75" Width="2.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
     <InheritanceLine Type="ArchiTed_Grasshopper.WinformControls.Renderable" FixedFromPoint="true" FixedToPoint="true">
       <Path>
         <Point X="18.5" Y="9.952" />
         <Point X="18.875" Y="9.952" />
-        <Point X="18.875" Y="10.121" />
-        <Point X="20" Y="10.121" />
+        <Point X="18.875" Y="9.96" />
+        <Point X="20" Y="9.96" />
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
@@ -371,7 +374,7 @@
   <Interface Name="ArchiTed_Grasshopper.WinformControls.IControlState&lt;T&gt;">
     <Position X="49.75" Y="14" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAgAAAA=</HashCode>
+      <HashCode>AAAAAAAAIAAAAgAAAAAAIAAAAAAAAAAAAAAAAAgAAAA=</HashCode>
       <FileName>WinformControls\IControlState.cs</FileName>
     </TypeIdentifier>
   </Interface>

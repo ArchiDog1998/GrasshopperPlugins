@@ -31,7 +31,7 @@ namespace ArchiTed_Grasshopper.WinformControls
             this.Default = @default;
         }
 
-        protected override Color GetValue()
+        public override Color GetValue()
         {
             Color color;
             try
@@ -45,7 +45,7 @@ namespace ArchiTed_Grasshopper.WinformControls
             return color;
         }
 
-        protected override void SetValue(Color valueIn, bool record = true)
+        public override void SetValue(Color valueIn, bool record = true)
         {
             Owner.SetValuePub(ValueName, valueIn, record);
         }

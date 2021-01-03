@@ -106,12 +106,12 @@ namespace ArchiTed_Grasshopper.WinformControls
 
         #endregion
 
-        protected override bool GetValue()
+        public override bool GetValue()
         {
             return Owner.GetValuePub(ValueName, Default);
         }
 
-        protected override void SetValue(bool valueIn, bool record = true)
+        public override void SetValue(bool valueIn, bool record = true)
         {
             Owner.SetValuePub(ValueName, valueIn, record);
         }
