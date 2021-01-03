@@ -21,7 +21,7 @@ using Grasshopper.Kernel.Special;
 
 namespace InfoGlasses.WinformControls
 {
-    class InputBoxDoubleParam<TGoo> : InputBoxDouble, ITargetParam<TGoo, double>, IDisposable where TGoo : GH_Goo<double>
+    class InputBoxDoubleParam<TGoo> : InputBoxDouble, ITargetParam<TGoo, double> where TGoo : GH_Goo<double>
     {
 
         public GH_PersistentParam<TGoo> Target { get; }
@@ -33,18 +33,7 @@ namespace InfoGlasses.WinformControls
         {
             get
             {
-                if (_myProxies == null)
-                {
-                    foreach (var set in Owner.CreateProxyDict)
-                    {
-                        if (set.Key == this.Target.Type.FullName)
-                        {
-                            _myProxies = set.Value;
-                            return _myProxies;
-                        }
-                    }
-                    _myProxies = new AddProxyParams[] { };
-                }
+                _myProxies = _myProxies ?? ParamControlHelper.GetAddProxyParams(this);
                 return _myProxies;
             }
         }

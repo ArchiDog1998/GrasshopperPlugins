@@ -20,7 +20,7 @@ using ArchiTed_Grasshopper;
 
 namespace InfoGlasses.WinformControls
 {
-    public class ColourSwatchParam<TGoo> : ColourSwatch, ITargetParam<TGoo, Color>, IDisposable where TGoo : GH_Goo<Color>
+    public class ColourSwatchParam<TGoo> : ColourSwatch, ITargetParam<TGoo, Color> where TGoo : GH_Goo<Color>
 
     {
         public GH_PersistentParam<TGoo> Target { get; }
@@ -32,18 +32,7 @@ namespace InfoGlasses.WinformControls
         {
             get
             {
-                if (_myProxies == null)
-                {
-                    foreach (var set in Owner.CreateProxyDict)
-                    {
-                        if (set.Key == this.Target.Type.FullName)
-                        {
-                            _myProxies = set.Value;
-                            return _myProxies;
-                        }
-                    }
-                    _myProxies = new AddProxyParams[] { };
-                }
+                _myProxies = _myProxies ?? ParamControlHelper.GetAddProxyParams(this);
                 return _myProxies;
             }
         }

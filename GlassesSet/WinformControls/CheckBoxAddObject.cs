@@ -27,7 +27,7 @@ using TextBox = ArchiTed_Grasshopper.WinformControls.TextBox;
 
 namespace InfoGlasses.WinformControls
 {
-    class CheckBoxAddObject<TGoo>: ClickButtonBase<LangWindow>, IAddObjectParam<TGoo>, IDisposable where TGoo : class, IGH_Goo
+    class CheckBoxAddObject<TGoo>: ClickButtonBase<LangWindow>, IAddObjectParam<TGoo> where TGoo : class, IGH_Goo
     {
         public GH_Param<TGoo> Target { get; }
         public int Width => 20;
@@ -38,19 +38,8 @@ namespace InfoGlasses.WinformControls
         public AddProxyParams[] MyProxies
         {
             get 
-            { 
-                if(_myProxies == null)
-                {
-                    foreach (var set in Owner.CreateProxyDict)
-                    {
-                        if (set.Key == this.Target.Type.FullName)
-                        {
-                            _myProxies = set.Value;
-                            return _myProxies;
-                        }
-                    }
-                    _myProxies = new AddProxyParams[] { };
-                }
+            {
+                _myProxies = _myProxies ?? ParamControlHelper.GetAddProxyParams(this);
                 return _myProxies; 
             }
         }

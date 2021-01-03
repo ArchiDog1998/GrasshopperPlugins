@@ -33,18 +33,7 @@ namespace InfoGlasses.WinformControls
         {
             get
             {
-                if (_myProxies == null)
-                {
-                    foreach (var set in Owner.CreateProxyDict)
-                    {
-                        if (set.Key == this.Target.Type.FullName)
-                        {
-                            _myProxies = set.Value;
-                            return _myProxies;
-                        }
-                    }
-                    _myProxies = new AddProxyParams[] { };
-                }
+                _myProxies = _myProxies ?? ParamControlHelper.GetAddProxyParams(this);
                 return _myProxies;
             }
         }

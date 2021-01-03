@@ -183,6 +183,7 @@ namespace InfoGlasses.WinformControls
         #endregion
 
         #region Add Object
+
         #region AddObjectIcon
         public static float IconSize => 12;
         public static float IconSpacing => 6;
@@ -245,7 +246,6 @@ namespace InfoGlasses.WinformControls
         }
 
         #endregion
-
 
         #region Create Object
         public static void CreateNewObject<TGoo>(IAddObjectParam<TGoo> paramcontrol, int index = 0, float leftMove = 100, string init = null) where TGoo : class, IGH_Goo
@@ -318,6 +318,24 @@ namespace InfoGlasses.WinformControls
             }
         }
         #endregion
+
+        public static AddProxyParams [] GetAddProxyParams<TGoo>(IAddObjectParam<TGoo> paramControl) where TGoo : class, IGH_Goo
+        {
+            string keyname = paramControl.Target.Type.FullName;
+            if (paramControl.Owner.ProxyReplaceDict.ContainsKey(paramControl.Target.ComponentGuid))
+            {
+                keyname = paramControl.Owner.ProxyReplaceDict[paramControl.Target.ComponentGuid];
+            }
+            if (paramControl.Owner.CreateProxyDict.ContainsKey(keyname))
+            {
+                return paramControl.Owner.CreateProxyDict[keyname];
+            }
+            else
+            {
+                return new AddProxyParams[0];
+            }
+           
+        }
         #endregion
     }
 }

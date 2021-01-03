@@ -209,9 +209,16 @@ namespace InfoGlasses
             set { _allProxy = value; }
         }
 
+        /// <summary>
+        /// For Legend Render
+        /// </summary>
+        public List<GooTypeProxy> ShowProxy { get; internal set; }
+
+
         public Dictionary<string, AddProxyParams[]> CreateProxyDict { get; set; }
 
-        public List<GooTypeProxy> ShowProxy { get; internal set; }
+        public Dictionary<Guid, string> ProxyReplaceDict { get; set; }
+
 
         public Dictionary<string, Color> ColorDict { get; set; }
 
@@ -228,6 +235,10 @@ namespace InfoGlasses
             ResponseToLanguageChanged(this, new EventArgs());
             ShowProxy = new List<GooTypeProxy>();
             //For test
+            ProxyReplaceDict = new Dictionary<Guid, string>()
+            {
+            };
+
             CreateProxyDict = new Dictionary<string, AddProxyParams[]>() 
             {
                 {"Grasshopper.Kernel.Types.GH_Point", new AddProxyParams[]{new AddProxyParams(new Guid("{3581F42A-9592-4549-BD6B-1C0FC39D067B}"), 0) } },

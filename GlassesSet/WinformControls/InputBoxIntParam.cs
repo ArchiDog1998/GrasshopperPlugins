@@ -21,7 +21,7 @@ using ArchiTed_Grasshopper;
 
 namespace InfoGlasses.WinformControls
 {
-    class InputBoxIntParam<TGoo> : InputBoxInt, ITargetParam<TGoo, int>, IDisposable where TGoo : GH_Goo<int>
+    class InputBoxIntParam<TGoo> : InputBoxInt, ITargetParam<TGoo, int> where TGoo : GH_Goo<int>
     {
         public GH_PersistentParam<TGoo> Target { get; }
         GH_Param<TGoo> IParamControlBase<TGoo>.Target => this.Target;
@@ -32,18 +32,7 @@ namespace InfoGlasses.WinformControls
         {
             get
             {
-                if (_myProxies == null)
-                {
-                    foreach (var set in Owner.CreateProxyDict)
-                    {
-                        if (set.Key == this.Target.Type.FullName)
-                        {
-                            _myProxies = set.Value;
-                            return _myProxies;
-                        }
-                    }
-                    _myProxies = new AddProxyParams[] { };
-                }
+                _myProxies = _myProxies ?? ParamControlHelper.GetAddProxyParams(this);
                 return _myProxies;
             }
         }
