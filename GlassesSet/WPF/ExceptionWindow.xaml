@@ -234,7 +234,7 @@
                             <DataGrid.Columns>
                                 <DataGridCheckBoxColumn Binding="{Binding IsExceptNormal, UpdateSourceTrigger=PropertyChanged}"
                                                     MinWidth="24" x:Name="DataGridCheckBox"
-                                                    ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}" CanUserSort="False"
+                                                    ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}" CanUserSort="True"
                                                     EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}">
 
 

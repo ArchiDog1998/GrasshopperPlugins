@@ -339,7 +339,15 @@ namespace InfoGlasses.WPF
                         CheckBox checkBox = objElement as CheckBox;
                         checkBox.IsChecked = AllButton.IsChecked.Value;
                     }
+                    //else
+                    //{
+                    //    System.Windows.Forms.MessageBox.Show(LanguagableComponent.GetTransLation(new string[] { "Failed to set all button", "设定所有按钮失败" }));
+                    //}
                 }
+                //else
+                //{
+                //    System.Windows.Forms.MessageBox.Show(LanguagableComponent.GetTransLation(new string[] { "Failed to set all button", "设定所有按钮失败" }));
+                //}
             }
         }
 
