@@ -928,20 +928,32 @@ namespace InfoGlasses
 
             if (path == null) return;
 
+            //IO_Helper.ReadFileInLine(path, (str) =>
+            //{
+            //    string[] strs = str.Split(',');
+            //    SetColor(strs[0], Color.FromArgb(int.Parse(strs[1])));
+            //});
             try
             {
                 StreamReader sr = new StreamReader(path, Encoding.Default);
 
                 try
                 {
-                    while (true)
-                    {
 
-                        string[] strs = sr.ReadLine().Split(',');
+                    foreach (string str in sr.ReadToEnd().Split('\n'))
+                    {
+                        string[] strs = str.Split(',');
                         SetColor(strs[0], Color.FromArgb(int.Parse(strs[1])));
 
-
                     }
+                    //while (true)
+                    //{
+
+                    //    string[] strs = sr.ReadLine().Split(',');
+                    //    SetColor(strs[0], Color.FromArgb(int.Parse(strs[1])));
+
+
+                    //}
 
                 }
                 catch
@@ -1054,10 +1066,11 @@ namespace InfoGlasses
             int replaceCount = 0;
             if(reader.TryGetInt32("ReplaceCount", ref replaceCount))
             {
-                for (int n = 0; n < colorCount; n++)
+                for (int n = 0; n < replaceCount; n++)
                 {
-                    ProxyReplaceDict[reader.GetGuid("ReplaceGuid" + n.ToString())] =
-                        reader.GetString("ReplaceName" + n.ToString());
+                    Guid guid = reader.GetGuid("ReplaceGuid" + n.ToString());
+                    string name = reader.GetString("ReplaceName" + n.ToString());
+                    ProxyReplaceDict[guid] = name;
                 }
             }
 
