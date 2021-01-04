@@ -553,78 +553,53 @@ namespace InfoGlasses
         #endregion
 
         #region IO
-        public void Writetxt()
+        public string Writetxt()
         {
             string name = "Infoglasses_Default";
-            string path = "";
-            try
-            {
-                path = System.IO.Path.GetDirectoryName(this.GetType().Assembly.Location) + "\\" + name + ".txt";
-            }
-            catch
-            {
-                var result = (Directory.EnumerateFiles(Grasshopper.Folders.DefaultAssemblyFolder, "*" + name + ".txt", SearchOption.TopDirectoryOnly));
-                if (result.Count() > 0)
-                {
-                    path = result.ElementAt(0);
-                }
-            }
-
-            Writetxt(path);
+            string path = IO_Helper.GetNamedPath(this, name, create: true);
+            return Writetxt(path);
         }
 
 
-        public void Writetxt(string path)
+        public string Writetxt(string path)
         {
-
-            FileStream fs = new FileStream(path, FileMode.Create);
-            StreamWriter sw = new StreamWriter(fs);
-            string normalGuids = "";
-            if (normalExceptionGuid.Count > 0)
+            if (string.IsNullOrEmpty( path)) return LanguagableComponent.GetTransLation(new string[] { "Failed to get path.", "获取位置失败！" });
+            IO_Helper.WriteString(path, () =>
             {
-                normalGuids = this.normalExceptionGuid[0].ToString();
-                for (int i = 1; i < normalExceptionGuid.Count; i++)
+                string normalGuids = "";
+                if (normalExceptionGuid.Count > 0)
                 {
-                    normalGuids += ',';
-                    normalGuids += normalExceptionGuid[i].ToString();
+                    normalGuids = this.normalExceptionGuid[0].ToString();
+                    for (int i = 1; i < normalExceptionGuid.Count; i++)
+                    {
+                        normalGuids += ',';
+                        normalGuids += normalExceptionGuid[i].ToString();
+                    }
                 }
-            }
 
-            string pluginGuids = "";
-            if (pluginExceptionGuid.Count > 0)
-            {
-                pluginGuids = this.pluginExceptionGuid[0].ToString();
-                for (int i = 1; i < pluginExceptionGuid.Count; i++)
+                string pluginGuids = "";
+                if (pluginExceptionGuid.Count > 0)
                 {
-                    pluginGuids += ',';
-                    pluginGuids += pluginExceptionGuid[i].ToString();
+                    pluginGuids = this.pluginExceptionGuid[0].ToString();
+                    for (int i = 1; i < pluginExceptionGuid.Count; i++)
+                    {
+                        pluginGuids += ',';
+                        pluginGuids += pluginExceptionGuid[i].ToString();
+                    }
                 }
-            }
 
-            sw.Write(normalGuids + "\n" + pluginGuids);
-            sw.Flush();
-            sw.Close();
-            fs.Close();
+                return normalGuids + "\n" + pluginGuids;
+            });
+
+
+            return  LanguagableComponent.GetTransLation(new string[] { "Export successfully! \n Location: ", "导出成功！\n 位置：" }) + path;
         }
 
         public void Readtxt()
         {
             string name = "Infoglasses_Default";
-            normalExceptionGuid = new List<Guid>();
-            pluginExceptionGuid = new List<Guid>();
-            string path = "";
-            try
-            {
-                path = System.IO.Path.GetDirectoryName(this.GetType().Assembly.Location) + "\\" + name + ".txt";
-            }
-            catch
-            {
-                var result = (Directory.EnumerateFiles(Grasshopper.Folders.DefaultAssemblyFolder, "*" + name + ".txt", SearchOption.AllDirectories));
-                if (result.Count() > 0)
-                {
-                    path = result.ElementAt(0);
-                }
-            }
+
+            string path = IO_Helper.GetNamedPath(this, name);
             Readtxt(path);
         }
 
@@ -634,80 +609,50 @@ namespace InfoGlasses
         /// <param name="path"></param>
         public string Readtxt(string path)
         {
-            int succeedCount = 0;
+            normalExceptionGuid = new List<Guid>();
+            pluginExceptionGuid = new List<Guid>();
 
+            if (path == null) return null;
+
+            int succeedCount = 0;
             int failCount = 0;
 
-            try
+            IO_Helper.ReadFileInLine(path, (str, index) =>
             {
-                StreamReader sr = new StreamReader(path, Encoding.Default);
-
-                try
+                string[] strs = str.Split(',');
+                foreach (var guid in strs)
                 {
-                    string[] strs = sr.ReadLine().Split(',');
-                    foreach (var guid in strs)
+                    if (guid != "")
                     {
-                        if (guid != "")
+                        try
                         {
-                            try
+                            Guid uid = new Guid(guid);
+                            switch (index)
                             {
-                                Guid uid = new Guid(guid);
-                                if (!normalExceptionGuid.Contains(uid))
-                                {
-                                    normalExceptionGuid.Add(uid);
-                                    succeedCount++;
-                                }
-                                    
-                            }
-                            catch
-                            {
-                                failCount++;
-                            }
+                                case 0:
+                                    if (!normalExceptionGuid.Contains(uid))
+                                    {
+                                        normalExceptionGuid.Add(uid);
+                                    }
+                                    break;
+                                case 1:
+                                    if (!pluginExceptionGuid.Contains(uid))
+                                    {
+                                        pluginExceptionGuid.Add(uid);
 
+                                    }
+                                    break;
+                            }
+                            succeedCount++;
                         }
+                        catch
+                        {
+                            failCount++;
+                        }
+
                     }
                 }
-                catch
-                {
-                    
-                }
-
-
-
-                try
-                {
-                    string[] strs2 = sr.ReadLine().Split(',');
-                    foreach (var guid in strs2)
-                    {
-                        if (guid != "")
-                        {
-                            try
-                            {
-                                Guid uid = new Guid(guid);
-                                if (!pluginExceptionGuid.Contains(uid))
-                                {
-                                    pluginExceptionGuid.Add(uid);
-                                    succeedCount++;
-                                }
-                                    
-                            }
-                            catch
-                            {
-                                failCount++;
-                            }
-
-                        }
-                    }
-                }
-                catch
-                {
-
-                }
-            }
-            catch
-            {
-
-            }
+            });
 
             string all = succeedCount.ToString() + LanguagableComponent.GetTransLation(new string[] { " data imported successfully!", "个数据导入成功！" });
             if (failCount > 0)

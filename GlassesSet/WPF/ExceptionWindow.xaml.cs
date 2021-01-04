@@ -441,8 +441,7 @@ namespace InfoGlasses.WPF
         #region Bottom four respond
         private void AsDefaultButton_Click(object sender, RoutedEventArgs e)
         {
-            Owner.Writetxt();
-            MessageBox.Content = LanguagableComponent.GetTransLation(new string[] { "Save as template successfully!", "成功保存为一个模板！" });
+            MessageBox.Content = Owner.Writetxt();
             MessageSnackBar.IsActive = true;
         }
 
@@ -491,9 +490,7 @@ namespace InfoGlasses.WPF
             if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 string path = saveFileDialog.FileName;
-                Owner.Writetxt(path);
-
-                MessageBox.Content = LanguagableComponent.GetTransLation(new string[] { "Export successfully! \n Location: ", "导出成功！\n 位置：" }) + path;
+                MessageBox.Content = Owner.Writetxt(path);
                 MessageSnackBar.IsActive = true;
             }
         }

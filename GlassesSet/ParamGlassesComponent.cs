@@ -897,28 +897,22 @@ namespace InfoGlasses
         }
         public void WriteColorTxt(string path)
         {
-            if (path == null) return;
-
-            FileStream fs = new FileStream(path, FileMode.Create);
-            StreamWriter sw = new StreamWriter(fs);
-
-            string saveStr = "";
-
-            foreach (var item in ColorDict.Keys)
+            IO_Helper.WriteString(path, () =>
             {
-                saveStr += item.ToString() + ',' + ColorDict[item].ToArgb().ToString() + "\n";
-            }
+                string saveStr = "";
 
-            sw.Write(saveStr);
-            sw.Flush();
-            sw.Close();
-            fs.Close();
+                foreach (var item in ColorDict.Keys)
+                {
+                    saveStr += item.ToString() + ',' + ColorDict[item].ToArgb().ToString() + "\n";
+                }
+                return saveStr;
+            });
         }
 
         internal void WriteColorTxt()
         {
             string name = "WireColors_Default";
-            string path = IO_Helper.GetNamedPath(this, name);
+            string path = IO_Helper.GetNamedPath(this, name, create: true);
             WriteColorTxt(path);
         }
 
@@ -928,43 +922,11 @@ namespace InfoGlasses
 
             if (path == null) return;
 
-            //IO_Helper.ReadFileInLine(path, (str) =>
-            //{
-            //    string[] strs = str.Split(',');
-            //    SetColor(strs[0], Color.FromArgb(int.Parse(strs[1])));
-            //});
-            try
+            IO_Helper.ReadFileInLine(path, (str, index) =>
             {
-                StreamReader sr = new StreamReader(path, Encoding.Default);
-
-                try
-                {
-
-                    foreach (string str in sr.ReadToEnd().Split('\n'))
-                    {
-                        string[] strs = str.Split(',');
-                        SetColor(strs[0], Color.FromArgb(int.Parse(strs[1])));
-
-                    }
-                    //while (true)
-                    //{
-
-                    //    string[] strs = sr.ReadLine().Split(',');
-                    //    SetColor(strs[0], Color.FromArgb(int.Parse(strs[1])));
-
-
-                    //}
-
-                }
-                catch
-                {
-
-                }
-            }
-            catch
-            {
-
-            }
+                string[] strs = str.Split(',');
+                this.SetColor(strs[0], Color.FromArgb(int.Parse(strs[1])));
+            });
         }
 
         private void ReadColorTxt()
