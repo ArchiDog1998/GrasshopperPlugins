@@ -586,6 +586,15 @@ namespace InfoGlasses
             this.RenderObjsUnderComponent = new List<IRenderable>();
         }
 
+        void VariableComponentAttributesChanged(IGH_DocumentObject sender, GH_AttributesChangedEventArgs e)
+        {
+            foreach (IGH_Param param in ((IGH_Component)sender).Params.Input)
+            {
+                RemoveOneParam(param);
+                AddOneParam(param);
+            }
+        }
+
         /// <summary>
         /// Add a new object into this component.
         /// </summary>
@@ -608,8 +617,15 @@ namespace InfoGlasses
                 {
                     AddOneParam(param, addControl);
                 }
+                if(com is IGH_VariableParameterComponent)
+                {
+                    com.AttributesChanged -= VariableComponentAttributesChanged;
+                    com.AttributesChanged += VariableComponentAttributesChanged;
+                }
             }
         }
+
+
 
         private void RemoveOneObject(IGH_DocumentObject obj)
         {
@@ -627,6 +643,10 @@ namespace InfoGlasses
                 foreach (IGH_Param param in com.Params.Input)
                 {
                     RemoveOneParam(param);
+                }
+                if (com is IGH_VariableParameterComponent)
+                {
+                    com.AttributesChanged -= VariableComponentAttributesChanged;
                 }
             }
         }
