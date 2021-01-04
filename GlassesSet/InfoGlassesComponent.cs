@@ -619,7 +619,7 @@ namespace InfoGlasses
             }
             catch
             {
-                var result = (Directory.EnumerateFiles(Grasshopper.Folders.DefaultAssemblyFolder, "*" + name + ".txt", SearchOption.TopDirectoryOnly));
+                var result = (Directory.EnumerateFiles(Grasshopper.Folders.DefaultAssemblyFolder, "*" + name + ".txt", SearchOption.AllDirectories));
                 if (result.Count() > 0)
                 {
                     path = result.ElementAt(0);

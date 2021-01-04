@@ -227,7 +227,7 @@ namespace InfoGlasses.WinformControls
             {
                 if (paramcontrol.MyProxies.Length == 1)
                 {
-                    CreateNewObject(paramcontrol, 0);
+                    CreateNewObject(paramcontrol, 0, leftMove, init);
                 }
                 else if (paramcontrol.MyProxies.Length > 1)
                 {

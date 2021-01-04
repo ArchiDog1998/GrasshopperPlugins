@@ -31,7 +31,7 @@ namespace ArchiTed_Grasshopper
             }
             obj.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, LanguagableComponent.GetTransLation(new string[]
             {
-                $"Finding {name} Failed", $"{name} 查找失败！"
+                $"Finding {name} Failed!", $"{name} 查找失败！"
             }));
             return null;
         }

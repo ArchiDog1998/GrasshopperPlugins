@@ -296,13 +296,9 @@ namespace InfoGlasses
                 } },
                 {"Grasshopper.Kernel.Types.GH_Integer",new AddProxyParams[]{
                     new AddProxyParams(new Guid("{57da07bd-ecab-415d-9d86-af36d7073abc}"), 0),
-                    new AddProxyParams(new Guid("{bcac2747-348b-4edd-ae1f-77a782cebbdd}"), 0),
-                    new AddProxyParams(new Guid("{33bcf975-a0b2-4b54-99fd-585c893b9e88}"), 0),
                 } },
                 {"Grasshopper.Kernel.Types.GH_Number",new AddProxyParams[]{
                     new AddProxyParams(new Guid("{57da07bd-ecab-415d-9d86-af36d7073abc}"), 0),
-                    new AddProxyParams(new Guid("{bcac2747-348b-4edd-ae1f-77a782cebbdd}"), 0),
-                    new AddProxyParams(new Guid("{33bcf975-a0b2-4b54-99fd-585c893b9e88}"), 0),
                 } },
 
                 {"Grasshopper.Kernel.Types.GH_Colour",new AddProxyParams[]{
@@ -928,10 +924,10 @@ namespace InfoGlasses
 
         public void ReadColorTxt(string path)
         {
+            ColorDict = new Dictionary<string, Color>();
+
             if (path == null) return;
 
-
-            ColorDict = new Dictionary<string, Color>();
             try
             {
                 StreamReader sr = new StreamReader(path, Encoding.Default);
@@ -982,7 +978,7 @@ namespace InfoGlasses
             }
 
             //WieteCreate
-            if(CreateProxyDict.Count != 0)
+            if (CreateProxyDict.Count != 0)
             {
                 writer.SetInt32("AutoAddCount", CreateProxyDict.Count);
                 int n = 0;
@@ -1003,7 +999,7 @@ namespace InfoGlasses
             }
 
             //Write Replace
-            if(ProxyReplaceDict.Count != 0)
+            if (ProxyReplaceDict.Count != 0)
             {
                 writer.SetInt32("ReplaceCount", ProxyReplaceDict.Count);
                 int n = 0;
@@ -1038,7 +1034,7 @@ namespace InfoGlasses
 
             //Read Create
             int autoCount = 0;
-            if(reader.TryGetInt32("AutoAddCount", ref autoCount))
+            if (reader.TryGetInt32("AutoAddCount", ref autoCount))
             {
                 for (int n = 0; n < autoCount; n++)
                 {
@@ -1050,7 +1046,6 @@ namespace InfoGlasses
                         int outIndex = reader.GetInt32("autoValueInt" + n.ToString("D5") + m.ToString());
                         value[m] = new AddProxyParams(guid, outIndex);
                     }
-
                     CreateProxyDict[reader.GetString("autoName" + n.ToString())] = value;
                 }
             }
