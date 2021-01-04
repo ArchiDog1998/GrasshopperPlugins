@@ -47,6 +47,7 @@ namespace ArchiTed_Grasshopper
 
         public static void ReadFileInLine(string path, Action<string, int> operationToOneLine, Encoding encoding = null)
         {
+            if (string.IsNullOrEmpty(path)) return;
             encoding = encoding ?? Encoding.Default;
             try
             {

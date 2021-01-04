@@ -569,32 +569,9 @@ namespace InfoGlasses
             }
         }
 
-        private void RemoveAll()
-        {
-            if(this.RenderObjs != null)
-            {
-                foreach (var item in this.RenderObjs)
-                {
-                    if(item is IDisposable)
-                    {
-                        var dispose = item as IDisposable;
-                        dispose.Dispose();
-                    }
-                }
-            }
-            this.RenderObjs = new List<IRenderable>();
-            this.RenderObjsUnderComponent = new List<IRenderable>();
-        }
 
-        void VariableComponentAttributesChanged(IGH_DocumentObject sender, GH_AttributesChangedEventArgs e)
-        {
-            foreach (IGH_Param param in ((IGH_Component)sender).Params.Input)
-            {
-                RemoveOneParam(param);
-                AddOneParam(param);
-            }
-        }
 
+        #region Add & Remove for documentObject
         /// <summary>
         /// Add a new object into this component.
         /// </summary>
@@ -728,21 +705,34 @@ namespace InfoGlasses
             }
         }
 
-        private void SetTranslateColor()
+        private void RemoveAll()
         {
-            GH_Skin.wire_default = Color.Transparent;
-            GH_Skin.wire_empty = Color.Transparent;
-            GH_Skin.wire_selected_a = Color.Transparent;
-            GH_Skin.wire_selected_b = Color.Transparent;
+            if (this.RenderObjs != null)
+            {
+                foreach (var item in this.RenderObjs)
+                {
+                    if (item is IDisposable)
+                    {
+                        var dispose = item as IDisposable;
+                        dispose.Dispose();
+                    }
+                }
+            }
+            this.RenderObjs = new List<IRenderable>();
+            this.RenderObjsUnderComponent = new List<IRenderable>();
         }
 
-        private void SetDefaultColor()
+        void VariableComponentAttributesChanged(IGH_DocumentObject sender, GH_AttributesChangedEventArgs e)
         {
-            GH_Skin.wire_default = this.DefaultColor;
-            GH_Skin.wire_empty = this.EmptyColor;
-            GH_Skin.wire_selected_a = this.SelectedColor;
-            GH_Skin.wire_selected_b = this.UnselectColor;
+            foreach (IGH_Param param in ((IGH_Component)sender).Params.Input)
+            {
+                RemoveOneParam(param);
+                AddOneParam(param);
+            }
         }
+        #endregion
+
+
 
         private void ActiveCanvas_DocumentChanged(GH_Canvas sender, GH_CanvasDocumentChangedEventArgs e)
         {
@@ -782,6 +772,7 @@ namespace InfoGlasses
             SetTranslateColor();
         }
 
+        #region For Proxy
         private void UpdateAllParamProxy()
         {
             _allParamProxy = new List<GooTypeProxy>();
@@ -822,7 +813,7 @@ namespace InfoGlasses
                 }
             }
         }
-
+        #endregion
         private bool IsPersistentParam(Type type)
         {
             if(type == null)
@@ -843,6 +834,7 @@ namespace InfoGlasses
         #endregion
 
         #region After Algrithm
+        #region Lanuage & Window
         protected override void ResponseToLanguageChanged(object sender, EventArgs e)
         {
             string[] input = new string[] { GetTransLation(new string[] { "Run", "启动" }), GetTransLation(new string[] { "R", "启动" }), GetTransLation(new string[] { "Run", "启动" }) };
@@ -860,6 +852,7 @@ namespace InfoGlasses
             WinformControlHelper.CreateWindow(Activator.CreateInstance(this.WindowsType, this) as LangWindow, this);
         }
 
+        #endregion
         public override void RemovedFromDocument(GH_Document document)
         {
             LanguageChanged -= ResponseToLanguageChanged;
@@ -880,6 +873,22 @@ namespace InfoGlasses
 
             }
             base.RemovedFromDocument(document);
+        }
+        #region Get & Set
+        private void SetTranslateColor()
+        {
+            GH_Skin.wire_default = Color.Transparent;
+            GH_Skin.wire_empty = Color.Transparent;
+            GH_Skin.wire_selected_a = Color.Transparent;
+            GH_Skin.wire_selected_b = Color.Transparent;
+        }
+
+        private void SetDefaultColor()
+        {
+            GH_Skin.wire_default = this.DefaultColor;
+            GH_Skin.wire_empty = this.EmptyColor;
+            GH_Skin.wire_selected_a = this.SelectedColor;
+            GH_Skin.wire_selected_b = this.UnselectColor;
         }
 
         internal void SetColor(string name, Color color)
@@ -915,6 +924,11 @@ namespace InfoGlasses
                 return null;
             }
         }
+        #endregion
+
+        #region IO for .txt
+
+        #region WireColor
         public void WriteColorTxt(string path)
         {
             IO_Helper.WriteString(path, () =>
@@ -940,8 +954,6 @@ namespace InfoGlasses
         {
             ColorDict = new Dictionary<string, Color>();
 
-            if (path == null) return;
-
             IO_Helper.ReadFileInLine(path, (str, index) =>
             {
                 string[] strs = str.Split(',');
@@ -955,7 +967,10 @@ namespace InfoGlasses
             string path = IO_Helper.GetNamedPath(this, name);
             ReadColorTxt(path);
         }
+        #endregion
+        #endregion
 
+        #region Write & Read
         public override bool Write(GH_IWriter writer)
         {
             //Write Color
@@ -1058,6 +1073,7 @@ namespace InfoGlasses
 
             return base.Read(reader);
         }
+        #endregion
         #endregion
 
     }
