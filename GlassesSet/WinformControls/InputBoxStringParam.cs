@@ -76,9 +76,18 @@ namespace InfoGlasses.WinformControls
         public override string GetValue()
         {
             GH_ParamAccess access = GH_ParamAccess.item;
-            var result = ParamControlHelper.GetData<TGoo, string>(this, out access);
-            this.Access = access;
-            return result;
+            string result;
+            if(ParamControlHelper.GetData(this, out access, out result))
+            {
+                this.Access = access;
+                return result;
+            }
+            else
+            {
+                this.Access = access;
+                return LanguagableComponent.GetTransLation(new string[] { "Click Me To Set!", "点我以设置！" });
+            }
+            
         }
 
         public override void SetValue(string valueIn, bool record = true)

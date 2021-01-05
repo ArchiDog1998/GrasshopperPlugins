@@ -51,7 +51,7 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// <returns></returns>
         protected virtual bool IsRender(GH_Canvas canvas,  Graphics graphics,  bool renderLittleZoom = false)
         {
-           
+            if (this.Bounds == new RectangleF()) return false;
             RectangleF rec = this.Bounds;
             bool result = canvas.Viewport.IsVisible(ref rec, 10f);
             this.Bounds = rec;

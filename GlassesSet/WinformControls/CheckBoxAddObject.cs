@@ -34,7 +34,7 @@ namespace InfoGlasses.WinformControls
 
         public new bool Enable => MyProxies.Length != 0;
 
-        public string initStr => GetValue().ToString();
+        public string initStr => "";
 
         private AddProxyParams[] _myProxies;
         public AddProxyParams[] MyProxies
@@ -81,8 +81,6 @@ namespace InfoGlasses.WinformControls
         {
             Grasshopper.Instances.ActiveCanvas.MouseDown -= RespondToMouseDown;
         }
-
-
 
     }
 }

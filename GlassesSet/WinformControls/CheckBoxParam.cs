@@ -81,9 +81,17 @@ namespace InfoGlasses.WinformControls
         public override bool GetValue()
         {
             GH_ParamAccess access = GH_ParamAccess.item;
-            var result = ParamControlHelper.GetData<TGoo, bool>(this, out access);
-            this.Access = access;
-            return result;
+            bool result;
+            if(ParamControlHelper.GetData<TGoo, bool>(this, out access, out result))
+            {
+                this.Access = access;
+                return result;
+            }
+            else
+            {
+                this.Access = access;
+                return false;
+            }
         }
 
         public override void SetValue(bool valueIn, bool record = true)

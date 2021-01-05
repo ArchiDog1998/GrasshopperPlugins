@@ -45,7 +45,7 @@ namespace InfoGlasses.WinformControls
             }
         }
 
-        public static T GetData<TGoo, T>(ITargetParam<TGoo, T> owner, out GH_ParamAccess access) where TGoo : GH_Goo<T>
+        public static bool GetData<TGoo, T>(ITargetParam<TGoo, T> owner, out GH_ParamAccess access, out T value) where TGoo : GH_Goo<T>
         {
             access = GH_ParamAccess.item;
             if (owner.Target.Attributes.HasInputGrip)
@@ -65,13 +65,16 @@ namespace InfoGlasses.WinformControls
                     access = owner.Target.VolatileData.PathCount == 1 ? GH_ParamAccess.list : GH_ParamAccess.tree;
                 }
                 GH_Goo<T> gh_color = owner.Target.VolatileData.AllData(true).ElementAt(0) as GH_Goo<T>;
-                return gh_color.Value;
+                value = gh_color.Value;
+                return true;
 
             }
             else
             {
-                ParamControlHelper.SetData<TGoo, T>(owner, owner.Default);
-                return owner.Default;
+                //ParamControlHelper.SetData<TGoo, T>(owner, owner.Default);
+                //return owner.Default;
+                value = default(T);
+                return false;
             }
         }
 

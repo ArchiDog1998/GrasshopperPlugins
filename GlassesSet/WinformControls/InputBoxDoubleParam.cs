@@ -48,7 +48,7 @@ namespace InfoGlasses.WinformControls
         {
             this.Target = target;
             this.Owner = owner;
-            ParamControlHelper.SetDefaultValue(this, 0);
+            //ParamControlHelper.SetDefaultValue(this, 0);
         }
 
         public void RespondToMouseDown(object sender, MouseEventArgs e)
@@ -75,9 +75,17 @@ namespace InfoGlasses.WinformControls
         public override double GetValue()
         {
             GH_ParamAccess access = GH_ParamAccess.item;
-            var result = ParamControlHelper.GetData<TGoo, double>(this, out access);
-            this.Access = access;
-            return result;
+            double result;
+            if(ParamControlHelper.GetData(this, out access, out result))
+            {
+                this.Access = access;
+                return result;
+            }
+            else
+            {
+                this.Access = access;
+                return double.NaN;
+            }
         }
 
         public override void SetValue(double valueIn, bool record = true)

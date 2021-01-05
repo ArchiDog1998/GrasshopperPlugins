@@ -116,25 +116,29 @@ namespace ArchiTed_Grasshopper
 
         public bool GetValuePub(string name, bool value)
         {
+            if (string.IsNullOrEmpty(name)) return default(bool);
             return GetValue(name, value);
         }
         public int GetValuePub(string name, int value)
         {
+            if (string.IsNullOrEmpty(name)) return default(int);
             return GetValue(name, value);
         }
         public double GetValuePub(string name, double value)
         {
+            if (string.IsNullOrEmpty(name)) return default(double);
             return GetValue(name, value);
         }
         public Color GetValuePub(string name, Color value)
         {
+            if (string.IsNullOrEmpty(name)) return default(Color);
             return GetValue(name, value);
         }
         public string GetValuePub(string name, string value)
         {
+            if (string.IsNullOrEmpty(name)) return default(string);
             return GetValue(name, value);
         }
-
         #endregion
 
 

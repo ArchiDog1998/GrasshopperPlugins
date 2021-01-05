@@ -269,7 +269,7 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// <summary>
         /// Get value that in controllableComponent.
         /// </summary>
-        /// <returns>Value.</returns>
+        /// <returns>Value.</returns>-
         public abstract T GetValue();
 
         /// <summary>

@@ -79,9 +79,18 @@ namespace InfoGlasses.WinformControls
         public override Color GetValue()
         {
             GH_ParamAccess access = GH_ParamAccess.item;
-            var result = ParamControlHelper.GetData<TGoo, Color>(this, out access);
-            this.Access = access;
-            return result;
+            Color result;
+            if(ParamControlHelper.GetData(this, out access, out result))
+            {
+                this.Access = access;
+                return result;
+            }
+            else
+            {
+                this.Access = access;
+                return Color.Transparent;
+            }
+            
         }
 
         public override void SetValue(Color valueIn, bool record = true)

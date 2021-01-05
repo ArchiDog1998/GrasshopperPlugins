@@ -41,7 +41,7 @@ namespace ArchiTed_Grasshopper
 
             A = A < 0 ? 0 : A;
 
-            return Color.FromArgb(A, color);
+            return Color.FromArgb(A, color.R, color.G, color.B);
         }
 
         public static Color OnColor = Color.FromArgb(255, 19, 34, 122);
