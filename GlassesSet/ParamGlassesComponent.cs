@@ -536,16 +536,10 @@ namespace InfoGlasses
         {
             DA.GetData(0, ref _run);
             RemoveAll();
+            RemoveRespond();
 
             if (_isFirst)
             {
-
-                this.OnPingDocument().ObjectsAdded += ObjectsAddedAction;
-                this.OnPingDocument().ObjectsDeleted += ObjectsDeletedAction;
-                Grasshopper.Instances.ActiveCanvas.CanvasPrePaintWires += ActiveCanvas_CanvasPrePaintWires;
-                Grasshopper.Instances.ActiveCanvas.CanvasPostPaintWires += ActiveCanvas_CanvasPostPaintWires;
-                Grasshopper.Instances.ActiveCanvas.DocumentChanged += ActiveCanvas_DocumentChanged;
-
                 if(ColorDict == null)
                 {
                     ReadColorTxt();
@@ -556,6 +550,8 @@ namespace InfoGlasses
 
             if (_run)
             {
+                AddRespond();
+
                 foreach (var obj in this.OnPingDocument().Objects)
                 {
                     this.AddOneObject(obj);
@@ -662,7 +658,7 @@ namespace InfoGlasses
             if (!this.IsShowControl || !addControl) return;
             Type type = param.Type;
 
-            if (IsPersistentParam(param.GetType()))
+            if (IsPersistentParam(param.GetType(), out _))
             {
 
                 if (this.IsShowBoolControl && typeof(GH_Goo<bool>).IsAssignableFrom(type))
@@ -782,10 +778,11 @@ namespace InfoGlasses
                 {
                     try
                     {
-                        IGH_DocumentObject obj = proxy.CreateInstance();
-                        if (IsPersistentParam(obj.GetType()))
+                        //IGH_DocumentObject obj = proxy.CreateInstance();
+                        Type dataType;
+                        if (IsPersistentParam(proxy.Type, out dataType))
                         {
-                            GooTypeProxy paramProxy = new GooTypeProxy(((IGH_Param)obj).Type, this);
+                            GooTypeProxy paramProxy = new GooTypeProxy(dataType, this);
                             if (!_allParamProxy.Contains(paramProxy))
                             {
                                 _allParamProxy.Add(paramProxy);
@@ -814,21 +811,24 @@ namespace InfoGlasses
             }
         }
         #endregion
-        private bool IsPersistentParam(Type type)
+        private bool IsPersistentParam(Type type, out Type dataType)
         {
-            if(type == null)
+            dataType = default(Type);
+            if (type == null)
             {
                 return false;
             }
             else if (type.IsGenericType)
             {
                 if (type.GetGenericTypeDefinition() == typeof(GH_PersistentParam<>))
+                {
+                    dataType = type.GenericTypeArguments[0];
                     return true;
+                }
                 else if (type.GetGenericTypeDefinition() == typeof(GH_Param<>))
                     return false;
             }
-
-            return IsPersistentParam(type.BaseType);
+            return IsPersistentParam(type.BaseType, out dataType);
         }
 
         #endregion
@@ -853,16 +853,20 @@ namespace InfoGlasses
         }
 
         #endregion
-        public override void RemovedFromDocument(GH_Document document)
+        private void AddRespond()
         {
-            LanguageChanged -= ResponseToLanguageChanged;
+            this.OnPingDocument().ObjectsAdded += ObjectsAddedAction;
+            this.OnPingDocument().ObjectsDeleted += ObjectsDeletedAction;
+            Grasshopper.Instances.ActiveCanvas.CanvasPrePaintWires += ActiveCanvas_CanvasPrePaintWires;
+            Grasshopper.Instances.ActiveCanvas.CanvasPostPaintWires += ActiveCanvas_CanvasPostPaintWires;
+            Grasshopper.Instances.ActiveCanvas.DocumentChanged += ActiveCanvas_DocumentChanged;
+        }
+
+        private void RemoveRespond()
+        {
             Grasshopper.Instances.ActiveCanvas.DocumentChanged -= ActiveCanvas_DocumentChanged;
             Grasshopper.Instances.ActiveCanvas.CanvasPrePaintWires -= ActiveCanvas_CanvasPrePaintWires;
             Grasshopper.Instances.ActiveCanvas.CanvasPostPaintWires -= ActiveCanvas_CanvasPostPaintWires;
-            RemoveAll();
-            SetDefaultColor();
-
-
             try
             {
                 this.OnPingDocument().ObjectsAdded -= ObjectsAddedAction;
@@ -872,6 +876,15 @@ namespace InfoGlasses
             {
 
             }
+        }
+
+        public override void RemovedFromDocument(GH_Document document)
+        {
+            LanguageChanged -= ResponseToLanguageChanged;
+            RemoveAll();
+            SetDefaultColor();
+            RemoveRespond();
+
             base.RemovedFromDocument(document);
         }
         #region Get & Set
