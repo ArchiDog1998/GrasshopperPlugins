@@ -27,7 +27,7 @@ using TextBox = ArchiTed_Grasshopper.WinformControls.TextBox;
 
 namespace InfoGlasses.WinformControls
 {
-    public class ButtonAddObjectInput<TGoo> : ClickButtonBase<LangWindow>, IAddObjectParam<TGoo> where TGoo : class, IGH_Goo
+    public class ButtonAddObjectOutput<TGoo> : ClickButtonBase<LangWindow>, IAddObjectParam<TGoo> where TGoo : class, IGH_Goo
     {
         public GH_Param<TGoo> Target { get; }
         public int Width => 20;
@@ -42,14 +42,14 @@ namespace InfoGlasses.WinformControls
         {
             get
             {
-                _myProxies = _myProxies ?? ParamControlHelper.GetAddProxyInputParams(this);
+                _myProxies = _myProxies ?? ParamControlHelper.GetAddProxyOutputParams(this);
                 return _myProxies;
             }
         }
-        public RectangleF IconButtonBound => ParamControlHelper.GetIconBound(this.Bounds, true, 2);
+        public RectangleF IconButtonBound => ParamControlHelper.GetIconBound(this.Bounds, false, 2);
         public new ParamGlassesComponent Owner { get; }
 
-        public ButtonAddObjectInput(GH_Param<TGoo> target, ParamGlassesComponent owner, bool enable,
+        public ButtonAddObjectOutput(GH_Param<TGoo> target, ParamGlassesComponent owner, bool enable,
             string[] tips = null, int tipsRelay = 5000, Func<ToolStripDropDownMenu> createMenu = null, bool isToggle = true,
             bool renderLittleZoom = false)
             : base(null, owner, null, enable, true, tips, tipsRelay, createMenu, isToggle, renderLittleZoom)
@@ -60,12 +60,12 @@ namespace InfoGlasses.WinformControls
 
         public void RespondToMouseDown(object sender, MouseEventArgs e)
         {
-            ParamControlHelper.AddObjectMouseDown(this, sender, e, true, init: initStr);
+            ParamControlHelper.AddObjectMouseDown(this, sender, e, false, init: initStr);
         }
 
         protected override bool IsRender(GH_Canvas canvas, Graphics graphics, bool renderLittleZoom = false)
         {
-            return ParamControlHelper.IsRender(this, canvas, graphics, renderLittleZoom) && base.IsRender(canvas, graphics, renderLittleZoom);
+            return ParamControlHelper.IsRender(this, canvas, graphics, renderLittleZoom, false) && base.IsRender(canvas, graphics, renderLittleZoom);
         }
 
         protected override void Render(GH_Canvas canvas, Graphics graphics, GH_CanvasChannel channel)

@@ -326,7 +326,8 @@ namespace InfoGlasses
             };
 
             CreateProxyDictOutput = new Dictionary<string, AddProxyParams[]>() 
-            { 
+            {
+                {"Grasshopper.Kernel.Types.GH_Boolean",new AddProxyParams[]{ new AddProxyParams(new Guid("{040f195d-0b4e-4fe0-901f-fedb2fd3db15}"), 0) } },
             };
 
             int width = 24;
@@ -585,7 +586,11 @@ namespace InfoGlasses
                 IGH_Param param = obj as IGH_Param;
                 if (param.Attributes.HasInputGrip)
                 {
-                    AddOneParam(param);
+                    AddOneParamInput(param);
+                }
+                if (param.Attributes.HasOutputGrip)
+                {
+                    AddOneParamOutput(param);
                 }
             }
             else if(obj is IGH_Component)
@@ -594,9 +599,13 @@ namespace InfoGlasses
                 bool addControl = obj != this;
                 foreach (IGH_Param param in com.Params.Input)
                 {
-                    AddOneParam(param, addControl);
+                    AddOneParamInput(param, addControl);
                 }
-                if(com is IGH_VariableParameterComponent)
+                foreach (IGH_Param param in com.Params.Output)
+                {
+                    AddOneParamOutput(param);
+                }
+                if (com is IGH_VariableParameterComponent)
                 {
                     com.AttributesChanged -= VariableComponentAttributesChanged;
                     com.AttributesChanged += VariableComponentAttributesChanged;
@@ -613,7 +622,11 @@ namespace InfoGlasses
                 IGH_Param param = obj as IGH_Param;
                 if (param.Attributes.HasInputGrip)
                 {
-                    RemoveOneParam(param);
+                    RemoveOneParam(param, true);
+                }
+                if (param.Attributes.HasOutputGrip)
+                {
+                    RemoveOneParam(param, false);
                 }
             }
             else if (obj is IGH_Component)
@@ -621,7 +634,11 @@ namespace InfoGlasses
                 IGH_Component com = obj as IGH_Component;
                 foreach (IGH_Param param in com.Params.Input)
                 {
-                    RemoveOneParam(param);
+                    RemoveOneParam(param, true);
+                }
+                foreach (IGH_Param param in com.Params.Output)
+                {
+                    RemoveOneParam(param, false);
                 }
                 if (com is IGH_VariableParameterComponent)
                 {
@@ -630,26 +647,32 @@ namespace InfoGlasses
             }
         }
 
-        private void RemoveOneParam(IGH_Param param)
+        private void RemoveOneParam(IGH_Param param, bool isInputSide)
         {
             while (true)
             {
                 bool findit = false;
                 foreach (var item in this.RenderObjs)
                 {
+                    //bool isOutputParam = item.GetType().GetGenericTypeDefinition() == typeof(ButtonAddObjectOutput<>);
+
                     var result = item.GetType().GetProperty("Target");
                     if (result != null)
                     {
                         var prop = result.GetValue(item);
                         if (prop == param)
                         {
-                            if (item is IDisposable)
+                            //if((isOutputParam && !isInputSide) || (!isOutputParam && isInputSide))
                             {
-                                ((IDisposable)item).Dispose();
+                                if (item is IDisposable)
+                                {
+                                    ((IDisposable)item).Dispose();
+                                }
+                                this.RenderObjs.Remove(item);
+                                findit = true;
+                                break;
                             }
-                            this.RenderObjs.Remove(item);
-                            findit = true;
-                            break;
+
                         }
                     }
                 }
@@ -657,8 +680,18 @@ namespace InfoGlasses
             }
 
         }
+        private void AddOneParamOutput(IGH_Param param)
+        {
+            if (!this.IsShowControl) return;
 
-        private void AddOneParam(IGH_Param param, bool addControl = true)
+            if (IsPersistentParam(param.GetType(), out _)&& param.Attributes.HasOutputGrip && this.IsShowOtherControl)
+            {
+                Type paramType = typeof(ButtonAddObjectOutput<>).MakeGenericType(param.Type);
+                this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, null, true, false));
+            }
+        }
+
+        private void AddOneParamInput(IGH_Param param, bool addControl = true)
         {
             this.RenderObjs.Add(new WireConnectRenderItem(param, this));
             if (!this.IsShowControl || !addControl) return;
@@ -728,8 +761,13 @@ namespace InfoGlasses
         {
             foreach (IGH_Param param in ((IGH_Component)sender).Params.Input)
             {
-                RemoveOneParam(param);
-                AddOneParam(param);
+                RemoveOneParam(param, true);
+                AddOneParamInput(param);
+            }
+            foreach (IGH_Param param in ((IGH_Component)sender).Params.Output)
+            {
+                RemoveOneParam(param, false);
+                AddOneParamOutput(param);
             }
         }
         #endregion

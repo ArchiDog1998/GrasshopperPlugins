@@ -40,7 +40,7 @@ namespace InfoGlasses.WinformControls
             }
         }
         public new ParamGlassesComponent Owner { get; }
-        public RectangleF IconButtonBound => ParamControlHelper.GetIconBound(this.Bounds);
+        public RectangleF IconButtonBound => ParamControlHelper.GetIconBound(this.Bounds, true);
         public int Width => 20;
 
         public ColourSwatchParam(GH_PersistentParam<TGoo> target, ParamGlassesComponent owner, bool enable,

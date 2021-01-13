@@ -39,7 +39,7 @@ namespace InfoGlasses.WinformControls
             }
         }
         public new ParamGlassesComponent Owner { get; }
-        public RectangleF IconButtonBound => ParamControlHelper.GetIconBound(this.Bounds);
+        public RectangleF IconButtonBound => ParamControlHelper.GetIconBound(this.Bounds, true);
 
         public InputBoxIntParam(GH_PersistentParam<TGoo> target, ParamGlassesComponent owner, bool enable,
             string[] tips = null, int tipsRelay = 5000, bool renderLittleZoom = false)

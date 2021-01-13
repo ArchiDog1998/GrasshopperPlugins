@@ -24,7 +24,6 @@ namespace InfoGlasses.WinformControls
         RectangleF IconButtonBound { get; }
 
         string initStr { get; }
-
         new ParamGlassesComponent Owner { get; }
     }
 }

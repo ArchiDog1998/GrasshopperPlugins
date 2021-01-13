@@ -66,7 +66,7 @@
   <Class Name="InfoGlasses.WinformControls.ParamControlHelper" Collapsed="true">
     <Position X="8.75" Y="2.5" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAIAREEAEIAAEAAAAAQAACAAAAAEAIEDAACACAAA=</HashCode>
+      <HashCode>AAAAAIAREEAEAAAEAAAAAQAACAAAAAEAJEDAACACAAA=</HashCode>
       <FileName>WinformControls\ParamControlHelper.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -133,7 +133,7 @@
   <Class Name="InfoGlasses.WinformControls.CheckBoxParam&lt;TGoo&gt;" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="7" Y="0.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAIACAIKCEAkFAAAAAAGAAAAABAAAIABAAAAAAAAA=</HashCode>
+      <HashCode>AAAAIACAIKCEAgFAAAAAAGAAAAABAAAIABAAAAAAAAA=</HashCode>
       <FileName>WinformControls\CheckBoxParam.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
@@ -158,14 +158,14 @@
       <Compartment Name="Properties" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAEAAEAAAAAACAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAEAAAAAACAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>WinformControls\IParamControlBase.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="InfoGlasses.WinformControls.ITargetParam&lt;TGoo, T&gt;">
     <Position X="0.75" Y="8" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAEAAAAAAACAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>WinformControls\ITargetParam.cs</FileName>
     </TypeIdentifier>
   </Interface>

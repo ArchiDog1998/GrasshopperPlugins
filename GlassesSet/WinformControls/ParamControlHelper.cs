@@ -127,10 +127,14 @@ namespace InfoGlasses.WinformControls
             graphics.DrawPath(new Pen(Color.DimGray, 1), path);
             graphics.DrawImage(icon, bound);
         }
-        public static bool IsRender<TGoo>(IParamControlBase<TGoo> paramcontrol, GH_Canvas canvas, Graphics graphics, bool renderLittleZoom = false) where TGoo : class, IGH_Goo
+        public static bool IsRender<TGoo>(IParamControlBase<TGoo> paramcontrol, GH_Canvas canvas, Graphics graphics, bool isInputSide = true, bool renderLittleZoom = false) where TGoo : class, IGH_Goo
         {
             Grasshopper.Instances.ActiveCanvas.MouseDown -= paramcontrol.RespondToMouseDown;
-            if (paramcontrol.Target.SourceCount > 0 || !paramcontrol.Enable)
+            if ((paramcontrol.Target.SourceCount > 0 || !paramcontrol.Enable))
+            {
+                return false;
+            }
+            else if (isInputSide)
             {
                 return false;
             }
@@ -171,10 +175,13 @@ namespace InfoGlasses.WinformControls
         #region AddObjectIcon
         public static float IconSize => 12;
         public static float IconSpacing => 6;
-        public static RectangleF GetIconBound(RectangleF bound, float multy = 1)
+        public static RectangleF GetIconBound(RectangleF bound,bool isInputSide, float multy = 1)
         {
-            return new RectangleF(bound.X - ParamControlHelper.IconSize - ParamControlHelper.IconSpacing * multy, bound.Y + bound.Height / 2 - ParamControlHelper.IconSize / 2,
-                ParamControlHelper.IconSize, ParamControlHelper.IconSize);
+            if (isInputSide)
+                return new RectangleF(bound.X - ParamControlHelper.IconSize - ParamControlHelper.IconSpacing * multy, bound.Y + bound.Height / 2 - ParamControlHelper.IconSize / 2,
+                    ParamControlHelper.IconSize, ParamControlHelper.IconSize);
+            else return new RectangleF(bound.Right + ParamControlHelper.IconSpacing * multy, bound.Y + bound.Height / 2 - ParamControlHelper.IconSize / 2,
+                    ParamControlHelper.IconSize, ParamControlHelper.IconSize);
         }
 
         public static void IconRender<TGoo>(IAddObjectParam<TGoo> paramcontrol, GH_Canvas canvas, Graphics graphics, GH_CanvasChannel channel) where TGoo : class, IGH_Goo
@@ -259,7 +266,7 @@ namespace InfoGlasses.WinformControls
                 return;
             }
 
-            PointF comRightCenter = new PointF(target.Attributes.Bounds.Left + leftMove * (isInputSide ? -1:1),
+            PointF comRightCenter = new PointF(target.Attributes.Bounds.Left + (isInputSide ? -leftMove:(leftMove + target.Attributes.Bounds.Width)),
                 target.Attributes.Bounds.Top + target.Attributes.Bounds.Height / 2);
             if (obj is GH_Component)
             {
