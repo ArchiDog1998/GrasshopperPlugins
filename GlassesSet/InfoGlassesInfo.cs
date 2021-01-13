@@ -65,7 +65,7 @@ namespace InfoGlasses
         {
             get
             {
-                return "1.2.5.v" + DateTime.Now.ToString("yyyyMMdd");
+                return "1.2.6.v" + DateTime.Now.ToString("yyyyMMdd");
             }
         }
     }

@@ -96,10 +96,6 @@
     </Compile>
     <Compile Include="InfoGlassesComponent.cs" />
     <Compile Include="NamedViewPPTComponent.cs" />
-    <Compile Include="WireColors_OBSOLETE.xaml.cs">
-      <DependentUpon>WireColors_OBSOLETE.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="WireGlassesComponent_OBSOLETE.cs" />
     <Compile Include="InfoGlassesInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -178,10 +174,6 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="WPF\ExceptionWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="WireColors_OBSOLETE.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

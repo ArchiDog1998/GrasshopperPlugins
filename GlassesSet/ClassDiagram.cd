@@ -31,30 +31,8 @@
   <Class Name="InfoGlasses.ParamGlassesComponent" Collapsed="true">
     <Position X="10.5" Y="2.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>2Y8YTYoCcSItTaIe2d+JKIE0nxugBiCuaqgdCFUce5k=</HashCode>
+      <HashCode>2Y8YTYoCcSItTaIe2d+JKIE2nxuiBiCuaqgdCFUce5k=</HashCode>
       <FileName>ParamGlassesComponent.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="InfoGlasses.WireColors_OBSOLETE" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="8.75" Y="3.5" Width="2" />
-    <TypeIdentifier>
-      <HashCode>ABACAACAAAAIAEAAAAAoAAAURAAABAAAAAAFAAAAAAA=</HashCode>
-      <FileName>WireColors_OBSOLETE.xaml.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
-  </Class>
-  <Class Name="InfoGlasses.WireGlassesComponent_OBSOLETE" Collapsed="true">
-    <Position X="5.25" Y="4.5" Width="2.75" />
-    <TypeIdentifier>
-      <HashCode>gAIIBAAAAAAHIACAgB4BAAEQIRNAAACQJAgRAAEIEBI=</HashCode>
-      <FileName>WireGlassesComponent_OBSOLETE.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="InfoGlasses.ParamTypeInfo" Collapsed="true">
-    <Position X="5.25" Y="3.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>gAAQAAEEIACAAAAAAAAAAAQCAAAAAAAACAAAQAEACAA=</HashCode>
-      <FileName>WireGlassesComponent_OBSOLETE.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="InfoGlasses.Properties.Resources" Collapsed="true">

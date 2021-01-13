@@ -100,7 +100,7 @@ namespace InfoGlasses
         public Color LabelTextColor => GetValue(_labelTextColor, _labelTextColorDefault);
 
         private const string _labelBackgroundColor = "labelBackGroundColor";
-        private readonly Color _labelDackgroundColorDefault = Color.WhiteSmoke;
+        private readonly Color _labelDackgroundColorDefault = Color.FromArgb(150, Color.WhiteSmoke);
         public Color LabelBackGroundColor => GetValue(_labelBackgroundColor, _labelDackgroundColorDefault);
 
         private const string _labelBoundaryColor = "labelBoundaryColor";
@@ -264,6 +264,7 @@ namespace InfoGlasses
                 {"Grasshopper.Kernel.Types.GH_Box", new AddProxyParams[]{
                     new AddProxyParams(new Guid("{28061aae-04fb-4cb5-ac45-16f3b66bc0a4}"), 0),
                     new AddProxyParams(new Guid("{79aa7f47-397c-4d3f-9761-aaf421bb7f5f}"), 0),
+                    new AddProxyParams(new Guid("{0bb3d234-9097-45db-9998-621639c87d3b}"), 0),
                 } },
                 {"Grasshopper.Kernel.Types.GH_Mesh",new AddProxyParams[]{ 
                     new AddProxyParams(new Guid("{e2c0f9db-a862-4bd9-810c-ef2610e7a56f}"), 0),
@@ -291,6 +292,23 @@ namespace InfoGlasses
                     new AddProxyParams(new Guid("{d27cc1ea-9ef7-47bf-8ee2-c6662da0e3d9}"), 0),
                 } },
                 {"Grasshopper.Kernel.Types.GH_GeometryGroup",new AddProxyParams[]{ new AddProxyParams(new Guid("{874eebe7-835b-4f4f-9811-97e031c41597}"), 0) } },
+                {"Grasshopper.Kernel.Types.GH_Transform",new AddProxyParams[]{ 
+                    new AddProxyParams(new Guid("{407e35c6-7c40-4652-bd80-fde1eb7ec034}"), 1),
+                    new AddProxyParams(new Guid("{4d2a06bd-4b0f-4c65-9ee0-4220e4c01703}"), 1),
+                    new AddProxyParams(new Guid("{290f418a-65ee-406a-a9d0-35699815b512}"), 1),
+                    new AddProxyParams(new Guid("{5a27203a-e05f-4eea-b80f-a5f29a00fdf2}"), 1),
+                    new AddProxyParams(new Guid("{f19ee36c-f21f-4e25-be4c-4ca4b30eda0d}"), 1),
+                    new AddProxyParams(new Guid("{23285717-156c-468f-a691-b242488c06a6}"), 1),
+                    new AddProxyParams(new Guid("{06d7bc4a-ba3e-4445-8ab5-079613b52f28}"), 1),
+                    new AddProxyParams(new Guid("{f12daa2f-4fd5-48c1-8ac3-5dea476912ca}"), 1),
+                    new AddProxyParams(new Guid("{e9eb1dcf-92f6-4d4d-84ae-96222d60f56b}"), 1),
+                    new AddProxyParams(new Guid("{378d0690-9da0-4dd1-ab16-1d15246e7c22}"), 1),
+                    new AddProxyParams(new Guid("{b7798b74-037e-4f0c-8ac7-dc1043d093e0}"), 1),
+                    new AddProxyParams(new Guid("{5edaea74-32cb-4586-bd72-66694eb73160}"), 1),
+                    new AddProxyParams(new Guid("{ca80054a-cde0-4f69-a132-10502b24866d}"), 0),
+                    new AddProxyParams(new Guid("{51f61166-7202-45aa-9126-3d83055b269e}"), 0),
+                } },
+
 
                 {"Grasshopper.Kernel.Types.GH_Boolean",new AddProxyParams[]{
                     new AddProxyParams(new Guid("{2e78987b-9dfb-42a2-8b76-3923ac8bd91a}"), 0),
@@ -320,14 +338,147 @@ namespace InfoGlasses
                 {"Grasshopper.Kernel.Types.GH_StructurePath",new AddProxyParams[]{ new AddProxyParams(new Guid("{946cb61e-18d2-45e3-8840-67b0efa26528}"), 0) } },
                 {"Grasshopper.Kernel.Types.GH_Material",new AddProxyParams[]{ new AddProxyParams(new Guid("{76975309-75a6-446a-afed-f8653720a9f2}"), 0) } },
 
-                {"Grasshopper.Kernel.Types.GH_MeshingParameters",new AddProxyParams[]{ new AddProxyParams(new Guid("{4a0180e5-d8f9-46e7-bd34-ced804601462}"), 0) } },
+                {"Grasshopper.Kernel.Types.GH_MeshingParameters",new AddProxyParams[]{
+                    new AddProxyParams(new Guid("{4a0180e5-d8f9-46e7-bd34-ced804601462}"), 0),
+                    new AddProxyParams(new Guid("{255ca3e9-2c1e-443a-a404-e76b5c63f4cb}"), 0),
+                    new AddProxyParams(new Guid("{1b0ee096-cc76-4847-8941-04a9e256de76}"), 0),
+                } },
                 {"SurfaceComponents.SurfaceComponents.LoftOptions",new AddProxyParams[]{ new AddProxyParams(new Guid("{45f19d16-1c9f-4b0f-a9a6-45a77f3d206c}"), 0) } },
 
             };
 
             CreateProxyDictOutput = new Dictionary<string, AddProxyParams[]>() 
             {
-                {"Grasshopper.Kernel.Types.GH_Boolean",new AddProxyParams[]{ new AddProxyParams(new Guid("{040f195d-0b4e-4fe0-901f-fedb2fd3db15}"), 0) } },
+                {"Grasshopper.Kernel.Types.GH_Point", new AddProxyParams[]{
+                    new AddProxyParams(new Guid("{93b8e93d-f932-402c-b435-84be04d87666}"), 0),
+                    new AddProxyParams(new Guid("{4a9e9a8e-0943-4438-b360-129c30f2bb0f}"), 0),
+                    new AddProxyParams(new Guid("{4beead95-8aa2-4613-8bb9-24758a0f5c4c}"), 0),
+                } },
+                {"Grasshopper.Kernel.Types.GH_Vector", new AddProxyParams[]{
+                    new AddProxyParams(new Guid("{e9eb1dcf-92f6-4d4d-84ae-96222d60f56b}"), 1),
+                    new AddProxyParams(new Guid("{962034e9-cc27-4394-afc4-5c16e3447cf9}"), 1),
+                } },
+
+                {"Grasshopper.Kernel.Types.GH_Circle",new AddProxyParams[]{
+                    new AddProxyParams(new Guid("{23862862-049a-40be-b558-2418aacbd916}"), 0),
+                } },
+                {"Grasshopper.Kernel.Types.GH_Arc", new AddProxyParams[]{new AddProxyParams(new Guid("{23862862-049a-40be-b558-2418aacbd916}"), 0) } },
+                {"Grasshopper.Kernel.Types.GH_Curve", new AddProxyParams[]{
+                    new AddProxyParams(new Guid("{fc6979e4-7e91-4508-8e05-37c680779751}"), 0),
+                    new AddProxyParams(new Guid("{c75b62fa-0a33-4da7-a5bd-03fd0068fd93}"), 0),
+                    new AddProxyParams(new Guid("{5816ec9c-f170-4c59-ac44-364401ff84cd}"), 0),
+                } },
+                {"Grasshopper.Kernel.Types.GH_Line", new AddProxyParams[]{
+                    new AddProxyParams(new Guid("{fc6979e4-7e91-4508-8e05-37c680779751}"), 0),
+                    new AddProxyParams(new Guid("{c75b62fa-0a33-4da7-a5bd-03fd0068fd93}"), 0),
+                } },
+                {"Grasshopper.Kernel.Types.GH_Plane", new AddProxyParams[]{new AddProxyParams(new Guid("{807b86e3-be8d-4970-92b5-f8cdcb45b06b}"), 0) } },
+                {"Grasshopper.Kernel.Types.GH_Rectangle", new AddProxyParams[]{
+                    new AddProxyParams(new Guid("{e5c33a79-53d5-4f2b-9a97-d3d45c780edc}"), 0),
+                    new AddProxyParams(new Guid("{d0a56c9e-2483-45e7-ab98-a450b97f1bc0}"), 0),
+                } },
+
+                {"Grasshopper.Kernel.Types.GH_Box", new AddProxyParams[]{
+                    new AddProxyParams(new Guid("{db7d83b1-2898-4ef9-9be5-4e94b4e2048d}"), 0),
+                    new AddProxyParams(new Guid("{af9cdb9d-9617-4827-bb3c-9efd88c76a70}"), 0),
+                    new AddProxyParams(new Guid("{a10e8cdf-7c7a-4aac-aa70-ddb7010ab231}"), 0),
+                    new AddProxyParams(new Guid("{13b40e9c-3aed-4669-b2e8-60bd02091421}"), 0),
+                } },
+                {"Grasshopper.Kernel.Types.GH_Brep", new AddProxyParams[]{
+                    new AddProxyParams(new Guid("{8d372bdc-9800-45e9-8a26-6e33c5253e21}"), 0),
+                    new AddProxyParams(new Guid("{0148a65d-6f42-414a-9db7-9a9b2eb78437}"), 0),
+                    new AddProxyParams(new Guid("{ac750e41-2450-4f98-9658-98fef97b01b2}"), 0),
+                } },
+                {"Grasshopper.Kernel.Types.GH_Mesh",new AddProxyParams[]{
+                    new AddProxyParams(new Guid("{0b4ac802-fc4a-4201-9c66-0078b837c1eb}"), 0),
+                    new AddProxyParams(new Guid("{ba2d8f57-0738-42b4-b5a5-fe4d853517eb}"), 0),
+                    new AddProxyParams(new Guid("{2b9bf01d-5fe5-464c-b0b3-b469eb5f2efb}"), 0),
+                } },
+                {"Grasshopper.Kernel.Types.GH_MeshFace", new AddProxyParams[]{
+                    new AddProxyParams(new Guid("{e2c0f9db-a862-4bd9-810c-ef2610e7a56f}"), 1),
+                } },
+                {"Grasshopper.Kernel.Types.GH_SubD", new AddProxyParams[]{new AddProxyParams(new Guid("{c0b3c6e9-d05d-4c51-a0df-1ce2678c7a33}"), 0) } },
+                {"Grasshopper.Kernel.Types.GH_Surface", new AddProxyParams[]{
+                    new AddProxyParams(new Guid("{353b206e-bde5-4f02-a913-b3b8a977d4b9}"), 0),
+                    new AddProxyParams(new Guid("{404f75ac-5594-4c48-ad8a-7d0f472bbf8a}"), 0),
+                } },
+                {"SquishyXMorphs.GH_TwistedBox",new AddProxyParams[]{ new AddProxyParams(new Guid("{d8940ff0-dd4a-4e74-9361-54df537b50db}"), 2) } },
+
+                {"Grasshopper.Kernel.Types.GH_Field",new AddProxyParams[]{
+                    new AddProxyParams(new Guid("{a7c9f738-f8bd-4f64-8e7f-33341183e493}"), 0),
+                    new AddProxyParams(new Guid("{add6be3e-c57f-4740-96e4-5680abaa9169}"), 0),
+                } },
+                {"Grasshopper.Kernel.Types.GH_GeometryGroup",new AddProxyParams[]{ 
+                    new AddProxyParams(new Guid("{a45f59c8-11c1-4ea7-9e10-847061b80d75}"), 0),
+                    new AddProxyParams(new Guid("{610e689b-5adc-47b3-af8f-e3a32b7ea341}"), 0),
+                } },
+                {"Grasshopper.Kernel.Types.GH_Transform",new AddProxyParams[]{
+                    new AddProxyParams(new Guid("{610e689b-5adc-47b3-af8f-e3a32b7ea341}"), 1),
+                    new AddProxyParams(new Guid("{ca80054a-cde0-4f69-a132-10502b24866d}"), 0),
+                    new AddProxyParams(new Guid("{51f61166-7202-45aa-9126-3d83055b269e}"), 0),
+                } },
+
+                {"Grasshopper.Kernel.Types.GH_Boolean",new AddProxyParams[]{
+                    new AddProxyParams(new Guid("{040f195d-0b4e-4fe0-901f-fedb2fd3db15}"), 0),
+                    new AddProxyParams(new Guid("{5cad70f9-5a53-4c5c-a782-54a479b4abe3}"), 0),
+                    new AddProxyParams(new Guid("{de4a0d86-2709-4564-935a-88bf4d40af89}"), 0),
+                    new AddProxyParams(new Guid("{78669f9c-4fea-44fd-ab12-2a69eeec58de}"), 0),
+                    new AddProxyParams(new Guid("{5ca5de6b-bc71-46c4-a8f7-7f30d7040acb}"), 0),
+                    new AddProxyParams(new Guid("{548177c2-d1db-4172-b667-bec979e2d38b}"), 0),
+                    new AddProxyParams(new Guid("{b6aedcac-bf43-42d4-899e-d763612f834d}"), 0),
+                } },
+                {"Grasshopper.Kernel.Types.GH_Integer",new AddProxyParams[]{
+                    new AddProxyParams(new Guid("{a0d62394-a118-422d-abb3-6af115c75b25}"), 0),
+                    new AddProxyParams(new Guid("{9c007a04-d0d9-48e4-9da3-9ba142bc4d46}"), 0),
+                    new AddProxyParams(new Guid("{ce46b74e-00c9-43c4-805a-193b69ea4a11}"), 0),
+                    new AddProxyParams(new Guid("{9c85271f-89fa-4e9f-9f4a-d75802120ccc}"), 0),
+                    new AddProxyParams(new Guid("{a3371040-e552-4bc8-b0ff-10a840258e88}"), 0),
+                    new AddProxyParams(new Guid("{431bc610-8ae1-4090-b217-1a9d9c519fe2}"), 0),
+                    new AddProxyParams(new Guid("{28124995-cf99-4298-b6f4-c75a8e379f18}"), 0),
+                } },
+                {"Grasshopper.Kernel.Types.GH_Number",new AddProxyParams[]{
+                    new AddProxyParams(new Guid("{a0d62394-a118-422d-abb3-6af115c75b25}"), 0),
+                    new AddProxyParams(new Guid("{9c007a04-d0d9-48e4-9da3-9ba142bc4d46}"), 0),
+                    new AddProxyParams(new Guid("{ce46b74e-00c9-43c4-805a-193b69ea4a11}"), 0),
+                    new AddProxyParams(new Guid("{9c85271f-89fa-4e9f-9f4a-d75802120ccc}"), 0),
+                    new AddProxyParams(new Guid("{a3371040-e552-4bc8-b0ff-10a840258e88}"), 0),
+                    new AddProxyParams(new Guid("{431bc610-8ae1-4090-b217-1a9d9c519fe2}"), 0),
+                    new AddProxyParams(new Guid("{28124995-cf99-4298-b6f4-c75a8e379f18}"), 0),
+                } },
+
+                {"Grasshopper.Kernel.Types.GH_Colour",new AddProxyParams[]{
+                } },
+                {"Grasshopper.Kernel.Types.GH_ComplexNumber",new AddProxyParams[]{ new AddProxyParams(new Guid("{63d12974-2915-4ccf-ac26-5d566c3bac92}"), 0) } },
+                {"Grasshopper.Kernel.Types.GH_Interval", new AddProxyParams[]{new AddProxyParams(new Guid("{d1a28e95-cf96-4936-bf34-8bf142d731bf}"), 0) } },
+                {"Grasshopper.Kernel.Types.GH_Interval2D", new AddProxyParams[]{
+                    new AddProxyParams(new Guid("{8555a743-36c1-42b8-abcc-06d9cb94519f}"), 0),
+                    new AddProxyParams(new Guid("{9083b87f-a98c-4e41-9591-077ae4220b19}"), 0),
+                } },
+                {"Grasshopper.Kernel.Types.GH_Matrix", new AddProxyParams[]{
+                    new AddProxyParams(new Guid("{a0d62394-a118-422d-abb3-6af115c75b25}"), 0),
+                    new AddProxyParams(new Guid("{9c007a04-d0d9-48e4-9da3-9ba142bc4d46}"), 0),
+                    new AddProxyParams(new Guid("{ce46b74e-00c9-43c4-805a-193b69ea4a11}"), 0),
+                    new AddProxyParams(new Guid("{9c85271f-89fa-4e9f-9f4a-d75802120ccc}"), 0),
+                    new AddProxyParams(new Guid("{a3371040-e552-4bc8-b0ff-10a840258e88}"), 0),
+                    new AddProxyParams(new Guid("{431bc610-8ae1-4090-b217-1a9d9c519fe2}"), 0),
+                    new AddProxyParams(new Guid("{28124995-cf99-4298-b6f4-c75a8e379f18}"), 0),
+
+                    new AddProxyParams(new Guid("{be715e4c-d6d8-447b-a9c3-6fea700d0b83}"), 0),
+                    new AddProxyParams(new Guid("{1f384257-b26b-4160-a6d3-1dcd89b64acd}"), 0),
+                    new AddProxyParams(new Guid("{7d2a6064-51f0-45b2-adc4-f417b30dcd15}"), 0),
+                    new AddProxyParams(new Guid("{88fb33f9-f467-452b-a0e3-44bdb78a9b06}"), 0),
+                } },
+                {"Grasshopper.Kernel.Types.GH_Time",new AddProxyParams[]{ } },
+                {"Grasshopper.Kernel.Types.GH_StructurePath",new AddProxyParams[]{ 
+                    new AddProxyParams(new Guid("{1d8b0e2c-e772-4fa9-b7f7-b158251b34b8}"), 0),
+                    new AddProxyParams(new Guid("{df6d9197-9a6e-41a2-9c9d-d2221accb49e}"), 0),
+                    new AddProxyParams(new Guid("{3a710c1e-1809-4e19-8c15-82adce31cd62}"), 1),
+                    new AddProxyParams(new Guid("{c1ec65a3-bda4-4fad-87d0-edf86ed9d81c}"), 1),
+                } },
+                {"Grasshopper.Kernel.Types.GH_Material",new AddProxyParams[]{} },
+
+                {"Grasshopper.Kernel.Types.GH_MeshingParameters",new AddProxyParams[]{ new AddProxyParams(new Guid("{60e7defa-8b21-4ee1-99aa-a9223d6134ff}"), 1) } },
+                {"SurfaceComponents.SurfaceComponents.LoftOptions",new AddProxyParams[]{ new AddProxyParams(new Guid("{a7a41d0a-2188-4f7a-82cc-1a2c4e4ec850}"), 1) } },
             };
 
             int width = 24;
