@@ -131,10 +131,12 @@ namespace ArchiTed_Grasshopper.WinformControls
         }
 
 
-        public static void DrawTextBox(Graphics graphics, RectangleF rect, Color backgroundColor, Color boundaryColor, string text, Font font, Color textColor, float boundaryWidth = 1, int colorChange = -40, float cornerRadius = 3, InflateMode mode = InflateMode.Horizontal)
+        public static void DrawTextBox(Graphics graphics, RectangleF rect, Color backgroundColor, Color boundaryColor, string text, Font font, Color textColor, float boundaryWidth = 1, int colorChange = -40, float cornerRadius = 3, InflateMode mode = InflateMode.Horizontal, bool isCenter = false)
         {
             DrawRectangleBox(graphics, rect, backgroundColor, boundaryColor, boundaryWidth, colorChange, cornerRadius, mode);
-            graphics.DrawString(text, font, new SolidBrush(textColor), rect);
+            StringFormat format = new StringFormat();
+            if (isCenter) format.Alignment = StringAlignment.Center;
+            graphics.DrawString(text, font, new SolidBrush(textColor), rect, format);
         }
 
         protected override void Render(GH_Canvas canvas, Graphics graphics, GH_CanvasChannel channel)

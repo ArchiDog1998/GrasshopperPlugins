@@ -130,13 +130,24 @@ namespace InfoGlasses.WinformControls
                     {
                         dataStr += "...";
                     }
+                    else if(datas.PathCount == 1)
+                    {
+                        for (int k = 0; k < Math.Min(datas.get_Branch(0).Count, Owner.TreeCount); k++)
+                        {
+                            dataStr += datas.get_Branch(0)[k].ToString() + "\n";
+                        }
+                        if (datas.get_Branch(0).Count > Owner.TreeCount)
+                        {
+                            dataStr += "...";
+                        }
+                    }
                     str += dataStr;
                 }
                 if (str == "")
                     return;
                 SizeF size = graphics.MeasureString(str, font);
                 PointF loc = new PointF(pivot.X, pivot.Y + size.Height / 2);
-                TextBox.DrawTextBox(graphics, CanvasRenderEngine.MiddleDownRect(loc, size), Owner.LabelBackGroundColor, Owner.LabelBoundaryColor, str, font, Owner.LabelTextColor); ;
+                TextBox.DrawTextBox(graphics, CanvasRenderEngine.MiddleDownRect(loc, size), Owner.LabelBackGroundColor, Owner.LabelBoundaryColor, str, font, Owner.LabelTextColor, isCenter:true);
             }
         }
 
