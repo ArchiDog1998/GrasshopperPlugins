@@ -1208,7 +1208,7 @@ namespace InfoGlasses
             GH_DocumentObject.Menu_AppendSeparator(menu);
 
             {
-                WinFormPlus.AddLabelItem(menu, GetTransLation(new string[] { "Label Options", "标签选项" }), GetValue("ShowLabel", false) ? System.Drawing.Color.FromArgb(19, 34, 122) : System.Drawing.Color.FromArgb(110, 110, 110));
+                WinFormPlus.AddLabelItem(menu, GetTransLation(new string[] { "Label Options", "标签选项" }));
 
 
                 WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Set Legend FontSize", "设置标签字体大小" }),
@@ -1235,7 +1235,7 @@ namespace InfoGlasses
             }
             GH_DocumentObject.Menu_AppendSeparator(menu);
             {
-                WinFormPlus.AddLabelItem(menu, GetTransLation(new string[] { "Legend Options", "图例选项" }), GetValue("ShowLegend", false) ? System.Drawing.Color.FromArgb(19, 34, 122) : System.Drawing.Color.FromArgb(110, 110, 110));
+                WinFormPlus.AddLabelItem(menu, GetTransLation(new string[] { "Legend Options", "图例选项" }));
 
                 {
 

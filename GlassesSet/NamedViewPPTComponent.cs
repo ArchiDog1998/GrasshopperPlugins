@@ -410,7 +410,7 @@ namespace InfoGlasses
 
         protected override void AppendAdditionComponentMenuItems(ToolStripDropDown menu)
         {
-            WinFormPlus.AddLabelItem(menu, GetTransLation(new string[] { "View Options", "视图选项" }), Color.FromArgb(19, 34, 122));
+            WinFormPlus.AddLabelItem(menu, GetTransLation(new string[] { "View Options", "视图选项" }));
 
             GH_DocumentObject.Menu_AppendItem(menu, GetTransLation(new string[] { "Reset", "重置" }), ResetClick, Properties.Resources.ResetLogo, true, false).ToolTipText =
                 GetTransLation(new string[] { "Reset to the first named view.", "重置并跳转到第一个已命名视图。" });
@@ -451,7 +451,7 @@ namespace InfoGlasses
             {
 
 
-                WinFormPlus.AddLabelItem(menu, GetTransLation(new string[] { "Display Options", "显示选项" }), Color.FromArgb(19, 34, 122));
+                WinFormPlus.AddLabelItem(menu, GetTransLation(new string[] { "Display Options", "显示选项" }));
 
                 ToolStripMenuItem colorItem = WinFormPlus.CreateOneItem(GetTransLation(new string[] { "Colors", "颜色" }),
                     GetTransLation(new string[] { "Adjust interface color.", "调整界面颜色。" }), Properties.Resources.ColorIcon);

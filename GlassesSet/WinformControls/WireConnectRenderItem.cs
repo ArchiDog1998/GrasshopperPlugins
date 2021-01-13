@@ -111,7 +111,7 @@ namespace InfoGlasses.WinformControls
 
         private void RenderTextBox(Graphics graphics, Font font, int i)
         {
-            if (Owner.IsShowLabel || Owner.IsShowTree)
+            if (Owner.IsShowLabel)
             {
                 string str = "";
                 PointF pivot = new PointF((((IGH_Param)Target).Sources.ElementAt(i).Attributes.OutputGrip.X + ((IGH_Param)Target).Attributes.InputGrip.X) / 2, 

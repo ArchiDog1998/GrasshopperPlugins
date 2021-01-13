@@ -37,12 +37,14 @@ namespace ArchiTed_Grasshopper
                 flag = false;
                 component.ExpireSolution(true);
             }
+
+
         }
 
 
 
         public static void AddNumberBoxItem(ToolStripDropDown menu,LanguagableComponent component,  string itemName, string itemTip, Bitmap itemIcon, bool enable, 
-            int Default, int Min, int Max, string valueName, int width = 100)
+            int Default, int Min, int Max, string valueName, int width = 150)
         {
             if (Max <= Min)
                 throw new ArgumentOutOfRangeException("Max less than Min!");
@@ -50,28 +52,47 @@ namespace ArchiTed_Grasshopper
             bool flag = true;
             string English = "Value must be in " + Min.ToString() + " - " + Max.ToString() + ". Default is " + Default.ToString() + ".";
             string Chinese = "输入值域为 " + Min.ToString() + " - " + Max.ToString() + ", 默认为 " + Default.ToString() + "。";
-            ToolStripMenuItem item = CreateOneItem(itemName, itemTip + LanguagableComponent.GetTransLation(new string[] { English, Chinese }), itemIcon, enable);
-            GH_DocumentObject.Menu_AppendTextItem(item.DropDown, component.GetValuePub(valueName, Default).ToString(), BoxItemKeyDown, TextChanged3, true, width, true);
+            string tip = itemTip + LanguagableComponent.GetTransLation(new string[] { English, Chinese });
+            ToolStripMenuItem item = CreateOneItem(itemName, tip, itemIcon, enable);
 
-            void TextChanged3(GH_MenuTextBox sender, string newText)
+            var slider = new GH_DigitScroller
             {
+                MinimumValue = Min,
+                MaximumValue = Max,
+                DecimalPlaces = 0,
+                Value = Default,
+                Size = new Size(width, 24)
+            };
+            slider.ValueChanged += Slider_ValueChanged;
 
-                int result;
-                if (int.TryParse(sender.Text, out result))
-                {
-                    result = result >= Min ? result : Min;
-                    result = result <= Max ? result : Max;
-                    component.SetValuePub(valueName, result, flag);
-                    flag = false;
-                }
+            void Slider_ValueChanged(object sender, GH_DigitScrollerEventArgs e)
+            {
+                int result = (int)e.Value;
+                result = result >= Min ? result : Min;
+                result = result <= Max ? result : Max;
+                component.SetValuePub(valueName, result, flag);
+                flag = false;
+                component.ExpireSolution(true);
+            }
+
+            WinFormPlus.AddLabelItem(item.DropDown, itemName, tip);
+            GH_DocumentObject.Menu_AppendCustomItem(item.DropDown, slider);
+
+            GH_DocumentObject.Menu_AppendItem(item.DropDown, LanguagableComponent.GetTransLation(new string[] { "Reset Integer", "重置整数" }), resetClick, Properties.Resources.ResetLogo,
+                true, false).ToolTipText = LanguagableComponent.GetTransLation(new string[] { "Click to reset integer.", "点击以重置整数。" });
+            void resetClick(object sender, EventArgs e)
+            {
+                component.SetValuePub(valueName, Default);
                 component.ExpireSolution(true);
             }
 
             menu.Items.Add(item);
         }
 
+
+
         public static void AddNumberBoxItem(ToolStripDropDown menu, LanguagableComponent component, string itemName, string itemTip, Bitmap itemIcon, bool enable,
-            double Default, double Min, double Max, string valueName, int width = 100)
+            double Default, double Min, double Max, string valueName, int width = 150)
         {
             if (Max <= Min)
                 throw new ArgumentOutOfRangeException("Max less than Min!");
@@ -79,21 +100,40 @@ namespace ArchiTed_Grasshopper
             bool flag = true;
             string English = "Value must be in " + Min.ToString() + " - " + Max.ToString() + ". Default is " + Default.ToString() + ".";
             string Chinese = "输入值域为 " + Min.ToString() + " - " + Max.ToString() + ", 默认为 " + Default.ToString() + "。";
-            ToolStripMenuItem item = CreateOneItem(itemName, itemTip + LanguagableComponent.GetTransLation(new string[] { English, Chinese }), itemIcon, enable);
-            GH_DocumentObject.Menu_AppendTextItem(item.DropDown, component.GetValuePub(valueName, Default).ToString(), BoxItemKeyDown, TextChanged3, true, width, true);
+            string tip = itemTip + LanguagableComponent.GetTransLation(new string[] { English, Chinese });
+            ToolStripMenuItem item = CreateOneItem(itemName, tip, itemIcon, enable);
 
-            void TextChanged3(GH_MenuTextBox sender, string newText)
+            var slider = new GH_DigitScroller
             {
-                double result;
-                if (double.TryParse(sender.Text, out result))
-                {
-                    result = result >= Min ? result : Min;
-                    result = result <= Max ? result : Max;
-                    component.SetValuePub(valueName, result, flag);
-                    flag = false;
-                }
+                MinimumValue = (decimal)Min,
+                MaximumValue = (decimal)Max,
+                DecimalPlaces = 3,
+                Value = (decimal)Default,
+                Size = new Size(width, 24)
+            };
+            slider.ValueChanged += Slider_ValueChanged;
+
+            void Slider_ValueChanged(object sender, GH_DigitScrollerEventArgs e)
+            {
+                double result = (double)e.Value;
+                result = result >= Min ? result : Min;
+                result = result <= Max ? result : Max;
+                component.SetValuePub(valueName, result, flag);
+                flag = false;
                 component.ExpireSolution(true);
             }
+
+            WinFormPlus.AddLabelItem(item.DropDown, itemName, tip);
+            GH_DocumentObject.Menu_AppendCustomItem(item.DropDown, slider);
+
+            GH_DocumentObject.Menu_AppendItem(item.DropDown, LanguagableComponent.GetTransLation(new string[] { "Reset Number", "重置数值" }), resetClick, Properties.Resources.ResetLogo,
+                true, false).ToolTipText = LanguagableComponent.GetTransLation(new string[] { "Click to reset Number.", "点击以重置数值。" });
+            void resetClick(object sender, EventArgs e)
+            {
+                component.SetValuePub(valueName, Default);
+                component.ExpireSolution(true);
+            }
+
             menu.Items.Add(item);
         }
 
@@ -337,7 +377,7 @@ namespace ArchiTed_Grasshopper
             return item;
         }
 
-        public static void AddLabelItem(ToolStripDropDown menu, string labelText, Color? color = null, int divisor = 6, int margin = 5, float? fontSize = null)
+        public static void AddLabelItem(ToolStripDropDown menu, string labelText, string labelTip = null, Color? color = null, int divisor = 6, int margin = 5, float? fontSize = null)
         {
             Color realColor = color.HasValue ? color.Value : ColorExtension.OnColor;
             ToolStripLabel item = new ToolStripLabel(labelText);
@@ -351,7 +391,8 @@ namespace ArchiTed_Grasshopper
             }
             
             item.ForeColor = realColor;
-           
+            if (!string.IsNullOrEmpty(labelTip))
+                item.ToolTipText = labelTip;
             item.Margin = new Padding(menu.Size.Width / divisor, margin, menu.Size.Width / divisor, margin);
             menu.Items.Add(item);
         }
