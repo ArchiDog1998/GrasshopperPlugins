@@ -287,7 +287,7 @@ namespace InfoGlasses.WinformControls
                 AddAObjectToCanvas(com, comRightCenter, false, init);
 
                 target.AddSource(com.Params.Output[outIndex]);
-                com.Params.Output[outIndex].Recipients.Add(target);
+                //com.Params.Output[outIndex].Recipients.Add(target);
 
                 target.OnPingDocument().NewSolution(false);
             }
