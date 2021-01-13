@@ -32,7 +32,7 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// <summary>
         /// how to find the string's Width.
         /// </summary>
-        public virtual int Width => (int)(GH_FontServer.StringWidth(WholeToString(GetValue()), GH_FontServer.StandardAdjusted));
+        public virtual int Width => (int)(GH_FontServer.StringWidth(WholeToString(), GH_FontServer.StandardAdjusted));
 
         /// <summary>
         ///  Define a input box.
@@ -58,7 +58,7 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// </summary>
         /// <param name="value"> Value. </param>
         /// <returns> String that should be shown. </returns>
-        protected abstract string WholeToString(T value);
+        protected abstract string WholeToString();
 
         /// <summary>
         /// Get Value from input string.
@@ -80,7 +80,7 @@ namespace ArchiTed_Grasshopper.WinformControls
                 format.Alignment = StringAlignment.Center;
                 format.LineAlignment = StringAlignment.Center;
                 Brush brush = new SolidBrush(this.Enable ? ColorExtension.OffColor : ColorExtension.UnableColor);
-                graphics.DrawString(WholeToString(GetValue()), GH_FontServer.StandardAdjusted, brush, this.Bounds, format);
+                graphics.DrawString(WholeToString(), GH_FontServer.StandardAdjusted, brush, this.Bounds, format);
             }
         }
 
@@ -94,7 +94,7 @@ namespace ArchiTed_Grasshopper.WinformControls
                 {
                     bound = new RectangleF(this.Bounds.Location, new SizeF(this.Bounds.Height * mul, this.Bounds.Height));
                 }
-                new InputBoxBalloon(bound, Write).ShowTextInputBox(sender, WholeToString(GetValue()), selectContent: true, limitToBoundary: true, sender.Viewport.XFormMatrix(GH_Viewport.GH_DisplayMatrix.CanvasToControl));
+                new InputBoxBalloon(bound, Write).ShowTextInputBox(sender, WholeToString(), selectContent: true, limitToBoundary: true, sender.Viewport.XFormMatrix(GH_Viewport.GH_DisplayMatrix.CanvasToControl));
                 void Write(string str)
                 {
                     SetValue(StringToT(str));

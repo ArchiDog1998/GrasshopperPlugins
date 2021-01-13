@@ -25,7 +25,7 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// <summary>
         /// Icon in right state.
         /// </summary>
-        public Bitmap Icon => Icons[GetValue()].GetIcon(this.Enable, true);
+        public Bitmap Icon => Icons[GetValue(out _)].GetIcon(this.Enable, true);
 
         /// <summary>
         /// All icons.

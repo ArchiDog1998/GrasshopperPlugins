@@ -27,7 +27,7 @@ using TextBox = ArchiTed_Grasshopper.WinformControls.TextBox;
 
 namespace InfoGlasses.WinformControls
 {
-    class CheckBoxAddObject<TGoo>: ClickButtonBase<LangWindow>, IAddObjectParam<TGoo> where TGoo : class, IGH_Goo
+    public class CheckBoxAddObject<TGoo>: ClickButtonBase<LangWindow>, IAddObjectParam<TGoo> where TGoo : class, IGH_Goo
     {
         public GH_Param<TGoo> Target { get; }
         public int Width => 20;

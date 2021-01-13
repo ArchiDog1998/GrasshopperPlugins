@@ -27,7 +27,7 @@ namespace InfoGlasses.WinformControls
         GH_Param<TGoo> IParamControlBase<TGoo>.Target => this.Target;
         public GH_ParamAccess Access { get; set; }
 
-        public string initStr => GetValue().ToString();
+        public string initStr => GetValue(out _).ToString();
 
 
         private AddProxyParams[] _myProxies;
@@ -49,7 +49,7 @@ namespace InfoGlasses.WinformControls
         {
             this.Target = target;
             this.Owner = owner;
-            ParamControlHelper.SetDefaultValue(this, Color.Black);
+            //ParamControlHelper.SetDefaultValue(this, Color.Black);
         }
 
         public void RespondToMouseDown(object sender, MouseEventArgs e)
@@ -76,18 +76,20 @@ namespace InfoGlasses.WinformControls
             base.Render(canvas, graphics, channel);
         }
 
-        public override Color GetValue()
+        public override Color GetValue(out bool isNull)
         {
             GH_ParamAccess access = GH_ParamAccess.item;
             Color result;
             if(ParamControlHelper.GetData(this, out access, out result))
             {
                 this.Access = access;
+                isNull = false;
                 return result;
             }
             else
             {
                 this.Access = access;
+                isNull = true;
                 return Color.Transparent;
             }
             

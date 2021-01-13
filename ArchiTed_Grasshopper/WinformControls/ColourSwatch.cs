@@ -31,8 +31,9 @@ namespace ArchiTed_Grasshopper.WinformControls
             this.Default = @default;
         }
 
-        public override Color GetValue()
+        public override Color GetValue(out bool isNull)
         {
+            isNull = false;
             Color color;
             try
             {
@@ -59,8 +60,11 @@ namespace ArchiTed_Grasshopper.WinformControls
                 float width = 1;
 
                 GraphicsPath path = TextBox.GetRoundRectangle(this.Bounds, this.Bounds.Height / 6);
-                
-                graphics.FillPath(new SolidBrush(GetValue()), path);
+
+                bool isNull;
+                Color brushColor = GetValue(out isNull);
+                brushColor = isNull ? Color.Transparent : brushColor;
+                graphics.FillPath(new SolidBrush(brushColor), path);
                 graphics.DrawPath(new Pen(this.Enable ? Color.DimGray : ColorExtension.UnableColor, width), path);
             }
             
@@ -75,7 +79,11 @@ namespace ArchiTed_Grasshopper.WinformControls
                 ShowCheckMargin = false,
                 ShowImageMargin = false
             };
-            GH_DocumentObject.Menu_AppendColourPicker(obj, GetValue(), ColourChanged);
+
+            bool isNull;
+            Color color = GetValue(out isNull);
+            color = isNull ? Color.Transparent : color;
+            GH_DocumentObject.Menu_AppendColourPicker(obj, color, ColourChanged);
             obj.Show(canvas, @event.ControlLocation);
 
             void ColourChanged(GH_ColourPicker sender, GH_ColourPickerEventArgs e)

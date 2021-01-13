@@ -26,7 +26,7 @@ namespace InfoGlasses.WinformControls
         GH_Param<TGoo> IParamControlBase<TGoo>.Target => this.Target;
         public GH_ParamAccess Access { get; set; }
 
-        public string initStr => GetValue().ToString();
+        public string initStr => GetValue(out _).ToString();
 
 
         private AddProxyParams[] _myProxies;
@@ -48,7 +48,7 @@ namespace InfoGlasses.WinformControls
         {
             this.Target = target;
             this.Owner = owner;
-            ParamControlHelper.SetDefaultValue(this, LanguagableComponent.GetTransLation(new string[] { "Click Me To Set!", "点我以设置！"}));
+            //ParamControlHelper.SetDefaultValue(this, LanguagableComponent.GetTransLation(new string[] { "Click Me To Set!", "点我以设置！"}));
         }
 
         public void RespondToMouseDown(object sender, MouseEventArgs e)
@@ -73,18 +73,20 @@ namespace InfoGlasses.WinformControls
         }
 
 
-        public override string GetValue()
+        public override string GetValue(out bool isNull)
         {
             GH_ParamAccess access = GH_ParamAccess.item;
             string result;
             if(ParamControlHelper.GetData(this, out access, out result))
             {
                 this.Access = access;
+                isNull = false;
                 return result;
             }
             else
             {
                 this.Access = access;
+                isNull = true;
                 return LanguagableComponent.GetTransLation(new string[] { "Click Me To Set!", "点我以设置！" });
             }
             

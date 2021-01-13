@@ -30,9 +30,15 @@ namespace ArchiTed_Grasshopper.WinformControls
             this.Max = max;
         }
 
-        protected override string WholeToString(double value)
+        protected override string WholeToString()
         {
-            if(value.ToString().Split('.').Length == 1)
+            bool isNull;
+            double value = this.GetValue(out isNull);
+            if(isNull)
+            {
+                return "Null";
+            }
+            else if(value.ToString().Split('.').Length == 1)
             {
                 return value.ToString("F1");
             }
@@ -58,8 +64,9 @@ namespace ArchiTed_Grasshopper.WinformControls
             return result;
         }
 
-        public override double GetValue()
+        public override double GetValue(out bool isNull)
         {
+            isNull = false;
             return Owner.GetValuePub(ValueName, Default);
         }
 

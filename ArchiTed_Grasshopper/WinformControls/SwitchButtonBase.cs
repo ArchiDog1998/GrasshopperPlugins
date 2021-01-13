@@ -33,7 +33,7 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// <summary>
         /// Tips in right states.
         /// </summary>
-        protected override string[] Tips => AllTips[GetValue()];
+        protected override string[] Tips => AllTips[GetValue(out _)];
 
         /// <summary>
         /// Render settings.
@@ -67,13 +67,14 @@ namespace ArchiTed_Grasshopper.WinformControls
         {
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
-                SetValue((GetValue() + 1) % AllTips.Length);
+                SetValue((GetValue(out _) + 1) % AllTips.Length);
                 Owner.ExpireSolution(true);
             }
         }
 
-        public override int GetValue()
+        public override int GetValue(out bool isNull)
         {
+            isNull = false;
             return Owner.GetValuePub(ValueName, Default);
         }
         public override void SetValue(int valueIn, bool record = true)

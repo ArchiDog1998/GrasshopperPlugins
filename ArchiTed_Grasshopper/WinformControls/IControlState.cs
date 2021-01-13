@@ -21,8 +21,9 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// <summary>
         /// Get value that in controllableComponent.
         /// </summary>
+        /// <param name="isNull">check the value is null</param>
         /// <returns>Value.</returns>
-        T GetValue();
+        T GetValue(out bool isNull);
 
         /// <summary>
         /// Set value that in controllableComponent.

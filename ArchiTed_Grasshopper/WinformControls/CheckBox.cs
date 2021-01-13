@@ -52,7 +52,9 @@ namespace ArchiTed_Grasshopper.WinformControls
                 Color showColor = this.Enable ? ColorExtension.OffColor : ColorExtension.UnableColor;
                 graphics.DrawEllipse(new Pen(showColor, this.Bounds.Height / 6), this.Bounds);
 
-                Color buttonColor = this.GetValue() ? ColorExtension.OnColor : ColorExtension.OffColor;
+                bool isNull;
+                Color buttonColor = this.GetValue(out isNull) ? ColorExtension.OnColor : ColorExtension.OffColor;
+                buttonColor = isNull ? Color.Transparent : buttonColor;
                 RectangleF rect = this.Bounds;
                 float inflate = -this.Bounds.Height / 3;
                 rect.Inflate(inflate, inflate);

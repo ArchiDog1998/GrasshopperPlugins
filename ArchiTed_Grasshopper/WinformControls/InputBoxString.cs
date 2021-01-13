@@ -26,8 +26,9 @@ namespace ArchiTed_Grasshopper.WinformControls
             this.Default = @default;
         }
 
-        public override string GetValue()
+        public override string GetValue(out bool isNull)
         {
+            isNull = false;
             return Owner.GetValuePub(ValueName, Default);
         }
 
@@ -41,9 +42,18 @@ namespace ArchiTed_Grasshopper.WinformControls
             return str;
         }
 
-        protected override string WholeToString(string value)
+        protected override string WholeToString()
         {
-            return value;
+            bool isNull;
+            string value = this.GetValue(out isNull);
+            if (isNull)
+            {
+                return "Null";
+            }
+            else
+            {
+                return value;
+            }
         }
     }
 

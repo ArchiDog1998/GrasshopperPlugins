@@ -270,7 +270,7 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// Get value that in controllableComponent.
         /// </summary>
         /// <returns>Value.</returns>-
-        public abstract T GetValue();
+        public abstract T GetValue(out bool isNull);
 
         /// <summary>
         /// Set value that in controllableComponent.

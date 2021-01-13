@@ -65,7 +65,15 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// <summary>
         /// Define the menu when toggle is off.
         /// </summary>
-        protected override bool UnableMenu => !GetValue();
+        protected override bool UnableMenu 
+        {
+            get
+            {
+                bool isNull;
+                bool value = !GetValue(out isNull);
+                return isNull ? true : value;
+            }
+        } 
 
         protected override void RespondToMouseUp(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
@@ -73,7 +81,9 @@ namespace ArchiTed_Grasshopper.WinformControls
             {
                 if (_isToggle)
                 {
-                    SetValue(!GetValue());
+                    bool isNull;
+                    bool value = !GetValue(out isNull);
+                    SetValue(isNull ? true : value);
                 }
                 else
                 {
@@ -97,17 +107,22 @@ namespace ArchiTed_Grasshopper.WinformControls
 
         protected override void RespondToMouseDoubleClick(GH_Canvas sender, GH_CanvasMouseEvent e)
         {
-            if (GetValue())
+            bool isNull;
+            if (GetValue(out isNull))
             {
-                base.RespondToMouseDoubleClick(sender, e);
+                if (!isNull)
+                {
+                    base.RespondToMouseDoubleClick(sender, e);
+                }
             }
         }
 
 
         #endregion
 
-        public override bool GetValue()
+        public override bool GetValue(out bool isNull)
         {
+            isNull = false;
             return Owner.GetValuePub(ValueName, Default);
         }
 

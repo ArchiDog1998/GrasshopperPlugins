@@ -26,7 +26,7 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// <summary>
         /// Get name in right state and right languages.
         /// </summary>
-        public string Name => LanguagableComponent.GetTransLation(Names[GetValue()]);
+        public string Name => LanguagableComponent.GetTransLation(Names[GetValue(out _)]);
 
         /// <summary>
         /// Get color in right state and right languages.

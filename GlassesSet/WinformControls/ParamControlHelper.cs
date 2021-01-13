@@ -170,18 +170,18 @@ namespace InfoGlasses.WinformControls
 
         #endregion
 
-        public static void SetDefaultValue<TGoo, T>(ITargetParam<TGoo, T> paramControl, T @default) where TGoo : GH_Goo<T>
-        {
-            try
-            {
-                paramControl.Default = ((TGoo)paramControl.Target.PersistentData.AllData(true).ElementAt(0)).Value;
-            }
-            catch
-            {
-                paramControl.Default = @default;
-                paramControl.SetValue(paramControl.Default);
-            }
-        }
+        //public static void SetDefaultValue<TGoo, T>(ITargetParam<TGoo, T> paramControl, T @default) where TGoo : GH_Goo<T>
+        //{
+        //    try
+        //    {
+        //        paramControl.Default = ((TGoo)paramControl.Target.PersistentData.AllData(true).ElementAt(0)).Value;
+        //    }
+        //    catch
+        //    {
+        //        paramControl.Default = @default;
+        //        paramControl.SetValue(paramControl.Default);
+        //    }
+        //}
 
         #endregion
 
