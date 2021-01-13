@@ -167,6 +167,9 @@ namespace InfoGlasses
                 createMenu: () =>
                 {
                     ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
+                    WinFormPlus.AddLabelItem(menu, GetTransLation(new string[] { "Name Options", "名称选项" }));
+
+
                     WinFormPlus.AddCheckBoxItem(menu, GetTransLation(new string[] { "Show NickName", "展示昵称" }), GetTransLation(new string[] { "When checked, it will show the nickname instead of name of the component.", "当选中时，将会显示运算器的昵称而不是全名。" }),
                         null, this, _showNickName, _showNickNameDefault);
                     WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Set Name Distance", "设置命名距离" }), GetTransLation(new string[] { "Set the distance between name box's top and the component's buttom.", "设置名称气泡框到运算器的距离。" }),
@@ -180,7 +183,7 @@ namespace InfoGlasses
                 createMenu:()=> 
                 {
                     ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
-                    WinFormPlus.AddLabelItem(menu, GetTransLation(new string[] { "Category Options", "类别选项" }), this.IsShowCategory ? Color.FromArgb(19, 34, 122) : Color.FromArgb(110, 110, 110), margin:5);
+                    WinFormPlus.AddLabelItem(menu, GetTransLation(new string[] { "Category Options", "类别选项" }));
                     WinFormPlus.AddCheckBoxItem(menu, GetTransLation(new string[] { "Full Name Category", "全名显示运算器类别" }), GetTransLation(new string[] { "When checked, it will show full name of category on box.", "当选中时，将会在每个运算器的顶部显示其类别的全名。" }),
                         null, this, _fullCategory, _fullCateDefault);
 
@@ -194,7 +197,7 @@ namespace InfoGlasses
                 createMenu:()=>
                 {
                     ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
-                    WinFormPlus.AddLabelItem(menu, GetTransLation(new string[] { "Assembly Options", "类库选项" }), GetValue(_assemSetName, _cateDefaultValue) ? Color.FromArgb(19, 34, 122) : Color.FromArgb(110, 110, 110), margin:5);
+                    WinFormPlus.AddLabelItem(menu, GetTransLation(new string[] { "Assembly Options", "类库选项" }));
                     WinFormPlus.AddCheckBoxItem(menu, GetTransLation(new string[] { "Auto Assembly Height", "自动设置类库高度" }), GetTransLation(new string[] { "When checked, it will Automaticly change assembly's height.", "当选中时， 将会自动调整类库气泡框到运算器的距离。" }),
                         null, this, _autoAssemHeight, _autoAssemHeightDefault);
                     WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Set Assembly FontSize", "设置类库字体大小" }), GetTransLation(new string[] { "Set the assembly box's font size.", "设置类库气泡框的字体大小。" }), ArchiTed_Grasshopper.Properties.Resources.TextIcon,
@@ -218,7 +221,7 @@ namespace InfoGlasses
                createMenu: () =>
                {
                    ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
-                   WinFormPlus.AddLabelItem(menu, GetTransLation(new string[] { "Plug-in Options", "插件选项" }), this.IsShowPlugin ? Color.FromArgb(19, 34, 122) : Color.FromArgb(110, 110, 110), margin: 5);
+                   WinFormPlus.AddLabelItem(menu, GetTransLation(new string[] { "Plug-in Options", "插件选项" }));
                    WinFormPlus.AddColorBoxItem(menu, this, GetTransLation(new string[] { "Highlight Color", "高亮显示颜色" }), GetTransLation(new string[] { "Modify the highlight color.", "修改高亮显示颜色。" }),
                        ArchiTed_Grasshopper.Properties.Resources.ColorIcon, true, _pluginColorDefault, _pluginColor);
 

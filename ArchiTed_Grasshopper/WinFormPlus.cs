@@ -337,8 +337,9 @@ namespace ArchiTed_Grasshopper
             return item;
         }
 
-        public static void AddLabelItem(ToolStripDropDown menu, string labelText, Color color, int divisor = 6, int margin = 0, float? fontSize = null)
+        public static void AddLabelItem(ToolStripDropDown menu, string labelText, Color? color = null, int divisor = 6, int margin = 5, float? fontSize = null)
         {
+            Color realColor = color.HasValue ? color.Value : ColorExtension.OnColor;
             ToolStripLabel item = new ToolStripLabel(labelText);
             if(fontSize == null)
             {
@@ -349,7 +350,7 @@ namespace ArchiTed_Grasshopper
                 item.Font = new Font(GH_FontServer.StandardBold.FontFamily, fontSize.Value, FontStyle.Bold);
             }
             
-            item.ForeColor = color;
+            item.ForeColor = realColor;
            
             item.Margin = new Padding(menu.Size.Width / divisor, margin, menu.Size.Width / divisor, margin);
             menu.Items.Add(item);

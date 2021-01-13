@@ -326,40 +326,39 @@ namespace InfoGlasses
             int width = 24;
 
             Func<RectangleF, RectangleF> changeInput;
-            var inFuncs = WinformControlHelper.GetInnerRectLeftFunc(1, 2, new SizeF(width, width), out changeInput);
+            var inFuncs = WinformControlHelper.GetInnerRectLeftFunc(1, 1, new SizeF(width, width), out changeInput);
             this.ChangeInputLayout = changeInput;
 
             Func<RectangleF, RectangleF> changeOutput;
             var outFuncs = WinformControlHelper.GetInnerRectRightFunc(1, 2, new SizeF(width, width), out changeOutput);
             this.ChangeOutputLayout = changeOutput;
 
-            ClickButtonIcon<LangWindow> LabelButton = new ClickButtonIcon<LangWindow>(_showLabel, this, inFuncs(1), true, Properties.Resources.LabelIcon, _showLabelDefault,
+            ClickButtonIcon<LangWindow> LabelButton = new ClickButtonIcon<LangWindow>(_showLabel, this, inFuncs(0), true, Properties.Resources.LabelIcon, _showLabelDefault,
                tips: new string[] { "Click to choose whether to show the wire's label.", "点击以选择是否要显示连线的名称。" },
                createMenu: () =>
                {
                    ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
+
+                   WinFormPlus.AddLabelItem(menu, GetTransLation(new string[] { "Label Options", "标签选项" }));
+
+
+                   WinFormPlus.AddCheckBoxItem(menu, LanguagableComponent.GetTransLation(new string[] { "Show Data Structure", "展示数据结构" }),
+                       LanguagableComponent.GetTransLation(new string[] { "Click to switch whether to show the wire's data structure", "点击以选择是否要显示连线的数据结构。" }),
+                       Properties.Resources.ShowTreeStructure, this, _showTree, _showTreeDefault);
+
+                   WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Data Tree Count", "树型数据显示长度" }),
+                        GetTransLation(new string[] { "Set Data Tree Count", "设置树型数据显示长度" }),
+                        ArchiTed_Grasshopper.Properties.Resources.SizeIcon, this.IsShowTree, _treeCountDefault, 1, 50, _treeCount);
+
                    return menu;
                });
-
-            ClickButtonIcon<LangWindow> treeButton = new ClickButtonIcon<LangWindow>(_showTree, this, inFuncs(0), true, Properties.Resources.ShowTreeStructure, _showTreeDefault,
-                tips: new string[] { "Click to switch whether to show the wire's data structure", "点击以选择是否要显示连线的数据结构。" },
-                createMenu: () =>
-                {
-                    ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
-
-                    WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Data Tree Count", "树型数据显示长度" }),
-                        GetTransLation(new string[] { "Set Data Tree Count", "设置树型数据显示长度" }),
-                        ArchiTed_Grasshopper.Properties.Resources.SizeIcon, true, _treeCountDefault, 1, 50, _treeCount);
-
-                    return menu;
-                });
-
 
             ClickButtonIcon<LangWindow> LegendButton = new ClickButtonIcon<LangWindow>(_showLegend, this, outFuncs(0), true, Properties.Resources.LegendIcon, _showLegendDefault,
                 tips: new string[] { "Click to choose whether to show the wire's legend.", "点击以选择是否要显示连线的图例。" },
                 createMenu: () =>
                 {
                     ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
+                    WinFormPlus.AddLabelItem(menu, GetTransLation(new string[] { "Legend Options", "图例选项" }));
 
                     WinFormPlus.AddLoopBoexItem(menu, this, GetTransLation(new string[] { "Legend Location", "图例位置" }), true, new string[]
                     {
@@ -406,6 +405,7 @@ namespace InfoGlasses
                 createMenu: () =>
                 {
                     ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
+                    WinFormPlus.AddLabelItem(menu, GetTransLation(new string[] { "Control Options", "控制选项" }));
 
                     WinFormPlus.AddCheckBoxItem(menu, LanguagableComponent.GetTransLation(new string[] { "Bool Control", "布尔控制项" }), null, null, this, _showBoolControl, _showBoolControlDefault);
                     WinFormPlus.AddCheckBoxItem(menu, LanguagableComponent.GetTransLation(new string[] { "Colour Control", "颜色控制项" }), null, null, this, _showColorControl, _showColorControlDefault);
@@ -417,7 +417,7 @@ namespace InfoGlasses
                     return menu;
                 });
 
-            this.Controls = new IRespond[] { LabelButton, treeButton, LegendButton, ControlButton};
+            this.Controls = new IRespond[] { LabelButton, LegendButton, ControlButton};
         }
 
         protected override void AppendAdditionComponentMenuItems(ToolStripDropDown menu)
