@@ -20,6 +20,7 @@ namespace InfoGlasses.WinformControls
     public interface IParamControlBase<TGoo> : IRespond, IDisposable where TGoo : class, IGH_Goo
     {
         GH_Param<TGoo> Target { get; }
+        bool IsInputSide { get; }
         void RespondToMouseDown(object sender, MouseEventArgs e);
     }
 }

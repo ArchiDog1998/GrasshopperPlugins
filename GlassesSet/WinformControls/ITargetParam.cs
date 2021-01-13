@@ -19,6 +19,5 @@ namespace InfoGlasses.WinformControls
     public interface ITargetParam<TGoo, T> : IAddObjectParam<TGoo>, IControlState<T>, INeedWidth where TGoo : GH_Goo<T>
     {
         new GH_PersistentParam<TGoo> Target { get; }
-        GH_ParamAccess Access { get; set; }
     }
 }

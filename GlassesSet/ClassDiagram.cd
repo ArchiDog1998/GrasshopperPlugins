@@ -8,7 +8,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="InfoGlasses.InfoGlassesComponent" Collapsed="true">
-    <Position X="7" Y="1.5" Width="1.5" />
+    <Position X="7" Y="1.5" Width="2" />
     <TypeIdentifier>
       <HashCode>ALYKDIhSQUaDSBeIEHxQACk4OBoCAgoSFBCBIgMkhAA=</HashCode>
       <FileName>InfoGlassesComponent.cs</FileName>
@@ -22,21 +22,21 @@
     </TypeIdentifier>
   </Class>
   <Class Name="InfoGlasses.NamedViewPPTComponent" Collapsed="true">
-    <Position X="7" Y="2.5" Width="1.5" />
+    <Position X="7" Y="2.5" Width="2.25" />
     <TypeIdentifier>
       <HashCode>CAYIBAAAAACCAAgAARQAACEQADAIAAAAAAARAEEAEBA=</HashCode>
       <FileName>NamedViewPPTComponent.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="InfoGlasses.ParamGlassesComponent" Collapsed="true">
-    <Position X="10.5" Y="2.5" Width="1.5" />
+    <Position X="10.5" Y="2.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>2Q8YbYoCcCItTaIe2d+JKIE0vRsgBiC+aigdCFUcORk=</HashCode>
+      <HashCode>2Y8YTYoCcSItTaIe2d+JKIE0nxugBiCuaqgdCFUce5k=</HashCode>
       <FileName>ParamGlassesComponent.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="InfoGlasses.WireColors_OBSOLETE" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="8.75" Y="3.5" Width="1.5" />
+    <Position X="8.75" Y="3.5" Width="2" />
     <TypeIdentifier>
       <HashCode>ABACAACAAAAIAEAAAAAoAAAURAAABAAAAAAFAAAAAAA=</HashCode>
       <FileName>WireColors_OBSOLETE.xaml.cs</FileName>
@@ -44,7 +44,7 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="InfoGlasses.WireGlassesComponent_OBSOLETE" Collapsed="true">
-    <Position X="5.25" Y="4.5" Width="1.5" />
+    <Position X="5.25" Y="4.5" Width="2.75" />
     <TypeIdentifier>
       <HashCode>gAIIBAAAAAAHIACAgB4BAAEQIRNAAACQJAgRAAEIEBI=</HashCode>
       <FileName>WireGlassesComponent_OBSOLETE.cs</FileName>
@@ -63,58 +63,10 @@
       <HashCode>AEAAIAAIAAAAFEAACwAJEAACBQAQAMAABAAIAQAAyIA=</HashCode>
     </TypeIdentifier>
   </Class>
-  <Class Name="InfoGlasses.WinformControls.CheckBoxAddObject&lt;TGoo&gt;" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="5.25" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAACAAKCEAAEAAAAACGAAAAABAAAIABAAAAAAAAA=</HashCode>
-      <FileName>WinformControls\CheckBoxAddObject.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
-  </Class>
-  <Class Name="InfoGlasses.WinformControls.CheckBoxParam&lt;TGoo&gt;" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="7" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAIACAIKCEAkEAAAAAAGAAAAABAAAIABAAAAAAAAA=</HashCode>
-      <FileName>WinformControls\CheckBoxParam.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
-  </Class>
-  <Class Name="InfoGlasses.WinformControls.ColourSwatchParam&lt;TGoo&gt;" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="8.75" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAIACAIKCEAkEAAAAAAGAAAAABAAAIABAAAAAAAAA=</HashCode>
-      <FileName>WinformControls\ColourSwatchParam.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
-  </Class>
-  <Class Name="InfoGlasses.WinformControls.InputBoxDoubleParam&lt;TGoo&gt;" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="10.5" Y="1.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAIACAIKCEAkEAAAAAACAAAAABAAAIABAAAAAAAAA=</HashCode>
-      <FileName>WinformControls\InputBoxDoubleParam.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
-  </Class>
-  <Class Name="InfoGlasses.WinformControls.InputBoxIntParam&lt;TGoo&gt;" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="12.25" Y="1.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAIACAIKCEAkEAAAAAACAAAAABAAAIABAAAAAAAAA=</HashCode>
-      <FileName>WinformControls\InputBoxIntParam.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
-  </Class>
-  <Class Name="InfoGlasses.WinformControls.InputBoxStringParam&lt;TGoo&gt;" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="5.25" Y="2.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAIACAIKCEAkEAAAAAACAAAAABAAAIABAAAAAAAAA=</HashCode>
-      <FileName>WinformControls\InputBoxStringParam.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
-  </Class>
   <Class Name="InfoGlasses.WinformControls.ParamControlHelper" Collapsed="true">
-    <Position X="8.75" Y="2.5" Width="1.5" />
+    <Position X="8.75" Y="2.5" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAIAREEAEAAAEAABAAQAAAAAAAAEAIECAACACAAA=</HashCode>
+      <HashCode>AAAAAIAREEAEIAAEAAAAAQAACAAAAAEAIEDAACACAAA=</HashCode>
       <FileName>WinformControls\ParamControlHelper.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -126,7 +78,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="InfoGlasses.WinformControls.WireConnectRenderItem" Collapsed="true">
-    <Position X="12.25" Y="3.5" Width="1.5" />
+    <Position X="12.25" Y="3.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAYQAACQAACAAHEAAAAwAgAAAAgECAAMABAAIAAIAAM=</HashCode>
       <FileName>WinformControls\WireConnectRenderItem.cs</FileName>
@@ -140,7 +92,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="InfoGlasses.WPF.ExceptionWindow" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="12.25" Y="0.5" Width="1.5" />
+    <Position X="12.25" Y="0.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>TFACAQiAAAAAQEAgCQBAAAlC4AEABARwAAAAAACAgAI=</HashCode>
       <FileName>WPF\ExceptionWindow.xaml.cs</FileName>
@@ -164,17 +116,25 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="InfoGlasses.WPF.ParamGlassesProxy" Collapsed="true">
-    <Position X="0.5" Y="1.75" Width="1.5" />
+    <Position X="0.5" Y="1.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
       <FileName>WPF\ParamGlassesProxy.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="InfoGlasses.WPF.WireColorsWindow" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="10.5" Y="3.5" Width="1.5" />
+    <Position X="10.5" Y="3.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>WPF\WireColorsWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="InfoGlasses.WinformControls.CheckBoxParam&lt;TGoo&gt;" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAIACAIKCEAkFAAAAAAGAAAAABAAAIABAAAAAAAAA=</HashCode>
+      <FileName>WinformControls\CheckBoxParam.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
@@ -185,22 +145,25 @@
       <FileName>AddProxyParams.cs</FileName>
     </TypeIdentifier>
   </Struct>
-  <Interface Name="InfoGlasses.WinformControls.IAddObjectParam&lt;TGoo&gt;" Collapsed="true">
-    <Position X="0.5" Y="5" Width="1.5" />
+  <Interface Name="InfoGlasses.WinformControls.IAddObjectParam&lt;TGoo&gt;">
+    <Position X="0.75" Y="5.25" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAACAAICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAACAAICAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>WinformControls\IAddObjectParam.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="InfoGlasses.WinformControls.IParamControlBase&lt;TGoo&gt;" Collapsed="true">
-    <Position X="0.5" Y="3.5" Width="1.5" />
+  <Interface Name="InfoGlasses.WinformControls.IParamControlBase&lt;TGoo&gt;">
+    <Position X="0.75" Y="2.75" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Properties" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAEAAAAAACAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAEAAEAAAAAACAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>WinformControls\IParamControlBase.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="InfoGlasses.WinformControls.ITargetParam&lt;TGoo, T&gt;" Collapsed="true">
-    <Position X="0.5" Y="6.5" Width="1.5" />
+  <Interface Name="InfoGlasses.WinformControls.ITargetParam&lt;TGoo, T&gt;">
+    <Position X="0.75" Y="8" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAEAAAAAAACAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>WinformControls\ITargetParam.cs</FileName>

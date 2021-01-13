@@ -96,18 +96,20 @@ namespace InfoGlasses.WinformControls
 
         #region ParamLayout
 
-        public static RectangleF ParamLayoutBase(IGH_Attributes targetAtt, int Width, RectangleF bound, int sideDistance = 8, bool inflate = true)
+        public static RectangleF ParamLayoutBase(IGH_Attributes targetAtt, int Width, RectangleF layoutBound, bool isInputSide, int sideDistance = 8, bool inflate = true)
         {
             RectangleF rect;
             //check whether input
-            if (targetAtt.HasInputGrip)
+            if (isInputSide)
             {
-                rect = new RectangleF(bound.Left - Width - sideDistance, targetAtt.Bounds.Top, Width, targetAtt.Bounds.Height);
+                rect = new RectangleF(layoutBound.Left - Width - sideDistance, targetAtt.Bounds.Top, Width, targetAtt.Bounds.Height);
             }
             else
             {
-                rect = new RectangleF(bound.Right + sideDistance, targetAtt.Bounds.Top, Width, targetAtt.Bounds.Height);
+                rect = new RectangleF(layoutBound.Right + sideDistance, targetAtt.Bounds.Top, Width, targetAtt.Bounds.Height);
             }
+
+
             if (inflate) rect.Inflate(-2, -2);
             else rect = new RectangleF(new PointF(rect.X - 2, rect.Y), rect.Size);
             return rect;
@@ -163,25 +165,12 @@ namespace InfoGlasses.WinformControls
                 }
                 else
                 {
-                    ParamControlHelper.AddObjectMouseDown(vp, paramcontrol, sender, e, leftMove, init);
+                    ParamControlHelper.AddObjectMouseDown(vp, paramcontrol, sender, e, paramcontrol.IsInputSide, leftMove, init);
                 }
             }
         }
 
         #endregion
-
-        //public static void SetDefaultValue<TGoo, T>(ITargetParam<TGoo, T> paramControl, T @default) where TGoo : GH_Goo<T>
-        //{
-        //    try
-        //    {
-        //        paramControl.Default = ((TGoo)paramControl.Target.PersistentData.AllData(true).ElementAt(0)).Value;
-        //    }
-        //    catch
-        //    {
-        //        paramControl.Default = @default;
-        //        paramControl.SetValue(paramControl.Default);
-        //    }
-        //}
 
         #endregion
 
@@ -190,9 +179,12 @@ namespace InfoGlasses.WinformControls
         #region AddObjectIcon
         public static float IconSize => 12;
         public static float IconSpacing => 6;
-        public static RectangleF GetIconBound(RectangleF bound, float multy = 1)
+        public static RectangleF GetIconBound(RectangleF bound, bool isInputSide, float multy = 1)
         {
-            return new RectangleF(bound.X - ParamControlHelper.IconSize - ParamControlHelper.IconSpacing * multy, bound.Y + bound.Height / 2 - ParamControlHelper.IconSize / 2,
+            if (isInputSide)
+                return new RectangleF(bound.X - ParamControlHelper.IconSize - ParamControlHelper.IconSpacing * multy, bound.Y + bound.Height / 2 - ParamControlHelper.IconSize / 2,
+                    ParamControlHelper.IconSize, ParamControlHelper.IconSize);
+            else return new RectangleF(bound.X + bound.Width + ParamControlHelper.IconSpacing * multy, bound.Y + bound.Height / 2 - ParamControlHelper.IconSize / 2,
                 ParamControlHelper.IconSize, ParamControlHelper.IconSize);
         }
 
@@ -213,24 +205,24 @@ namespace InfoGlasses.WinformControls
         #endregion
 
         #region Respond
-        public static void AddObjectMouseDown<TGoo>(IAddObjectParam<TGoo> paramcontrol, object sender, MouseEventArgs e, float leftMove = 100, string init = null) 
+        public static void AddObjectMouseDown<TGoo>(IAddObjectParam<TGoo> paramcontrol, object sender, MouseEventArgs e, bool isInputSide, float leftMove = 100, string init = null) 
             where TGoo : class, IGH_Goo
         {
             GH_Viewport vp = Grasshopper.Instances.ActiveCanvas.Viewport;
             if (vp.Zoom >= 0.5f)
             {
-                AddObjectMouseDown(vp, paramcontrol, sender, e, leftMove, init);
+                AddObjectMouseDown(vp, paramcontrol, sender, e, isInputSide, leftMove, init);
             }
         }
 
-        public static void AddObjectMouseDown<TGoo>(GH_Viewport vp, IAddObjectParam<TGoo> paramcontrol, object sender, MouseEventArgs e, float leftMove = 100, string init = null) 
+        public static void AddObjectMouseDown<TGoo>(GH_Viewport vp, IAddObjectParam<TGoo> paramcontrol, object sender, MouseEventArgs e, bool isInputSide, float leftMove = 100, string init = null) 
             where TGoo : class, IGH_Goo
         {
             if (paramcontrol.IconButtonBound.Contains(vp.UnprojectPoint(e.Location)))
             {
                 if (paramcontrol.MyProxies.Length == 1)
                 {
-                    CreateNewObject(paramcontrol, 0, leftMove, init);
+                    CreateNewObject(paramcontrol, isInputSide,0, leftMove, init);
                 }
                 else if (paramcontrol.MyProxies.Length > 1)
                 {
@@ -239,7 +231,7 @@ namespace InfoGlasses.WinformControls
                     {
                         void Item_Click(object sender1, EventArgs e1, int index)
                         {
-                            CreateNewObject(paramcontrol, index, leftMove, init);
+                            CreateNewObject(paramcontrol, isInputSide,index, leftMove, init);
                         }
                         WinFormPlus.AddClickItem(menu, paramcontrol.MyProxies[i].Name, null, paramcontrol.MyProxies[i].Icon.GetIcon(true, true), i, Item_Click, false);
                     }
@@ -251,13 +243,13 @@ namespace InfoGlasses.WinformControls
         #endregion
 
         #region Create Object
-        public static void CreateNewObject<TGoo>(IAddObjectParam<TGoo> paramcontrol, int index = 0, float leftMove = 100, string init = null) where TGoo : class, IGH_Goo
+        public static void CreateNewObject<TGoo>(IAddObjectParam<TGoo> paramcontrol, bool isInputSide, int index = 0, float leftMove = 100, string init = null) where TGoo : class, IGH_Goo
         {
-            CreateNewObject(paramcontrol.MyProxies, paramcontrol.Target, index, leftMove, init);
+            CreateNewObject(paramcontrol.MyProxies, paramcontrol.Target, isInputSide, index, leftMove, init);
         }
 
 
-        public static void CreateNewObject(AddProxyParams[] proxies, IGH_Param target, int index = 0, float leftMove = 100, string init = null)
+        public static void CreateNewObject(AddProxyParams[] proxies, IGH_Param target, bool isInputSide, int index = 0, float leftMove = 100, string init = null)
         {
             if (proxies.Length < index) return;
 
@@ -267,10 +259,10 @@ namespace InfoGlasses.WinformControls
                 return;
             }
 
-            CreateNewObject(obj, target, proxies[index].OutIndex, leftMove, init);
+            CreateNewObject(obj, target, isInputSide, proxies[index].OutIndex, leftMove, init);
         }
 
-        public static void CreateNewObject(IGH_DocumentObject obj, IGH_Param target, int outIndex = 0, float leftMove = 100, string init = null)
+        public static void CreateNewObject(IGH_DocumentObject obj, IGH_Param target, bool isInputSide, int outIndex = 0, float leftMove = 100, string init = null)
         {
 
             if (obj == null)
@@ -286,7 +278,14 @@ namespace InfoGlasses.WinformControls
 
                 AddAObjectToCanvas(com, comRightCenter, false, init);
 
-                target.AddSource(com.Params.Output[outIndex]);
+                if (isInputSide)
+                {
+                    target.AddSource(com.Params.Output[outIndex]);
+                }
+                else
+                {
+                    com.Params.Input[outIndex].AddSource(target);
+                }
                 //com.Params.Output[outIndex].Recipients.Add(target);
 
                 target.OnPingDocument().NewSolution(false);
@@ -297,8 +296,14 @@ namespace InfoGlasses.WinformControls
 
                 AddAObjectToCanvas(param, comRightCenter, false, init);
 
-                target.AddSource(param);
-                param.Recipients.Add(target);
+                if (isInputSide)
+                {
+                    target.AddSource(param);
+                }
+                else
+                {
+                    param.AddSource(target);
+                }
 
                 target.OnPingDocument().NewSolution(false);
             }
@@ -322,22 +327,63 @@ namespace InfoGlasses.WinformControls
         }
         #endregion
 
-        public static AddProxyParams [] GetAddProxyParams<TGoo>(IAddObjectParam<TGoo> paramControl) where TGoo : class, IGH_Goo
+        public static AddProxyParams[] GetAddProxyParams<TGoo>(IAddObjectParam<TGoo> paramControl, out bool isInputSide) where TGoo : class, IGH_Goo
+        {
+            bool hasInput = paramControl.Target.Attributes.HasInputGrip;
+            bool hasOutput = paramControl.Target.Attributes.HasOutputGrip;
+            bool hasInputSources = paramControl.Target.SourceCount > 0;
+            if (hasInput)
+            {
+                if (!hasInputSources)
+                {
+                    isInputSide = true;
+                    return GetAddProxyInputParams(paramControl);
+                }
+                else
+                {
+                    isInputSide = false;
+                    return GetAddProxyOutputParams(paramControl);
+                }
+            }
+            else
+            {
+                isInputSide = false;
+                return GetAddProxyOutputParams(paramControl);
+            }
+
+        }
+
+
+        private static AddProxyParams [] GetAddProxyInputParams<TGoo>(IAddObjectParam<TGoo> paramControl) where TGoo : class, IGH_Goo
         {
             string keyname = paramControl.Target.Type.FullName;
-            if (paramControl.Owner.ProxyReplaceDict.ContainsKey(paramControl.Target.ComponentGuid))
+            if (paramControl.Owner.ProxyReplaceDictInput.ContainsKey(paramControl.Target.ComponentGuid))
             {
-                keyname = paramControl.Owner.ProxyReplaceDict[paramControl.Target.ComponentGuid];
+                keyname = paramControl.Owner.ProxyReplaceDictInput[paramControl.Target.ComponentGuid];
             }
-            if (paramControl.Owner.CreateProxyDict.ContainsKey(keyname))
+            if (paramControl.Owner.CreateProxyDictInput.ContainsKey(keyname))
             {
-                return paramControl.Owner.CreateProxyDict[keyname];
+                return paramControl.Owner.CreateProxyDictInput[keyname];
             }
             else
             {
                 return new AddProxyParams[0];
             }
            
+        }
+
+        private static AddProxyParams[] GetAddProxyOutputParams<TGoo>(IAddObjectParam<TGoo> paramControl) where TGoo : class, IGH_Goo
+        {
+            string keyname = paramControl.Target.Type.FullName;
+            if (paramControl.Owner.CreateProxyDictOutput.ContainsKey(keyname))
+            {
+                return paramControl.Owner.CreateProxyDictOutput[keyname];
+            }
+            else
+            {
+                return new AddProxyParams[0];
+            }
+
         }
         #endregion
     }

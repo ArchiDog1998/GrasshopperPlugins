@@ -215,9 +215,11 @@ namespace InfoGlasses
         public List<GooTypeProxy> ShowProxy { get; internal set; }
 
 
-        public Dictionary<string, AddProxyParams[]> CreateProxyDict { get; set; }
+        public Dictionary<string, AddProxyParams[]> CreateProxyDictInput { get; set; }
 
-        public Dictionary<Guid, string> ProxyReplaceDict { get; set; }
+        public Dictionary<string, AddProxyParams[]> CreateProxyDictOutput { get; set; }
+
+        public Dictionary<Guid, string> ProxyReplaceDictInput { get; set; }
 
 
         public Dictionary<string, Color> ColorDict { get; set; }
@@ -235,13 +237,13 @@ namespace InfoGlasses
             ResponseToLanguageChanged(this, new EventArgs());
             ShowProxy = new List<GooTypeProxy>();
             //For test
-            ProxyReplaceDict = new Dictionary<Guid, string>()
+            ProxyReplaceDictInput = new Dictionary<Guid, string>()
             {
                 {new Guid("{51a2ede9-8f8c-4fdf-a375-999c2062eab7}"), "Grasshopper.Kernel.Types.GH_Integer" },
                 {new Guid("{bc984576-7aa6-491f-a91d-e444c33675a7}"), "Grasshopper.Kernel.Types.GH_Number" },
             };
 
-            CreateProxyDict = new Dictionary<string, AddProxyParams[]>() 
+            CreateProxyDictInput = new Dictionary<string, AddProxyParams[]>() 
             {
                 {"Grasshopper.Kernel.Types.GH_Point", new AddProxyParams[]{new AddProxyParams(new Guid("{3581F42A-9592-4549-BD6B-1C0FC39D067B}"), 0) } },
                 {"Grasshopper.Kernel.Types.GH_Vector", new AddProxyParams[]{new AddProxyParams(new Guid("{56b92eab-d121-43f7-94d3-6cd8f0ddead8}"), 0) } },
@@ -321,6 +323,10 @@ namespace InfoGlasses
                 {"Grasshopper.Kernel.Types.GH_MeshingParameters",new AddProxyParams[]{ new AddProxyParams(new Guid("{4a0180e5-d8f9-46e7-bd34-ced804601462}"), 0) } },
                 {"SurfaceComponents.SurfaceComponents.LoftOptions",new AddProxyParams[]{ new AddProxyParams(new Guid("{45f19d16-1c9f-4b0f-a9a6-45a77f3d206c}"), 0) } },
 
+            };
+
+            CreateProxyDictOutput = new Dictionary<string, AddProxyParams[]>() 
+            { 
             };
 
             int width = 24;
@@ -667,38 +673,38 @@ namespace InfoGlasses
                     this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, null, true, false));
                     return;
                 }
-                else if (this.IsShowColorControl && typeof(GH_Goo<Color>).IsAssignableFrom(type))
-                {
-                    Type paramType = typeof(ColourSwatchParam<>).MakeGenericType(type);
-                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 1000, false));
-                    return;
-                }
-                else if (this.IsShowDoubleControl && typeof(GH_Goo<double>).IsAssignableFrom(type))
-                {
-                    Type paramType = typeof(InputBoxDoubleParam<>).MakeGenericType(type);
-                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, false));
-                    return;
-                }
-                else if (this.IsShowIntControl && typeof(GH_Goo<int>).IsAssignableFrom(type))
-                {
-                    Type paramType = typeof(InputBoxIntParam<>).MakeGenericType(type);
-                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, false));
-                    return;
-                }
-                else if (this.IsShowStringControl && typeof(GH_Goo<string>).IsAssignableFrom(type))
-                {
-                    Type paramType = typeof(InputBoxStringParam<>).MakeGenericType(type);
-                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, false));
-                    return;
-                }
+                //else if (this.IsShowColorControl && typeof(GH_Goo<Color>).IsAssignableFrom(type))
+                //{
+                //    Type paramType = typeof(ColourSwatchParam<>).MakeGenericType(type);
+                //    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 1000, false));
+                //    return;
+                //}
+                //else if (this.IsShowDoubleControl && typeof(GH_Goo<double>).IsAssignableFrom(type))
+                //{
+                //    Type paramType = typeof(InputBoxDoubleParam<>).MakeGenericType(type);
+                //    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, false));
+                //    return;
+                //}
+                //else if (this.IsShowIntControl && typeof(GH_Goo<int>).IsAssignableFrom(type))
+                //{
+                //    Type paramType = typeof(InputBoxIntParam<>).MakeGenericType(type);
+                //    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, false));
+                //    return;
+                //}
+                //else if (this.IsShowStringControl && typeof(GH_Goo<string>).IsAssignableFrom(type))
+                //{
+                //    Type paramType = typeof(InputBoxStringParam<>).MakeGenericType(type);
+                //    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, false));
+                //    return;
+                //}
 
             }
-            if (param.Attributes.HasInputGrip && this.IsShowOtherControl)
-            {
-                Type paramType = typeof(CheckBoxAddObject<>).MakeGenericType(type);
-                this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, null, true, false));
-                return;
-            }
+            //if (param.Attributes.HasInputGrip && this.IsShowOtherControl)
+            //{
+            //    Type paramType = typeof(CheckBoxAddObject<>).MakeGenericType(type);
+            //    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, null, true, false));
+            //    return;
+            //}
         }
 
         private void RemoveAll()
@@ -923,14 +929,14 @@ namespace InfoGlasses
 
         internal void SetCreateProxyGuid(string name, AddProxyParams[] proxies)
         {
-            CreateProxyDict[name] = proxies;
+            CreateProxyDictInput[name] = proxies;
         }
 
         internal AddProxyParams[] GetCreateProxyGuid(string name)
         {
             try
             {
-                return CreateProxyDict[name];
+                return CreateProxyDictInput[name];
             }
             catch
             {
@@ -999,20 +1005,20 @@ namespace InfoGlasses
                 }
             }
 
-            //WieteCreate
-            if (CreateProxyDict.Count != 0)
+            //WieteCreate Input
+            if (CreateProxyDictInput.Count != 0)
             {
-                writer.SetInt32("AutoAddCount", CreateProxyDict.Count);
+                writer.SetInt32("AutoAddCount", CreateProxyDictInput.Count);
                 int n = 0;
-                foreach (string key in CreateProxyDict.Keys)
+                foreach (string key in CreateProxyDictInput.Keys)
                 {
                     writer.SetString("autoName" + n.ToString(), key);
 
-                    int valueCount = CreateProxyDict[key].Length;
+                    int valueCount = CreateProxyDictInput[key].Length;
                     writer.SetInt32("autoValueCount" + n.ToString(), valueCount);
                     for (int m = 0; m < valueCount; m++)
                     {
-                        var set = CreateProxyDict[key][m];
+                        var set = CreateProxyDictInput[key][m];
                         writer.SetGuid("autoValueGuid" + n.ToString("D5") + m.ToString(), set.Guid);
                         writer.SetInt32("autoValueInt" + n.ToString("D5") + m.ToString(), set.OutIndex);
                     }
@@ -1020,15 +1026,36 @@ namespace InfoGlasses
                 }
             }
 
-            //Write Replace
-            if (ProxyReplaceDict.Count != 0)
+            //WieteCreate Output
+            if (CreateProxyDictOutput.Count != 0)
             {
-                writer.SetInt32("ReplaceCount", ProxyReplaceDict.Count);
+                writer.SetInt32("AutoAddCountOut", CreateProxyDictOutput.Count);
                 int n = 0;
-                foreach (Guid key in ProxyReplaceDict.Keys)
+                foreach (string key in CreateProxyDictOutput.Keys)
+                {
+                    writer.SetString("autoNameOut" + n.ToString(), key);
+
+                    int valueCount = CreateProxyDictOutput[key].Length;
+                    writer.SetInt32("autoValueCountOut" + n.ToString(), valueCount);
+                    for (int m = 0; m < valueCount; m++)
+                    {
+                        var set = CreateProxyDictOutput[key][m];
+                        writer.SetGuid("autoValueGuidOut" + n.ToString("D5") + m.ToString(), set.Guid);
+                        writer.SetInt32("autoValueIntOut" + n.ToString("D5") + m.ToString(), set.OutIndex);
+                    }
+                    n++;
+                }
+            }
+
+            //Write Replace
+            if (ProxyReplaceDictInput.Count != 0)
+            {
+                writer.SetInt32("ReplaceCount", ProxyReplaceDictInput.Count);
+                int n = 0;
+                foreach (Guid key in ProxyReplaceDictInput.Keys)
                 {
                     writer.SetGuid("ReplaceGuid" + n.ToString(), key);
-                    writer.SetString("ReplaceName" + n.ToString(), ProxyReplaceDict[key]);
+                    writer.SetString("ReplaceName" + n.ToString(), ProxyReplaceDictInput[key]);
                     n++;
                 }
             }
@@ -1039,8 +1066,9 @@ namespace InfoGlasses
         public override bool Read(GH_IReader reader)
         {
             ColorDict = new Dictionary<string, Color>();
-            CreateProxyDict = new Dictionary<string, AddProxyParams[]>();
-            ProxyReplaceDict = new Dictionary<Guid, string>();
+            CreateProxyDictInput = new Dictionary<string, AddProxyParams[]>();
+            CreateProxyDictOutput = new Dictionary<string, AddProxyParams[]>();
+            ProxyReplaceDictInput = new Dictionary<Guid, string>();
 
             //Read Color
             int colorCount = 0;
@@ -1054,7 +1082,7 @@ namespace InfoGlasses
                 
             }
 
-            //Read Create
+            //Read Create Input
             int autoCount = 0;
             if (reader.TryGetInt32("AutoAddCount", ref autoCount))
             {
@@ -1068,7 +1096,25 @@ namespace InfoGlasses
                         int outIndex = reader.GetInt32("autoValueInt" + n.ToString("D5") + m.ToString());
                         value[m] = new AddProxyParams(guid, outIndex);
                     }
-                    CreateProxyDict[reader.GetString("autoName" + n.ToString())] = value;
+                    CreateProxyDictInput[reader.GetString("autoName" + n.ToString())] = value;
+                }
+            }
+
+            //Read Create Out
+            int autoCountOut = 0;
+            if (reader.TryGetInt32("AutoAddCountOut", ref autoCountOut))
+            {
+                for (int n = 0; n < autoCountOut; n++)
+                {
+                    int valueCount = reader.GetInt32("autoValueCountOut" + n.ToString());
+                    AddProxyParams[] value = new AddProxyParams[valueCount];
+                    for (int m = 0; m < valueCount; m++)
+                    {
+                        Guid guid = reader.GetGuid("autoValueGuidOut" + n.ToString("D5") + m.ToString());
+                        int outIndex = reader.GetInt32("autoValueIntOut" + n.ToString("D5") + m.ToString());
+                        value[m] = new AddProxyParams(guid, outIndex);
+                    }
+                    CreateProxyDictOutput[reader.GetString("autoNameOut" + n.ToString())] = value;
                 }
             }
 
@@ -1080,7 +1126,7 @@ namespace InfoGlasses
                 {
                     Guid guid = reader.GetGuid("ReplaceGuid" + n.ToString());
                     string name = reader.GetString("ReplaceName" + n.ToString());
-                    ProxyReplaceDict[guid] = name;
+                    ProxyReplaceDictInput[guid] = name;
                 }
             }
 

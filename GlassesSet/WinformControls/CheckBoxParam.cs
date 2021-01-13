@@ -22,26 +22,33 @@ using CheckBox = ArchiTed_Grasshopper.WinformControls.CheckBox;
 
 namespace InfoGlasses.WinformControls
 {
-    class CheckBoxParam<TGoo>: CheckBox, ITargetParam<TGoo, bool> where TGoo: GH_Goo<bool>
+    class CheckBoxParam<TGoo> : CheckBox, ITargetParam<TGoo, bool> where TGoo : GH_Goo<bool>
     {
         public GH_PersistentParam<TGoo> Target { get; }
         GH_Param<TGoo> IParamControlBase<TGoo>.Target => this.Target;
-        public GH_ParamAccess Access { get; set; }
 
         public string initStr => GetValue(out _).ToString();
 
-
+        private bool _isInputSide;
+        public bool IsInputSide 
+        {
+            get
+            {
+                _myProxies = _myProxies ?? ParamControlHelper.GetAddProxyParams(this, out _isInputSide);
+                return _isInputSide;
+            }
+        }
         private AddProxyParams[] _myProxies;
         public AddProxyParams[] MyProxies
         {
             get
             {
-                _myProxies = _myProxies ?? ParamControlHelper.GetAddProxyParams(this);
+                _myProxies = _myProxies ?? ParamControlHelper.GetAddProxyParams(this, out _isInputSide);
                 return _myProxies;
             }
         }
         public new ParamGlassesComponent Owner { get; }
-        public RectangleF IconButtonBound => ParamControlHelper.GetIconBound(this.Bounds);
+        public RectangleF IconButtonBound => ParamControlHelper.GetIconBound(this.Bounds, IsInputSide);
         public int Width => 20;
 
         public CheckBoxParam(GH_PersistentParam<TGoo> target, ParamGlassesComponent owner, bool enable,
@@ -51,25 +58,26 @@ namespace InfoGlasses.WinformControls
         {
             this.Target = target;
             this.Owner = owner;
-            //ParamControlHelper.SetDefaultValue(this, false);
         }
 
         public void RespondToMouseDown(object sender, MouseEventArgs e)
         {
-            ParamControlHelper.ParamMouseDown(this, this.RespondToMouseUp, sender, e, init: initStr);
+            if (IsInputSide)
+                ParamControlHelper.ParamMouseDown(this, this.RespondToMouseUp, sender, e, init: initStr);
         }
 
         public override void Layout(RectangleF innerRect, RectangleF outerRect)
         {
             float small = -2;
-            RectangleF rect = CanvasRenderEngine.MaxSquare(ParamControlHelper.ParamLayoutBase(this.Target.Attributes, Width, outerRect));
+            RectangleF rect = CanvasRenderEngine.MaxSquare(ParamControlHelper.ParamLayoutBase(this.Target.Attributes, Width, outerRect, IsInputSide));
             rect.Inflate(small, small);
             this.Bounds = rect;
         }
 
         protected override bool IsRender(GH_Canvas canvas, Graphics graphics, bool renderLittleZoom = false)
         {
-            return ParamControlHelper.IsRender(this, canvas, graphics, renderLittleZoom) && base.IsRender(canvas, graphics, renderLittleZoom);
+            var result = ParamControlHelper.IsRender(this, canvas, graphics, renderLittleZoom) && base.IsRender(canvas, graphics, renderLittleZoom);
+            return true;
         }
 
         protected override void Render(GH_Canvas canvas, Graphics graphics, GH_CanvasChannel channel)
@@ -80,17 +88,14 @@ namespace InfoGlasses.WinformControls
 
         public override bool GetValue(out bool isNull)
         {
-            GH_ParamAccess access = GH_ParamAccess.item;
             bool result;
-            if(ParamControlHelper.GetData<TGoo, bool>(this, out access, out result))
+            if (ParamControlHelper.GetData<TGoo, bool>(this, out _, out result))
             {
-                this.Access = access;
                 isNull = false;
                 return result;
             }
             else
             {
-                this.Access = access;
                 isNull = true;
                 return false;
             }
