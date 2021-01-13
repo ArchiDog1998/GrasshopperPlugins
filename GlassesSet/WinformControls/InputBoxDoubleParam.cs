@@ -79,13 +79,13 @@ namespace InfoGlasses.WinformControls
             if(ParamControlHelper.GetData(this, out access, out result))
             {
                 this.Access = access;
-                isNull = true;
+                isNull = false;
                 return result;
             }
             else
             {
                 this.Access = access;
-                isNull = false;
+                isNull = true;
                 return double.NaN;
             }
         }

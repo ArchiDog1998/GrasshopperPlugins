@@ -128,7 +128,7 @@ namespace InfoGlasses.WinformControls
                     }
                     if (datas.PathCount > Owner.TreeCount)
                     {
-                        dataStr += "\n...";
+                        dataStr += "...";
                     }
                     str += dataStr;
                 }
