@@ -348,6 +348,34 @@ namespace InfoGlasses
 
                    WinFormPlus.AddLabelItem(menu, GetTransLation(new string[] { "Label Options", "标签选项" }));
 
+                   WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Lebel Font Size", "气泡框中字体大小" }),
+                    GetTransLation(new string[] { "Set Lebel Font Size", "设置气泡框中字体大小" }),
+                    ArchiTed_Grasshopper.Properties.Resources.SizeIcon, true, _labelFontSizeDefault, 3, 20, _labelFontSize);
+
+                   WinFormPlus.ItemSet<Color>[] sets = new WinFormPlus.ItemSet<Color>[] {
+
+                    new WinFormPlus.ItemSet<Color>( GetTransLation(new string[] { "Text Color", "文字颜色" }),GetTransLation(new string[] { "Adjust text color.", "调整文字颜色。" }),
+                    null, true, _labelTextColorDefault, _labelTextColor),
+
+                    new WinFormPlus.ItemSet<Color>( GetTransLation(new string[] { "Background Color", "背景颜色" }), GetTransLation(new string[] { "Adjust background color.", "调整背景颜色。" }),
+                    null, true, _labelDackgroundColorDefault, _labelBackgroundColor),
+
+                    new WinFormPlus.ItemSet<Color>(GetTransLation(new string[] { "Boundary Color", "边框颜色" }),
+                            GetTransLation(new string[] { "Adjust boundary color.", "调整边框颜色。" }), null, true,
+                            _labelBoundaryColorDefault, _labelBoundaryColor),
+                    };
+                   WinFormPlus.AddColorBoxItems(menu, this, GetTransLation(new string[] { "Colors", "颜色" }),
+                   GetTransLation(new string[] { "Adjust color.", "调整颜色。" }), ArchiTed_Grasshopper.Properties.Resources.ColorIcon, true, sets);
+
+
+                   WinFormPlus.AddLoopBoexItem(menu, this, GetTransLation(new string[] { "Accuracy", "数据精度" }), true, new string[]
+                   {
+                GetTransLation(new string[]{ "Rough", "粗糙"}),
+                GetTransLation(new string[]{ "Medium", "中等"}),
+                GetTransLation(new string[]{ "High", "高精"}),
+                   }, _accuracyDefault, _accuracy);
+
+                   GH_DocumentObject.Menu_AppendSeparator(menu);
 
                    WinFormPlus.AddCheckBoxItem(menu, LanguagableComponent.GetTransLation(new string[] { "Show Data Structure", "展示数据结构" }),
                        LanguagableComponent.GetTransLation(new string[] { "Click to switch whether to show the wire's data structure", "点击以选择是否要显示连线的数据结构。" }),
@@ -442,26 +470,7 @@ namespace InfoGlasses
 
             GH_DocumentObject.Menu_AppendSeparator(menu);
 
-            WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Lebel Font Size", "气泡框中字体大小" }),
-    GetTransLation(new string[] { "Set Lebel Font Size", "设置气泡框中字体大小" }),
-    ArchiTed_Grasshopper.Properties.Resources.SizeIcon, true, _labelFontSizeDefault, 3, 20, _labelFontSize);
 
-            WinFormPlus.ItemSet<Color>[] sets = new WinFormPlus.ItemSet<Color>[] {
-
-                    new WinFormPlus.ItemSet<Color>( GetTransLation(new string[] { "Text Color", "文字颜色" }),GetTransLation(new string[] { "Adjust text color.", "调整文字颜色。" }),
-                    null, true, _labelTextColorDefault, _labelTextColor),
-
-                    new WinFormPlus.ItemSet<Color>( GetTransLation(new string[] { "Background Color", "背景颜色" }), GetTransLation(new string[] { "Adjust background color.", "调整背景颜色。" }),
-                    null, true, _labelDackgroundColorDefault, _labelBackgroundColor),
-
-                    new WinFormPlus.ItemSet<Color>(GetTransLation(new string[] { "Boundary Color", "边框颜色" }),
-                            GetTransLation(new string[] { "Adjust boundary color.", "调整边框颜色。" }), null, true,
-                            _labelBoundaryColorDefault, _labelBoundaryColor),
-                    };
-            WinFormPlus.AddColorBoxItems(menu, this, GetTransLation(new string[] { "Colors", "颜色" }),
-            GetTransLation(new string[] { "Adjust color.", "调整颜色。" }), ArchiTed_Grasshopper.Properties.Resources.ColorIcon, true, sets);
-
-            GH_DocumentObject.Menu_AppendSeparator(menu);
 
             WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Selected Wire Thickness Plus", "选中时连线宽度增值" }),
                 GetTransLation(new string[] { "Set Selected Wire Thickness Plus", "设置选中时连线宽度增值" }),
@@ -487,12 +496,6 @@ namespace InfoGlasses
                     null, true, _polywireParamDefault, 0, 0.5, _polywireParam);
             }
 
-            WinFormPlus.AddLoopBoexItem(menu, this, GetTransLation(new string[] { "Accuracy", "数据精度" }), true, new string[]
-            {
-                GetTransLation(new string[]{ "Rough", "粗糙"}),
-                GetTransLation(new string[]{ "Medium", "中等"}),
-                GetTransLation(new string[]{ "High", "高精"}),
-            }, _accuracyDefault, _accuracy);
 
             WinFormPlus.ItemSet<Color>[] sets2 = new WinFormPlus.ItemSet<Color>[]
             {

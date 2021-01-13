@@ -85,7 +85,7 @@ namespace InfoGlasses.WinformControls
             {
                 NewRenderIncomingWires(Target as IGH_Param, canvas, graphics);
             }
-            else if(channel == GH_CanvasChannel.Objects)
+            else if(channel == GH_CanvasChannel.Objects && canvas.Viewport.Zoom >= 0.5f)
             {
                 Font font = new Font(GH_FontServer.StandardBold.FontFamily, (float)Owner.LabelFontSize);
                 for (int i = 0; i < ((IGH_Param)this.Target).SourceCount; i++)
@@ -134,7 +134,15 @@ namespace InfoGlasses.WinformControls
                     {
                         for (int k = 0; k < Math.Min(datas.get_Branch(0).Count, Owner.TreeCount); k++)
                         {
-                            dataStr += datas.get_Branch(0)[k].ToString() + "\n";
+                            var obj = datas.get_Branch(0)[k];
+                            if(obj == null)
+                            {
+                                dataStr += "Null\n";
+                            }
+                            else
+                            {
+                                dataStr += obj.ToString() + "\n";
+                            }
                         }
                         if (datas.get_Branch(0).Count > Owner.TreeCount)
                         {
