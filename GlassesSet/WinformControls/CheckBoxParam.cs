@@ -29,26 +29,17 @@ namespace InfoGlasses.WinformControls
 
         public string initStr => GetValue(out _).ToString();
 
-        private bool _isInputSide;
-        public bool IsInputSide 
-        {
-            get
-            {
-                _myProxies = _myProxies ?? ParamControlHelper.GetAddProxyParams(this, out _isInputSide);
-                return _isInputSide;
-            }
-        }
         private AddProxyParams[] _myProxies;
         public AddProxyParams[] MyProxies
         {
             get
             {
-                _myProxies = _myProxies ?? ParamControlHelper.GetAddProxyParams(this, out _isInputSide);
+                _myProxies = _myProxies ?? ParamControlHelper.GetAddProxyInputParams(this);
                 return _myProxies;
             }
         }
         public new ParamGlassesComponent Owner { get; }
-        public RectangleF IconButtonBound => ParamControlHelper.GetIconBound(this.Bounds, IsInputSide);
+        public RectangleF IconButtonBound => ParamControlHelper.GetIconBound(this.Bounds);
         public int Width => 20;
 
         public CheckBoxParam(GH_PersistentParam<TGoo> target, ParamGlassesComponent owner, bool enable,
@@ -62,22 +53,21 @@ namespace InfoGlasses.WinformControls
 
         public void RespondToMouseDown(object sender, MouseEventArgs e)
         {
-            if (IsInputSide)
-                ParamControlHelper.ParamMouseDown(this, this.RespondToMouseUp, sender, e, init: initStr);
+            ParamControlHelper.ParamMouseDown(this, this.RespondToMouseUp, sender, e, true, init: initStr);
         }
 
         public override void Layout(RectangleF innerRect, RectangleF outerRect)
         {
             float small = -2;
-            RectangleF rect = CanvasRenderEngine.MaxSquare(ParamControlHelper.ParamLayoutBase(this.Target.Attributes, Width, outerRect, IsInputSide));
+            RectangleF rect = CanvasRenderEngine.MaxSquare(ParamControlHelper.ParamLayoutBase(this.Target.Attributes, Width, outerRect));
             rect.Inflate(small, small);
             this.Bounds = rect;
         }
 
         protected override bool IsRender(GH_Canvas canvas, Graphics graphics, bool renderLittleZoom = false)
         {
-            var result = ParamControlHelper.IsRender(this, canvas, graphics, renderLittleZoom) && base.IsRender(canvas, graphics, renderLittleZoom);
-            return true;
+            bool result = ParamControlHelper.IsRender(this, canvas, graphics, renderLittleZoom) && base.IsRender(canvas, graphics, renderLittleZoom);
+            return result;
         }
 
         protected override void Render(GH_Canvas canvas, Graphics graphics, GH_CanvasChannel channel)

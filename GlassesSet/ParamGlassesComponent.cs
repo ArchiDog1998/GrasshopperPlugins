@@ -673,38 +673,38 @@ namespace InfoGlasses
                     this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, null, true, false));
                     return;
                 }
-                //else if (this.IsShowColorControl && typeof(GH_Goo<Color>).IsAssignableFrom(type))
-                //{
-                //    Type paramType = typeof(ColourSwatchParam<>).MakeGenericType(type);
-                //    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 1000, false));
-                //    return;
-                //}
-                //else if (this.IsShowDoubleControl && typeof(GH_Goo<double>).IsAssignableFrom(type))
-                //{
-                //    Type paramType = typeof(InputBoxDoubleParam<>).MakeGenericType(type);
-                //    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, false));
-                //    return;
-                //}
-                //else if (this.IsShowIntControl && typeof(GH_Goo<int>).IsAssignableFrom(type))
-                //{
-                //    Type paramType = typeof(InputBoxIntParam<>).MakeGenericType(type);
-                //    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, false));
-                //    return;
-                //}
-                //else if (this.IsShowStringControl && typeof(GH_Goo<string>).IsAssignableFrom(type))
-                //{
-                //    Type paramType = typeof(InputBoxStringParam<>).MakeGenericType(type);
-                //    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, false));
-                //    return;
-                //}
+                else if (this.IsShowColorControl && typeof(GH_Goo<Color>).IsAssignableFrom(type))
+                {
+                    Type paramType = typeof(ColourSwatchParam<>).MakeGenericType(type);
+                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 1000, false));
+                    return;
+                }
+                else if (this.IsShowDoubleControl && typeof(GH_Goo<double>).IsAssignableFrom(type))
+                {
+                    Type paramType = typeof(InputBoxDoubleParam<>).MakeGenericType(type);
+                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, false));
+                    return;
+                }
+                else if (this.IsShowIntControl && typeof(GH_Goo<int>).IsAssignableFrom(type))
+                {
+                    Type paramType = typeof(InputBoxIntParam<>).MakeGenericType(type);
+                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, false));
+                    return;
+                }
+                else if (this.IsShowStringControl && typeof(GH_Goo<string>).IsAssignableFrom(type))
+                {
+                    Type paramType = typeof(InputBoxStringParam<>).MakeGenericType(type);
+                    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, false));
+                    return;
+                }
 
             }
-            //if (param.Attributes.HasInputGrip && this.IsShowOtherControl)
-            //{
-            //    Type paramType = typeof(CheckBoxAddObject<>).MakeGenericType(type);
-            //    this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, null, true, false));
-            //    return;
-            //}
+            if (param.Attributes.HasInputGrip && this.IsShowOtherControl)
+            {
+                Type paramType = typeof(ButtonAddObjectInput<>).MakeGenericType(type);
+                this.RenderObjs.Add((IRenderable)Activator.CreateInstance(paramType, param, this, true, null, 5000, null, true, false));
+                return;
+            }
         }
 
         private void RemoveAll()
