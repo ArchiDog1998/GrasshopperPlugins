@@ -77,7 +77,19 @@
 
     </Window.Resources>
     
-    <materialDesign:DialogHost CloseOnClickAway="True" OverlayBackground="Transparent">
+    <materialDesign:DialogHost CloseOnClickAway="True" OverlayBackground="Transparent" DialogOpened="DialogHost_DialogOpened" DialogClosing="DialogHost_DialogClosing">
+        <materialDesign:DialogHost.DialogContent>
+            <StackPanel Orientation="Vertical" MinWidth="150">
+                <ComboBox x:Name="DialogSelect"  Margin="15 20 15 20" materialDesign:HintAssist.Hint="Select Mode" materialDesign:HintAssist.HintOpacity=".26" SelectionChanged="DialogSelect_SelectionChanged">
+                    <ComboBoxItem x:Name="ColorMode" Content="Wire Color"/>
+                    <ComboBoxItem x:Name="InputMode" Content="Input Control"/>
+                    <ComboBoxItem x:Name="OutputMode" Content="Output Control"/>
+                </ComboBox>
+                <Button x:Name="DialogAccept" Style="{StaticResource MaterialDesignFlatButton}" IsDefault="True" Click="SaveIO_Click"
+                        Command="materialDesign:DialogHost.CloseDialogCommand" Content="ACCEPT" IsEnabled="False"/>
+
+            </StackPanel>
+        </materialDesign:DialogHost.DialogContent>
         <Grid>
 
             <Border CornerRadius="20" Margin="5" Background="{StaticResource ResourceKey=Brush_Background}" VerticalAlignment="Stretch"
@@ -90,12 +102,8 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <materialDesign:ColorZone CornerRadius="15" Margin="5 5 5 0"
-            Mode="PrimaryLight"
-            Padding="16" Grid.Row="0" MinHeight="80"
-            materialDesign:ShadowAssist.ShadowDepth="Depth3"
-            ClipToBounds="False">
-
+                    <materialDesign:ColorZone CornerRadius="15" Margin="5 5 5 0" Mode="PrimaryLight" Padding="16" Grid.Row="0" MinHeight="80"
+                                              materialDesign:ShadowAssist.ShadowDepth="Depth3" ClipToBounds="False">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -228,11 +236,11 @@
 
 
                                 <DataGrid.Columns>
-                                    <DataGridTemplateColumn Header="Edit" MinWidth="24" x:Name="DataGridCheckBox" CanUserSort="False">
+                                    <DataGridTemplateColumn Header="Edit" MinWidth="24" x:Name="EditColumn" CanUserSort="False">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <Button Margin="2" Style="{StaticResource MaterialDesignRaisedButton}" materialDesign:ButtonAssist.CornerRadius="15" VerticalAlignment="Center" 
-                                                    HorizontalAlignment="Center" 
+                                                    HorizontalAlignment="Center" Tag="{Binding}"
                                                     Background="{Binding ShowBrush}" Click="Edit_Click">
                                                     <materialDesign:PackIcon Kind="PlaylistEdit" Height="20" Width="20"/>
                                                 </Button>
@@ -281,7 +289,6 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="90"/>
                             <ColumnDefinition Width="90"/>
-                            <ColumnDefinition Width="90"/>
                         </Grid.ColumnDefinitions>
 
 
@@ -294,34 +301,16 @@
                                 <materialDesign:PackIcon Kind="File" Height="24" Width="24" Foreground="DimGray"/>
                             </materialDesign:PopupBox.ToggleContent>
                             <StackPanel Orientation="Horizontal">
-                                <Button x:Name="AsDefaultButton" Click="AsDefaultButton_Click" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
+                                <Button x:Name="AsDefaultButton" Click="AsDefaultButton_Click" 
+                                        Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
                                     <materialDesign:PackIcon Kind="FileStar" Height="24" Width="24"/>
-                                    
-                                    <Button.CommandParameter>
-                                        <StackPanel Orientation="Vertical" MinWidth="150">
-                                            <ComboBox  Margin="15 20 15 20"
-                                                           materialDesign:HintAssist.Hint="Select Mode"
-                                                           materialDesign:HintAssist.HintOpacity=".26">
-                                                <ComboBoxItem x:Name="ColorMode" Content="Wire Color"/>
-                                                <ComboBoxItem x:Name="InputMode" Content="Input Control"/>
-                                                <ComboBoxItem x:Name="OutputMode" Content="Output Control"/>
-                                            </ComboBox>
-                                            <Button Style="{StaticResource MaterialDesignFlatButton}" IsDefault="True"
-                                                        Command="materialDesign:DialogHost.CloseDialogCommand">
-                                                <Button.CommandParameter>
-                                                    <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">
-                                                        True
-                                                    </system:Boolean>
-                                                </Button.CommandParameter>
-                                                ACCEPT
-                                            </Button>
-                                        </StackPanel>
-                                    </Button.CommandParameter>
                                 </Button>
-                                <Button x:Name="ImportButton" Click="ImportButton_Click"  Background="WhiteSmoke" BorderBrush="WhiteSmoke">
+                                <Button x:Name="ImportButton" Click="ImportButton_Click"  Background="WhiteSmoke" BorderBrush="WhiteSmoke"
+                                        Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
                                     <materialDesign:PackIcon Kind="FileImport" Height="24" Width="24"  Foreground="DimGray"/>
                                 </Button>
-                                <Button x:Name="ExportButton" Click="ExportButton_Click"  Background="WhiteSmoke" BorderBrush="WhiteSmoke">
+                                <Button x:Name="ExportButton" Click="ExportButton_Click"  Background="WhiteSmoke" BorderBrush="WhiteSmoke"
+                                        Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
                                     <materialDesign:PackIcon Kind="FileExport" Height="24" Width="24"  Foreground="DimGray"/>
                                 </Button>
                             </StackPanel>
@@ -336,17 +325,10 @@
 
                         </Button>
 
-                        <Button x:Name="RefreshButton" Click="RefreshButton_Click"
-                    materialDesign:ButtonAssist.CornerRadius="10" Margin="5"
-                    materialDesign:ShadowAssist.ShadowDepth="Depth1"
-                    Style="{StaticResource MaterialDesignRaisedAccentButton}" Grid.Column="2">
-                            <materialDesign:PackIcon Kind="Refresh" Height="24" Width="24" Foreground="DimGray"/>
-                        </Button>
-
                         <Button x:Name="OKButton" Click="OKButton_Click"
                     materialDesign:ButtonAssist.CornerRadius="5" Margin="5"
                     materialDesign:ShadowAssist.ShadowDepth="Depth3"
-                    Style="{StaticResource MaterialDesignRaisedLightButton}" Grid.Column="3">
+                    Style="{StaticResource MaterialDesignRaisedLightButton}" Grid.Column="2">
                             <materialDesign:PackIcon Kind="CheckBold" Height="24" Width="24" Foreground="LightSeaGreen"/>
                         </Button>
                     </Grid>
@@ -354,6 +336,8 @@
                 </Grid>
 
             </Border>
+            <Border CornerRadius="20" Margin="5" VerticalAlignment="Stretch" x:Name="ActiveBorder"
+            ClipToBounds="False" Visibility="Hidden" Background="#4C808080"/>
 
         </Grid>
     </materialDesign:DialogHost>

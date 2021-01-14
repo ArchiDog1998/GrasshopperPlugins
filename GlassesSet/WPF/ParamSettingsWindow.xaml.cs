@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using ArchiTed_Grasshopper;
 using ArchiTed_Grasshopper.WPF;
 using Grasshopper.Kernel;
+using MaterialDesignThemes.Wpf;
 
 namespace InfoGlasses.WPF
 {
@@ -27,6 +28,8 @@ namespace InfoGlasses.WPF
         private Dictionary<string, AddProxyParams[]> _createProxyDictOutput = new Dictionary<string, AddProxyParams[]>();
 
         private Dictionary<string, System.Drawing.Color> _colorDict = new Dictionary<string, System.Drawing.Color>();
+
+        private IOType _ioType;
 
         private new ParamGlassesComponent Owner { get; }
 
@@ -52,7 +55,60 @@ namespace InfoGlasses.WPF
 
             SetShowProxy(owner.AllParamProxy);
             DrawDataTree(owner.AllParamProxy);
+
+            LanguageChanged();
+            LanguagableComponent.LanguageChanged += WindowLanguageChanged;
+
+            this.Deactivated += (x, y) =>
+            {
+                ActiveBorder.Visibility = Visibility.Visible;
+                //this.Opacity = 0.6;
+            };
+            this.Activated += (x, y) =>
+            {
+                ActiveBorder.Visibility = Visibility.Hidden;
+                //this.Opacity = 1;
+            };
         }
+
+        #region Language
+        protected override void LanguageChanged()
+        {
+            #region Top Tree Translate
+            WindowTitle.Text = LanguagableComponent.GetTransLation(new string[] { "Param Settings Window", "参数设定窗口" });
+            FilterButton.ToolTip = LanguagableComponent.GetTransLation(new string[] { "Click to add the components selected on the canvas to list.", "点击以将在画布中选中的运算器添加到列表当中" });
+
+            HintAssist.SetHint(SearchBox, new Label()
+            {
+                Content = LanguagableComponent.GetTransLation(new string[] { "Search", "搜索" }),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center
+            });
+            #endregion
+
+            #region Major Box
+            EditColumn.Header = LanguagableComponent.GetTransLation(new string[] { "Edit", "编辑" });
+            TypeNameColumn.Header = LanguagableComponent.GetTransLation(new string[] { "Type Name", "类型名称" });
+            TypeFullNameColumn.Header = LanguagableComponent.GetTransLation(new string[] { "Type FullName", "类型全名" });
+            AssemNameColumn.Header = LanguagableComponent.GetTransLation(new string[] { "Assembly Name", "类库名称" });
+            AssemIdColumn.Header = LanguagableComponent.GetTransLation(new string[] { "Assembly Guid", "类库全局唯一标识符（Guid）" });
+
+            FirstExpenderName.Text = LanguagableComponent.GetTransLation(new string[] { "Filter", "过滤器" });
+            SecondExpenderName.ToolTip = LanguagableComponent.GetTransLation(new string[] { "Column Visibility", "列可视性" });
+            #endregion
+
+            #region B0ttom Four Translate
+            FileOption.ToolTip = LanguagableComponent.GetTransLation(new string[] { "File Option", "文件选项" });
+            AsDefaultButton.ToolTip = LanguagableComponent.GetTransLation(new string[] { "Click to save as template.", "点击以保存一个模板。" });
+            ImportButton.ToolTip = LanguagableComponent.GetTransLation(new string[] { "Click to import a file.", "点击以导入一个文件。" });
+            ExportButton.ToolTip = LanguagableComponent.GetTransLation(new string[] { "Click to export a file.", "点击以导出一个文件。" });
+
+            CancelButton.ToolTip = LanguagableComponent.GetTransLation(new string[] { "Click to cancel the changes and close this window.", "单击以取消修改，并关闭此窗口。" });
+            OKButton.ToolTip = LanguagableComponent.GetTransLation(new string[] { "Click to comfirm the change and close the window.", "单击以确认修改并关闭窗口。" });
+            #endregion
+
+        }
+        #endregion
 
         #region Top Respond
         private void WindowTitle_MouseMove(object sender, MouseEventArgs e)
@@ -190,6 +246,10 @@ namespace InfoGlasses.WPF
             AssemIdColumn.Visibility = GetVisibility((CheckBox)sender);
         }
 
+        private void Edit_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.MessageBox.Show(sender.ToString());
+        }
 
         private System.Windows.Visibility GetVisibility(CheckBox box)
         {
@@ -278,58 +338,62 @@ namespace InfoGlasses.WPF
         #region Bottom four respond
         private void AsDefaultButton_Click(object sender, RoutedEventArgs e)
         {
+            this._ioType = IOType.Default;
             //MessageBox.Content = Owner.Writetxt();
             //MessageSnackBar.IsActive = true;
         }
 
         private void ImportButton_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            openFileDialog.Title = LanguagableComponent.GetTransLation(new string[] { "Select a template", "选择一个模板" });
+            this._ioType = IOType.Import;
+
+            //System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            //openFileDialog.Title = LanguagableComponent.GetTransLation(new string[] { "Select a template", "选择一个模板" });
 
 
-            openFileDialog.Filter = "*.txt|*.txt";
+            //openFileDialog.Filter = "*.txt|*.txt";
 
 
-            openFileDialog.FileName = string.Empty;
+            //openFileDialog.FileName = string.Empty;
 
 
-            openFileDialog.Multiselect = false;
+            //openFileDialog.Multiselect = false;
 
 
-            openFileDialog.RestoreDirectory = true;
+            //openFileDialog.RestoreDirectory = true;
 
 
-            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                string path = openFileDialog.FileName;
-                //string result = Owner.Readtxt(path);
-                //Owner.UpdateAllProxy();
-                //SetShowProxy(Owner.AllProxy);
+            //if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            //{
+            //    string path = openFileDialog.FileName;
+            //    string result = Owner.Readtxt(path);
+            //    Owner.UpdateAllProxy();
+            //    SetShowProxy(Owner.AllProxy);
 
-                //MessageBox.Content = result;
-                //MessageSnackBar.IsActive = true;
-            }
+            //    MessageBox.Content = result;
+            //    MessageSnackBar.IsActive = true;
+            //}
 
 
         }
 
         private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this._ioType = IOType.Export;
+            //System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog();
 
-            saveFileDialog.Title = LanguagableComponent.GetTransLation(new string[] { "Set a Paht", "设定一个路径" });
-            saveFileDialog.Filter = "*.txt|*.txt";
-            saveFileDialog.FileName = "Infoglasses_Default";
-            saveFileDialog.SupportMultiDottedExtensions = false;
-            saveFileDialog.RestoreDirectory = true;
+            //saveFileDialog.Title = LanguagableComponent.GetTransLation(new string[] { "Set a Paht", "设定一个路径" });
+            //saveFileDialog.Filter = "*.txt|*.txt";
+            //saveFileDialog.FileName = "Infoglasses_Default";
+            //saveFileDialog.SupportMultiDottedExtensions = false;
+            //saveFileDialog.RestoreDirectory = true;
 
-            if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                string path = saveFileDialog.FileName;
-                //MessageBox.Content = Owner.Writetxt(path);
-                //MessageSnackBar.IsActive = true;
-            }
+            //if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            //{
+            //    string path = saveFileDialog.FileName;
+            //    MessageBox.Content = Owner.Writetxt(path);
+            //    MessageSnackBar.IsActive = true;
+            //}
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -339,11 +403,6 @@ namespace InfoGlasses.WPF
             Owner.ColorDict = this._colorDict;
             Owner.ExpireSolution(true);
             this.Close();
-        }
-
-        private void RefreshButton_Click(object sender, RoutedEventArgs e)
-        {
-            Owner.ExpireSolution(true);
         }
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
@@ -360,14 +419,46 @@ namespace InfoGlasses.WPF
 
         #endregion
 
-        private void Edit_Click(object sender, RoutedEventArgs e)
-        {
 
-        }
 
         private void DialogHost_DialogOpened(object sender, MaterialDesignThemes.Wpf.DialogOpenedEventArgs eventArgs)
         {
+            ActiveBorder.Visibility = Visibility.Visible;
+            HintAssist.SetHint(DialogSelect, new Label()
+            {
+                Content = LanguagableComponent.GetTransLation(new string[] { "Select Mode", "选择模式" }),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center
+            });
+            ColorMode.Content = LanguagableComponent.GetTransLation(new string[] { "Wire Color", "连线颜色" });
+            InputMode.Content = LanguagableComponent.GetTransLation(new string[] { "Input Control", "输入控制项" });
+            OutputMode.Content = LanguagableComponent.GetTransLation(new string[] { "Output Control", "输出控制项" });
+            DialogAccept.Content = LanguagableComponent.GetTransLation(new string[] { "ACCEPT", "接受" });
+        }
 
+        private void SaveIO_Click(object sender, RoutedEventArgs e)
+        {
+            switch (this._ioType)
+            {
+                case IOType.Default:
+                    break;
+                case IOType.Import:
+                    break;
+                case IOType.Export:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("_ioType", "ioType is invalid!");
+            }
+        }
+
+        private void DialogHost_DialogClosing(object sender, DialogClosingEventArgs eventArgs)
+        {
+            ActiveBorder.Visibility = Visibility.Hidden;
+        }
+
+        private void DialogSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            DialogAccept.IsEnabled = true;
         }
     }
 }
