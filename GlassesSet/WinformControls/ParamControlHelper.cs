@@ -255,7 +255,7 @@ namespace InfoGlasses.WinformControls
                 return;
             }
 
-            CreateNewObject(obj, target, isInputSide, proxies[index].OutIndex, leftMove, init);
+            CreateNewObject(obj, target, isInputSide, proxies[index].Index, leftMove, init);
         }
 
         public static void CreateNewObject(IGH_DocumentObject obj, IGH_Param target, bool isInputSide, int index = 0, float leftMove = 100, string init = null)

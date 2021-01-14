@@ -248,7 +248,8 @@ namespace InfoGlasses.WPF
 
         private void Edit_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.MessageBox.Show(sender.ToString());
+            GooTypeProxy aimProxy = (GooTypeProxy)((Button)sender).Tag;
+            System.Windows.Forms.MessageBox.Show(aimProxy.TypeName);
         }
 
         private System.Windows.Visibility GetVisibility(CheckBox box)
@@ -339,61 +340,16 @@ namespace InfoGlasses.WPF
         private void AsDefaultButton_Click(object sender, RoutedEventArgs e)
         {
             this._ioType = IOType.Default;
-            //MessageBox.Content = Owner.Writetxt();
-            //MessageSnackBar.IsActive = true;
         }
 
         private void ImportButton_Click(object sender, RoutedEventArgs e)
         {
             this._ioType = IOType.Import;
-
-            //System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            //openFileDialog.Title = LanguagableComponent.GetTransLation(new string[] { "Select a template", "选择一个模板" });
-
-
-            //openFileDialog.Filter = "*.txt|*.txt";
-
-
-            //openFileDialog.FileName = string.Empty;
-
-
-            //openFileDialog.Multiselect = false;
-
-
-            //openFileDialog.RestoreDirectory = true;
-
-
-            //if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            //{
-            //    string path = openFileDialog.FileName;
-            //    string result = Owner.Readtxt(path);
-            //    Owner.UpdateAllProxy();
-            //    SetShowProxy(Owner.AllProxy);
-
-            //    MessageBox.Content = result;
-            //    MessageSnackBar.IsActive = true;
-            //}
-
-
         }
 
         private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
             this._ioType = IOType.Export;
-            //System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-
-            //saveFileDialog.Title = LanguagableComponent.GetTransLation(new string[] { "Set a Paht", "设定一个路径" });
-            //saveFileDialog.Filter = "*.txt|*.txt";
-            //saveFileDialog.FileName = "Infoglasses_Default";
-            //saveFileDialog.SupportMultiDottedExtensions = false;
-            //saveFileDialog.RestoreDirectory = true;
-
-            //if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            //{
-            //    string path = saveFileDialog.FileName;
-            //    MessageBox.Content = Owner.Writetxt(path);
-            //    MessageSnackBar.IsActive = true;
-            //}
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -441,10 +397,91 @@ namespace InfoGlasses.WPF
             switch (this._ioType)
             {
                 case IOType.Default:
+                    switch(DialogSelect.SelectedIndex)
+                    {
+                        case 0:
+                            MessageBox.Content = Owner.WriteColorTxt();
+                            MessageSnackBar.IsActive = true;
+                            break;
+                        case 1:
+                            MessageBox.Content = Owner.WriteInputTxt();
+                            MessageSnackBar.IsActive = true;
+                            break;
+                        case 2:
+                            MessageBox.Content = Owner.WriteOutputTxt();
+                            MessageSnackBar.IsActive = true;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException("SelectedIndex", "SelectedIndex is invalid!");
+                    }
                     break;
                 case IOType.Import:
+                    switch (DialogSelect.SelectedIndex)
+                    {
+                        case 0:
+                            IO_Helper.ImportOpenFileDialog((path) =>
+                            {
+                                string result = Owner.ReadColorTxt(path);
+                                //Owner.UpdateAllProxy();
+                                SetShowProxy(Owner.AllParamProxy);
+
+                                MessageBox.Content = result;
+                                MessageSnackBar.IsActive = true;
+                            });
+                            break;
+                        case 1:
+                            IO_Helper.ImportOpenFileDialog((path) =>
+                            {
+                                string result = Owner.ReadInputTxt(path);
+                                //Owner.UpdateAllProxy();
+                                //SetShowProxy(Owner.AllParamProxy);
+
+                                MessageBox.Content = result;
+                                MessageSnackBar.IsActive = true;
+                            });
+                            break;
+                        case 2:
+                            IO_Helper.ImportOpenFileDialog((path) =>
+                            {
+                                string result = Owner.ReadOutputTxt(path);
+                                //Owner.UpdateAllProxy();
+                                //SetShowProxy(Owner.AllParamProxy);
+
+                                MessageBox.Content = result;
+                                MessageSnackBar.IsActive = true;
+                            });
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException("SelectedIndex", "SelectedIndex is invalid!");
+                    }
                     break;
                 case IOType.Export:
+                    switch (DialogSelect.SelectedIndex)
+                    {
+                        case 0:
+                            IO_Helper.ExportSaveFileDialog("WireColors_Default", (path) =>
+                            {
+                                MessageBox.Content = Owner.WriteColorTxt(path);
+                                MessageSnackBar.IsActive = true;
+                            });
+                            break;
+                        case 1:
+                            IO_Helper.ExportSaveFileDialog("InputControl_Default", (path) =>
+                            {
+                                MessageBox.Content = Owner.WriteInputTxt(path);
+                                MessageSnackBar.IsActive = true;
+                            });
+                            break;
+                        case 2:
+                            IO_Helper.ExportSaveFileDialog("OutputControl_Default", (path) =>
+                            {
+                                MessageBox.Content = Owner.WriteOutputTxt(path);
+                                MessageSnackBar.IsActive = true;
+                            });
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException("SelectedIndex", "SelectedIndex is invalid!");
+                    }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("_ioType", "ioType is invalid!");

@@ -18,13 +18,13 @@ namespace InfoGlasses
     public struct AddProxyParams
     {
         public Guid Guid { get; }
-        public int OutIndex { get; }
+        public int Index { get; }
         public Iconable Icon { get;}
         public string Name { get; }
-        public AddProxyParams(Guid guid, int outIndex, int picturesize = 24)
+        public AddProxyParams(Guid guid, int Index, int picturesize = 24)
         {
             this.Guid = guid;
-            this.OutIndex = outIndex;
+            this.Index = Index;
             this.Icon = null;
             this.Name = "";
 

@@ -118,5 +118,63 @@ namespace ArchiTed_Grasshopper
             else return null;
         }
         #endregion
+
+        #region Message
+        public static string GetWriteMessage(string path)
+        {
+            return LanguagableComponent.GetTransLation(new string[] { "Export successfully! \n Location: ", "导出成功！\n 位置：" }) + path;
+        }
+
+        public static string GetReadMessage(int successCount, int failCount)
+        {
+            string all = successCount.ToString() + LanguagableComponent.GetTransLation(new string[] { " data imported successfully!", "个数据导入成功！" });
+            if (failCount > 0)
+            {
+                all += "\n" + failCount.ToString() + LanguagableComponent.GetTransLation(new string[] { " data imported failed!", "个数据导入失败！" });
+            }
+            return all;
+        }
+
+        public static void ImportOpenFileDialog(Action<string> openAction)
+        {
+
+            System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            openFileDialog.Title = LanguagableComponent.GetTransLation(new string[] { "Select a template", "选择一个模板" });
+
+
+            openFileDialog.Filter = "*.txt|*.txt";
+
+
+            openFileDialog.FileName = string.Empty;
+
+
+            openFileDialog.Multiselect = false;
+
+
+            openFileDialog.RestoreDirectory = true;
+
+
+            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                openAction.Invoke(openFileDialog.FileName);
+            }
+        }
+
+        public static void ExportSaveFileDialog(string defaultName, Action<string> saveAction)
+        {
+            System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+
+            saveFileDialog.Title = LanguagableComponent.GetTransLation(new string[] { "Set a Paht", "设定一个路径" });
+            saveFileDialog.Filter = "*.txt|*.txt";
+            saveFileDialog.FileName = "defaultName";
+            saveFileDialog.SupportMultiDottedExtensions = false;
+            saveFileDialog.RestoreDirectory = true;
+
+            if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                saveAction.Invoke( saveFileDialog.FileName);
+            }
+        }
+        #endregion
     }
 }
