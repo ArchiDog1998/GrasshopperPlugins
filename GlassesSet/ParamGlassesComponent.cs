@@ -215,6 +215,7 @@ namespace InfoGlasses
         public List<GooTypeProxy> ShowProxy { get; internal set; }
 
 
+        #region ParamSettings Control
         public Dictionary<string, AddProxyParams[]> CreateProxyDictInput { get; set; }
 
         public Dictionary<string, AddProxyParams[]> CreateProxyDictOutput { get; set; }
@@ -223,6 +224,7 @@ namespace InfoGlasses
 
 
         public Dictionary<string, Color> ColorDict { get; set; }
+        #endregion
 
         /// <summary>
         /// Initializes a new instance of the ParamGlassesComponent class.
@@ -230,7 +232,7 @@ namespace InfoGlasses
         public ParamGlassesComponent()
             : base(GetTransLation(new string[] { "ParamGlasses", "参数眼镜" }), GetTransLation(new string[] { "Param", "参数" }),
                  GetTransLation(new string[] { "To show the wire's and parameter's advances information.Right click or double click to have advanced options.",
-                     "显示连线或参数的高级信息。右键或者双击可以获得更多选项。" }), "Params", "Showcase Tools", windowsType: typeof(WireColorsWindow))
+                     "显示连线或参数的高级信息。右键或者双击可以获得更多选项。" }), "Params", "Showcase Tools", windowsType: typeof(ParamSettingsWindow))
 
         {
             LanguageChanged += ResponseToLanguageChanged;
@@ -608,8 +610,8 @@ namespace InfoGlasses
 
         protected override void AppendAdditionComponentMenuItems(ToolStripDropDown menu)
         {
-            ToolStripMenuItem exceptionsItem = new ToolStripMenuItem(GetTransLation(new string[] { "WireColors", "连线颜色" }), Properties.Resources.ExceptionIcon, exceptionClick);
-            exceptionsItem.ToolTipText = GetTransLation(new string[] { "A window to set the wire's color.", "可以设置连线颜色的窗口。" });
+            ToolStripMenuItem exceptionsItem = new ToolStripMenuItem(GetTransLation(new string[] { "ParamSettings", "参数设定" }), Properties.Resources.ExceptionIcon, exceptionClick);
+            exceptionsItem.ToolTipText = GetTransLation(new string[] { "A window to set the wire's color, input controls and output controls.", "可以设置连线颜色、输入控制项、输出控制项的窗口。" });
             exceptionsItem.Font = GH_FontServer.StandardBold;
             exceptionsItem.ForeColor = Color.FromArgb(19, 34, 122);
 
@@ -1009,7 +1011,7 @@ namespace InfoGlasses
             }
         }
         #endregion
-        private bool IsPersistentParam(Type type, out Type dataType)
+        public bool IsPersistentParam(Type type, out Type dataType)
         {
             dataType = default(Type);
             if (type == null)

@@ -120,6 +120,14 @@ namespace InfoGlasses.WPF
         #endregion
 
         #region Top Respond
+        private void WindowTitle_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                this.DragMove();
+            }
+        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             SearchBox.Text = null;
@@ -325,37 +333,6 @@ namespace InfoGlasses.WPF
 
         #region Allbutton Events
 
-        ///// <summary>
-        ///// ModeChanged.
-        ///// </summary>
-        ///// <param name="sender"></param>
-        ///// <param name="e"></param>
-        //private void AllButton_Click(object sender, RoutedEventArgs e)
-        //{
-        //    //System.Windows.Forms.MessageBox.Show(Datas.Items[0].ToString());
-        //    for (int i = 0; i < Datas.Items.Count; i++)
-        //    {
-        //        DataGridRow ObjRow = (DataGridRow)(Datas.ItemContainerGenerator.ContainerFromIndex(i));
-        //        if (ObjRow != null)
-        //        {
-        //            FrameworkElement objElement = Datas.Columns[0].GetCellContent(ObjRow);
-        //            if (objElement != null)
-        //            {
-        //                CheckBox checkBox = objElement as CheckBox;
-        //                checkBox.IsChecked = AllButton.IsChecked.Value;
-        //            }
-        //            //else
-        //            //{
-        //            //    System.Windows.Forms.MessageBox.Show(LanguagableComponent.GetTransLation(new string[] { "Failed to set all button", "设定所有按钮失败" }));
-        //            //}
-        //        }
-        //        //else
-        //        //{
-        //        //    System.Windows.Forms.MessageBox.Show(LanguagableComponent.GetTransLation(new string[] { "Failed to set all button", "设定所有按钮失败" }));
-        //        //}
-        //    }
-        //}
-
         private void Datas_LoadingRow(object sender, DataGridRowEventArgs e)
         {
 
@@ -406,69 +383,6 @@ namespace InfoGlasses.WPF
             }
         }
 
-
-        //private void checkAllButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //    List<bool> allBool = new List<bool>();
-        //    for (int i = 0; i < Datas.Items.Count; i++)
-        //    {
-        //        DataGridRow ObjRow = (DataGridRow)(Datas.ItemContainerGenerator.ContainerFromIndex(i));
-        //        if (ObjRow != null)
-        //        {
-        //            FrameworkElement objElement = Datas.Columns[0].GetCellContent(ObjRow);
-        //            if (objElement != null)
-        //            {
-        //                CheckBox checkBox = objElement as CheckBox;
-        //                allBool.Add(checkBox.IsChecked.Value);
-        //            }
-        //        }
-        //    }
-        //    //foreach (var item in Owner.AllProxy)
-        //    //{
-        //    //    allBool.Add(WindowSwitchControl.SelectedIndex == 0 ? item.IsExceptNormal : item.IsExceptPlugin);
-        //    //}
-        //    CheckAllButton(allBool);
-        //}
-
-        //private void CheckAllButton(List<bool> allBool)
-        //{
-        //    bool isChecked = true;
-        //    bool isUnChecked = true;
-        //    foreach (var item in allBool)
-        //    {
-        //        if (!isChecked && !isUnChecked)
-        //        {
-        //            AllButton.IsChecked = null;
-        //            return;
-        //        }
-
-        //        switch (item)
-        //        {
-        //            case false:
-        //                isChecked = false;
-        //                break;
-        //            case true:
-        //                isUnChecked = false;
-        //                break;
-        //        }
-        //    }
-
-        //    if (isChecked)
-        //    {
-        //        AllButton.IsChecked = true;
-        //        return;
-        //    }
-
-        //    else if (isUnChecked)
-        //    {
-        //        AllButton.IsChecked = false;
-        //        return;
-        //    }
-
-
-        //    System.Windows.Forms.MessageBox.Show("Something wrong with allbutton check!");
-        //}
         #endregion
         #endregion
 
@@ -546,14 +460,6 @@ namespace InfoGlasses.WPF
         {
             Owner.ExpireSolution(true);
             this.Close();
-        }
-
-        private void WindowTitle_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                this.DragMove();
-            }
         }
 
         protected override void OnClosed(EventArgs e)

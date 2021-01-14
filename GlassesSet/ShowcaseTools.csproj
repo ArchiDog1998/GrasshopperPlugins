@@ -107,8 +107,8 @@
     <Compile Include="WPF\ObjectProxy.cs" />
     <Compile Include="WPF\GooTypeProxy.cs" />
     <Compile Include="WPF\ParamGlassesProxy.cs" />
-    <Compile Include="WPF\WireColorsWindow.xaml.cs">
-      <DependentUpon>WireColorsWindow.xaml</DependentUpon>
+    <Compile Include="WPF\ParamSettingsWindow.xaml.cs">
+      <DependentUpon>ParamSettingsWindow.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -177,7 +177,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WPF\WireColorsWindow.xaml">
+    <Page Include="WPF\ParamSettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

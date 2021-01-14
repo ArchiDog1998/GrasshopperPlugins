@@ -22,12 +22,18 @@ namespace InfoGlasses.WPF
         public ParamGlassesComponent Owner { get; }
         public Color ShowColor => Owner.GetColor(this.TypeFullName);
 
-        public int OutParamIndex { get; set; }
+        public System.Windows.Media.Brush ShowBrush => new System.Windows.Media.SolidColorBrush(ColorExtension.ConvertToMediaColor(ShowColor));
 
         public string TypeFullName { get; }
         public string TypeName{ get; }
-        public bool IsPlugin = true;
+        public bool IsPlugin { get; } = true;
+        public string AssemName { get; } = string.Empty;
 
+        public Guid AssemId { get; } = Guid.Empty;
+
+        public GH_AssemblyInfo Assembly { get; } = null;
+
+        public Type DataType { get; }
 
         public string FindDesc => TypeName + TypeFullName;
 
@@ -36,11 +42,15 @@ namespace InfoGlasses.WPF
             this.Owner = owner;
             this.TypeFullName = type.FullName;
             this.TypeName = type.Name;
+            this.DataType = type;
             foreach (var item in Grasshopper.Instances.ComponentServer.Libraries)
             {
                 if (item.Assembly == type.Assembly)
                 {
+                    this.Assembly = item;
                     this.IsPlugin = !item.IsCoreLibrary;
+                    this.AssemName = item.Name;
+                    this.AssemId = item.Id;
                     break;
                 }
             }
