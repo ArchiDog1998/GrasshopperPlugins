@@ -208,11 +208,16 @@ namespace InfoGlasses.WPF
                 StackPanel panel = new StackPanel();
                 panel.MouseDown += CategoryClick;
                 panel.Orientation = Orientation.Horizontal;
-                panel.Children.Add(new Image()
+                try
                 {
-                    Source = CanvasRenderEngine.BitmapToBitmapImage(
-                        new System.Drawing.Bitmap(Grasshopper.Instances.ComponentServer.GetCategoryIcon(categoryItem.Key), 20, 20)),
-                });
+                    panel.Children.Add(new Image()
+                    {
+                        Source = CanvasRenderEngine.BitmapToBitmapImage(
+                            new System.Drawing.Bitmap(Grasshopper.Instances.ComponentServer.GetCategoryIcon(categoryItem.Key), 20, 20)),
+                    });
+                }
+                catch { }
+
                 panel.Children.Add(new Label()
                 {
                     Content = categoryItem.Key,
