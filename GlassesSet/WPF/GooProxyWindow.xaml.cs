@@ -80,7 +80,6 @@ namespace InfoGlasses.WPF
             #region B0ttom Four Translate
 
             CancelButton.ToolTip = LanguagableComponent.GetTransLation(new string[] { "Click to cancel the changes and close this window.", "单击以取消修改，并关闭此窗口。" });
-            RefreshButton.ToolTip = LanguagableComponent.GetTransLation(new string[] { "Click to refresh the component.", "单击以刷新运算器。" });
             OKButton.ToolTip = LanguagableComponent.GetTransLation(new string[] { "Click to comfirm the change and close the window.", "单击以确认修改并关闭窗口。" });
             #endregion
 
@@ -97,7 +96,18 @@ namespace InfoGlasses.WPF
         }
         private void WindowSwitchControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            MajorGrid.Children.Clear();
+            switch(SelectionBox.SelectedIndex)
+            {
+                case 0:
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("selectedindex", "index is out of range.");
+            }
             //DataGridPropertyChange();
             //DrawDataTree(GetRightStateProxy(Owner.AllProxy));
         }
@@ -119,11 +129,6 @@ namespace InfoGlasses.WPF
             Owner.CreateProxyDictOutput[this._proxy.TypeFullName] = this._outputProxy;
             Owner.ExpireSolution(true);
             this.Close();
-        }
-
-        private void RefreshButton_Click(object sender, RoutedEventArgs e)
-        {
-            Owner.ExpireSolution(true);
         }
 
         private void OKButton_Click(object sender, RoutedEventArgs e)

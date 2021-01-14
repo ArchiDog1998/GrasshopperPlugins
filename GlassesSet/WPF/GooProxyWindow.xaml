@@ -119,8 +119,8 @@
                                     <materialDesign:PackIcon Kind="SelectionSearch" Width="20" Height="20" />
                                 </Button>-->
 
-                                <ComboBox  SelectedIndex="0" Margin="10 0 0 0" BorderThickness="0"  materialDesign:ColorZoneAssist.Mode="Standard"
-                          materialDesign:TextFieldAssist.UnderlineBrush="{DynamicResource MaterialDesignPaper}"
+                                <ComboBox  SelectedIndex="0" Margin="10 0 0 0" BorderThickness="0"  materialDesign:ColorZoneAssist.Mode="Standard" x:Name="SelectionBox"
+                          materialDesign:TextFieldAssist.UnderlineBrush="{DynamicResource MaterialDesignPaper}" SelectionChanged="WindowSwitchControl_SelectionChanged"
                           BorderBrush="{DynamicResource MaterialDesignPaper}">
                                     <ComboBoxItem x:Name="ColorMode" Content="Wire Color"/>
                                     <ComboBoxItem x:Name="InputMode" Content="Input Control"/>
@@ -140,12 +140,9 @@
                     <materialDesign:ColorZone Grid.Row="1" Margin="20 15 20 15" CornerRadius="15" Padding="15" 
                                       Mode="Standard"  ClipToBounds="False"
                      materialDesign:ShadowAssist.ShadowDepth="Depth2" VerticalAlignment="Stretch">
-                        <Grid Margin="2" x:Name="ExpanderHeader">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
+                        <Grid Margin="2" >
+
+                            <Grid x:Name="MajorGrid"/>
 
                             <materialDesign:Snackbar x:Name="MessageSnackBar" IsActive="False"  HorizontalAlignment="Stretch" Grid.ColumnSpan="3">
                                 <materialDesign:SnackbarMessage Name="MessageBox" Content="MessageSnackBar." ActionClick="SnackbarMessage_ActionClick">
@@ -163,7 +160,6 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="90"/>
                             <ColumnDefinition Width="90"/>
-                            <ColumnDefinition Width="90"/>
                         </Grid.ColumnDefinitions>
 
                         <Button x:Name="CancelButton"  Click="CancelButton_Click"
@@ -174,17 +170,10 @@
 
                         </Button>
 
-                        <Button x:Name="RefreshButton" Click="RefreshButton_Click"
-                    materialDesign:ButtonAssist.CornerRadius="10" Margin="5"
-                    materialDesign:ShadowAssist.ShadowDepth="Depth1"
-                    Style="{StaticResource MaterialDesignRaisedAccentButton}" Grid.Column="2">
-                            <materialDesign:PackIcon Kind="Refresh" Height="24" Width="24" Foreground="DimGray"/>
-                        </Button>
-
                         <Button x:Name="OKButton" Click="OKButton_Click"
                     materialDesign:ButtonAssist.CornerRadius="5" Margin="5"
                     materialDesign:ShadowAssist.ShadowDepth="Depth3"
-                    Style="{StaticResource MaterialDesignRaisedLightButton}" Grid.Column="3">
+                    Style="{StaticResource MaterialDesignRaisedLightButton}" Grid.Column="2">
                             <materialDesign:PackIcon Kind="CheckBold" Height="24" Width="24" Foreground="LightSeaGreen"/>
                         </Button>
                     </Grid>
