@@ -239,10 +239,7 @@
 
 
                                     <DataGridCheckBoxColumn.Header>
-                                        <StackPanel Orientation="Horizontal">
-                                            <CheckBox Click="AllButton_Click" x:Name="AllButton"/>
-                                            <Label Content="Normal"/>
-                                        </StackPanel>
+                                        <Label Content="Normal"/>
                                     </DataGridCheckBoxColumn.Header>
                                 </DataGridCheckBoxColumn>
 

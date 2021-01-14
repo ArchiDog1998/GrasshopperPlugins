@@ -113,7 +113,7 @@ namespace InfoGlasses.WPF
             if (DataGridCheckBox != null)
             {
                 bool IsNormal = WindowSwitchControl.SelectedIndex == 0;
-                ((Label)((StackPanel)DataGridCheckBox.Header).Children[1]).Content = IsNormal ? LanguagableComponent.GetTransLation(new string[] { "Normal", "常规项" }) : LanguagableComponent.GetTransLation(new string[] { "Plugin", "插件项" });
+                ((Label)DataGridCheckBox.Header).Content = IsNormal ? LanguagableComponent.GetTransLation(new string[] { "Normal", "常规项" }) : LanguagableComponent.GetTransLation(new string[] { "Plugin", "插件项" });
                 DataGridCheckBox.Binding = new Binding(IsNormal ? "IsExceptNormal" : "IsExceptPlugin");
             }
         }
@@ -325,41 +325,41 @@ namespace InfoGlasses.WPF
 
         #region Allbutton Events
 
-        /// <summary>
-        /// ModeChanged.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void AllButton_Click(object sender, RoutedEventArgs e)
-        {
-            //System.Windows.Forms.MessageBox.Show(Datas.Items[0].ToString());
-            for (int i = 0; i < Datas.Items.Count; i++)
-            {
-                DataGridRow ObjRow = (DataGridRow)(Datas.ItemContainerGenerator.ContainerFromIndex(i));
-                if (ObjRow != null)
-                {
-                    FrameworkElement objElement = Datas.Columns[0].GetCellContent(ObjRow);
-                    if (objElement != null)
-                    {
-                        CheckBox checkBox = objElement as CheckBox;
-                        checkBox.IsChecked = AllButton.IsChecked.Value;
-                    }
-                    //else
-                    //{
-                    //    System.Windows.Forms.MessageBox.Show(LanguagableComponent.GetTransLation(new string[] { "Failed to set all button", "设定所有按钮失败" }));
-                    //}
-                }
-                //else
-                //{
-                //    System.Windows.Forms.MessageBox.Show(LanguagableComponent.GetTransLation(new string[] { "Failed to set all button", "设定所有按钮失败" }));
-                //}
-            }
-        }
+        ///// <summary>
+        ///// ModeChanged.
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        //private void AllButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    //System.Windows.Forms.MessageBox.Show(Datas.Items[0].ToString());
+        //    for (int i = 0; i < Datas.Items.Count; i++)
+        //    {
+        //        DataGridRow ObjRow = (DataGridRow)(Datas.ItemContainerGenerator.ContainerFromIndex(i));
+        //        if (ObjRow != null)
+        //        {
+        //            FrameworkElement objElement = Datas.Columns[0].GetCellContent(ObjRow);
+        //            if (objElement != null)
+        //            {
+        //                CheckBox checkBox = objElement as CheckBox;
+        //                checkBox.IsChecked = AllButton.IsChecked.Value;
+        //            }
+        //            //else
+        //            //{
+        //            //    System.Windows.Forms.MessageBox.Show(LanguagableComponent.GetTransLation(new string[] { "Failed to set all button", "设定所有按钮失败" }));
+        //            //}
+        //        }
+        //        //else
+        //        //{
+        //        //    System.Windows.Forms.MessageBox.Show(LanguagableComponent.GetTransLation(new string[] { "Failed to set all button", "设定所有按钮失败" }));
+        //        //}
+        //    }
+        //}
 
         private void Datas_LoadingRow(object sender, DataGridRowEventArgs e)
         {
 
-            int count = Datas.Items.Count;
+            //int count = Datas.Items.Count;
             for (int i = 0; i < Datas.Items.Count; i++)
             {
                 DataGridRow ObjRow = (DataGridRow)(Datas.ItemContainerGenerator.ContainerFromIndex(i));
@@ -369,8 +369,9 @@ namespace InfoGlasses.WPF
                     if (objElement != null)
                     {
                         CheckBox checkBox = objElement as CheckBox;
-                        checkBox.Click -= checkAllButton_Click;
-                        checkBox.Click += checkAllButton_Click;
+                        checkBox.Click -= selcetion_Click;
+                        checkBox.Click += selcetion_Click;
+                        //checkBox.Click += checkAllButton_Click;
                     }
 
                 }
@@ -382,72 +383,92 @@ namespace InfoGlasses.WPF
                 ExceptionProxy proxy = item as ExceptionProxy;
                 allBool.Add(WindowSwitchControl.SelectedIndex == 0 ? proxy.IsExceptNormal : proxy.IsExceptPlugin);
             }
-            CheckAllButton(allBool);
+            //CheckAllButton(allBool);
         }
 
-
-        private void checkAllButton_Click(object sender, RoutedEventArgs e)
+        private void selcetion_Click(object sender, RoutedEventArgs e)
         {
-
-            List<bool> allBool = new List<bool>();
             for (int i = 0; i < Datas.Items.Count; i++)
             {
                 DataGridRow ObjRow = (DataGridRow)(Datas.ItemContainerGenerator.ContainerFromIndex(i));
                 if (ObjRow != null)
                 {
+                    if (!ObjRow.IsSelected) continue;
+
                     FrameworkElement objElement = Datas.Columns[0].GetCellContent(ObjRow);
                     if (objElement != null)
                     {
                         CheckBox checkBox = objElement as CheckBox;
-                        allBool.Add(checkBox.IsChecked.Value);
+                        checkBox.IsChecked = ((CheckBox)sender).IsChecked;
                     }
+
                 }
             }
-            //foreach (var item in Owner.AllProxy)
-            //{
-            //    allBool.Add(WindowSwitchControl.SelectedIndex == 0 ? item.IsExceptNormal : item.IsExceptPlugin);
-            //}
-            CheckAllButton(allBool);
         }
 
-        private void CheckAllButton(List<bool> allBool)
-        {
-            bool isChecked = true;
-            bool isUnChecked = true;
-            foreach (var item in allBool)
-            {
-                if (!isChecked && !isUnChecked)
-                {
-                    AllButton.IsChecked = null;
-                    return;
-                }
 
-                switch (item)
-                {
-                    case false:
-                        isChecked = false;
-                        break;
-                    case true:
-                        isUnChecked = false;
-                        break;
-                }
-            }
+        //private void checkAllButton_Click(object sender, RoutedEventArgs e)
+        //{
 
-            if (isChecked)
-            {
-                AllButton.IsChecked = true;
-                return;
-            }
+        //    List<bool> allBool = new List<bool>();
+        //    for (int i = 0; i < Datas.Items.Count; i++)
+        //    {
+        //        DataGridRow ObjRow = (DataGridRow)(Datas.ItemContainerGenerator.ContainerFromIndex(i));
+        //        if (ObjRow != null)
+        //        {
+        //            FrameworkElement objElement = Datas.Columns[0].GetCellContent(ObjRow);
+        //            if (objElement != null)
+        //            {
+        //                CheckBox checkBox = objElement as CheckBox;
+        //                allBool.Add(checkBox.IsChecked.Value);
+        //            }
+        //        }
+        //    }
+        //    //foreach (var item in Owner.AllProxy)
+        //    //{
+        //    //    allBool.Add(WindowSwitchControl.SelectedIndex == 0 ? item.IsExceptNormal : item.IsExceptPlugin);
+        //    //}
+        //    CheckAllButton(allBool);
+        //}
 
-            else if (isUnChecked)
-            {
-                AllButton.IsChecked = false;
-                return;
-            }
+        //private void CheckAllButton(List<bool> allBool)
+        //{
+        //    bool isChecked = true;
+        //    bool isUnChecked = true;
+        //    foreach (var item in allBool)
+        //    {
+        //        if (!isChecked && !isUnChecked)
+        //        {
+        //            AllButton.IsChecked = null;
+        //            return;
+        //        }
+
+        //        switch (item)
+        //        {
+        //            case false:
+        //                isChecked = false;
+        //                break;
+        //            case true:
+        //                isUnChecked = false;
+        //                break;
+        //        }
+        //    }
+
+        //    if (isChecked)
+        //    {
+        //        AllButton.IsChecked = true;
+        //        return;
+        //    }
+
+        //    else if (isUnChecked)
+        //    {
+        //        AllButton.IsChecked = false;
+        //        return;
+        //    }
 
 
-            System.Windows.Forms.MessageBox.Show("Something wrong with allbutton check!");
-        }
+        //    System.Windows.Forms.MessageBox.Show("Something wrong with allbutton check!");
+        //}
         #endregion
         #endregion
 
