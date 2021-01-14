@@ -337,7 +337,7 @@
 
             </Border>
             <Border CornerRadius="20" Margin="5" VerticalAlignment="Stretch" x:Name="ActiveBorder"
-            ClipToBounds="False" Visibility="Hidden" Background="#4C808080"/>
+            ClipToBounds="False" Visibility="Visible" Background="#4C808080"/>
 
         </Grid>
     </materialDesign:DialogHost>

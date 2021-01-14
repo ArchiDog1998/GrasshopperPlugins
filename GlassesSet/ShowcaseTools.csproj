@@ -104,6 +104,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="WPF\ExceptionProxy.cs" />
+    <Compile Include="WPF\GooProxyWindow.xaml.cs">
+      <DependentUpon>GooProxyWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WPF\IOType.cs" />
     <Compile Include="WPF\ObjectProxy.cs" />
     <Compile Include="WPF\GooTypeProxy.cs" />
@@ -175,6 +178,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="WPF\ExceptionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WPF\GooProxyWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

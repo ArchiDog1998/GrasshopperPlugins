@@ -249,7 +249,9 @@ namespace InfoGlasses.WPF
         private void Edit_Click(object sender, RoutedEventArgs e)
         {
             GooTypeProxy aimProxy = (GooTypeProxy)((Button)sender).Tag;
-            System.Windows.Forms.MessageBox.Show(aimProxy.TypeName);
+            var subWindow = new GooProxyWindow(Owner, aimProxy) { Owner = this };
+            subWindow.Show();
+            //System.Windows.Forms.MessageBox.Show(aimProxy.TypeName);
         }
 
         private System.Windows.Visibility GetVisibility(CheckBox box)
