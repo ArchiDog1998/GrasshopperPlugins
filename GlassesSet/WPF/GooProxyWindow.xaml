@@ -9,7 +9,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:InfoGlasses.WPF"
         mc:Ignorable="d"
-        Title="GooProxyWindow" Height="450" Width="800"
+        Title="GooProxyWindow" Height="500" Width="450" MinWidth="400" MinHeight="200"
                   WindowStartupLocation="CenterScreen">
     
     <Window.Style>
@@ -78,7 +78,121 @@
         </ResourceDictionary>
 
     </Window.Resources>
-    <Grid>
-        
-    </Grid>
+
+    <materialDesign:DialogHost CloseOnClickAway="True" OverlayBackground="Transparent" DialogOpened="DialogHost_DialogOpened" DialogClosing="DialogHost_DialogClosing">
+        <materialDesign:DialogHost.DialogContent>
+            <StackPanel Orientation="Vertical" MinWidth="150">
+                <!--<ComboBox x:Name="DialogSelect"  Margin="15 20 15 20" materialDesign:HintAssist.Hint="Select Mode" materialDesign:HintAssist.HintOpacity=".26" SelectionChanged="DialogSelect_SelectionChanged">
+                    <ComboBoxItem x:Name="ColorMode" Content="Wire Color"/>
+                    <ComboBoxItem x:Name="InputMode" Content="Input Control"/>
+                    <ComboBoxItem x:Name="OutputMode" Content="Output Control"/>
+                </ComboBox>-->
+                <!--<Button x:Name="DialogAccept" Style="{StaticResource MaterialDesignFlatButton}" IsDefault="True" Click="SaveIO_Click"
+                        Command="materialDesign:DialogHost.CloseDialogCommand" Content="ACCEPT" IsEnabled="False"/>-->
+
+            </StackPanel>
+        </materialDesign:DialogHost.DialogContent>
+        <Grid>
+            <Border CornerRadius="20" Margin="5" Background="{StaticResource ResourceKey=Brush_Background}" VerticalAlignment="Stretch"
+            ClipToBounds="False" materialDesign:ShadowAssist.ShadowDepth="Depth2" BorderThickness="2" BorderBrush="Gray">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <materialDesign:ColorZone CornerRadius="15" Margin="5 5 5 0" Mode="PrimaryLight" Padding="16" Grid.Row="0" MinHeight="80"
+                                              materialDesign:ShadowAssist.ShadowDepth="Depth3" ClipToBounds="False">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" Orientation="Horizontal">
+
+
+                                <!--<Button Style="{DynamicResource MaterialDesignToolForegroundButton}" x:Name="FilterButton" Click="FilterButton_Click">
+                                    <materialDesign:PackIcon Kind="SelectionSearch" Width="20" Height="20" />
+                                </Button>-->
+
+                                <ComboBox  SelectedIndex="0" Margin="10 0 0 0" BorderThickness="0"  materialDesign:ColorZoneAssist.Mode="Standard"
+                          materialDesign:TextFieldAssist.UnderlineBrush="{DynamicResource MaterialDesignPaper}"
+                          BorderBrush="{DynamicResource MaterialDesignPaper}">
+                                    <ComboBoxItem x:Name="ColorMode" Content="Wire Color"/>
+                                    <ComboBoxItem x:Name="InputMode" Content="Input Control"/>
+                                    <ComboBoxItem x:Name="OutputMode" Content="Output Control"/>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <Border Grid.Column="1"  MouseMove="WindowTitle_MouseMove" 
+                                Background="Transparent">
+                                <TextBlock Style="{StaticResource MaterialDesignHeadline4TextBlock}"  Grid.Column="1" Margin="16 0 16 0"
+                                Text="Data Type" VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="WindowTitle" TextAlignment="Center"/>
+
+                            </Border>
+                        </Grid>
+                    </materialDesign:ColorZone>
+
+                    <materialDesign:ColorZone Grid.Row="1" Margin="20 15 20 15" CornerRadius="15" Padding="15" 
+                                      Mode="Standard"  ClipToBounds="False"
+                     materialDesign:ShadowAssist.ShadowDepth="Depth2" VerticalAlignment="Stretch">
+                        <Grid Margin="2" x:Name="ExpanderHeader">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <materialDesign:Snackbar x:Name="MessageSnackBar" IsActive="False"  HorizontalAlignment="Stretch" Grid.ColumnSpan="3">
+                                <materialDesign:SnackbarMessage Name="MessageBox" Content="MessageSnackBar." ActionClick="SnackbarMessage_ActionClick">
+                                    <materialDesign:SnackbarMessage.ActionContent>
+                                        <materialDesign:PackIcon Kind="CheckBold" Height="20" Width="20" Foreground="Green"/>
+                                    </materialDesign:SnackbarMessage.ActionContent>
+                                </materialDesign:SnackbarMessage>
+                            </materialDesign:Snackbar>
+                        </Grid>
+                    </materialDesign:ColorZone>
+
+
+                    <Grid Grid.Row="2" Margin="10 0 10 10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="90"/>
+                            <ColumnDefinition Width="90"/>
+                            <ColumnDefinition Width="90"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button x:Name="CancelButton"  Click="CancelButton_Click"
+                    materialDesign:ButtonAssist.CornerRadius="10" Margin="5"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth1"
+                    Style="{StaticResource MaterialDesignRaisedAccentButton}" Grid.Column="1">
+                            <materialDesign:PackIcon Kind="CloseThick" Height="24" Width="24" Foreground="DarkRed"/>
+
+                        </Button>
+
+                        <Button x:Name="RefreshButton" Click="RefreshButton_Click"
+                    materialDesign:ButtonAssist.CornerRadius="10" Margin="5"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth1"
+                    Style="{StaticResource MaterialDesignRaisedAccentButton}" Grid.Column="2">
+                            <materialDesign:PackIcon Kind="Refresh" Height="24" Width="24" Foreground="DimGray"/>
+                        </Button>
+
+                        <Button x:Name="OKButton" Click="OKButton_Click"
+                    materialDesign:ButtonAssist.CornerRadius="5" Margin="5"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth3"
+                    Style="{StaticResource MaterialDesignRaisedLightButton}" Grid.Column="3">
+                            <materialDesign:PackIcon Kind="CheckBold" Height="24" Width="24" Foreground="LightSeaGreen"/>
+                        </Button>
+                    </Grid>
+
+                </Grid>
+            </Border>
+            <Border CornerRadius="20" Margin="5" VerticalAlignment="Stretch" x:Name="ActiveBorder"
+            ClipToBounds="False" Visibility="Hidden" Background="#4C808080"/>
+        </Grid>
+    </materialDesign:DialogHost>
 </arwpf:LangWindow>

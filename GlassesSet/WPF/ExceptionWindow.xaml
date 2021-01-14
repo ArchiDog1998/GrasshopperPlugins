@@ -155,7 +155,6 @@
                     </Grid>
                 </materialDesign:ColorZone>
 
-                <!--Background="{DynamicResource MaterialDesignPaper}"-->
                 <materialDesign:ColorZone Grid.Row="1" Margin="20 15 20 15" CornerRadius="15" Padding="15" 
                                       Mode="Standard"  ClipToBounds="False"
                      materialDesign:ShadowAssist.ShadowDepth="Depth2" VerticalAlignment="Stretch">
@@ -288,10 +287,8 @@
                         </materialDesign:Snackbar>
                     </Grid>
                 </materialDesign:ColorZone>
-
-
-
-
+                
+                
                 <Grid Grid.Row="2" Margin="10 0 10 10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
