@@ -20,7 +20,7 @@ namespace InfoGlasses.WPF
     public class GooTypeProxy : ISearchItem
     {
         public ParamGlassesComponent Owner { get; }
-        public Color ShowColor => Owner.GetColor(this.TypeFullName);
+        public Color ShowColor { get => Owner.GetColor(this.TypeFullName); set => Owner.SetColor(this.TypeFullName, value); }
 
         public System.Windows.Media.Brush ShowBrush => new System.Windows.Media.SolidColorBrush(ColorExtension.ConvertToMediaColor(ShowColor));
 

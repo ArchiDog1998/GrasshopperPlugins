@@ -21,13 +21,21 @@ namespace InfoGlasses.WPF
     /// </summary>
     public partial class GooProxyWindow : LangWindow
     {
-        private GooTypeProxy Proxy { get; } 
+        private GooTypeProxy _proxy { get; }
+        private System.Drawing.Color _wireColor;
+        private AddProxyParams[] _inputProxy;
+        private AddProxyParams[] _outputProxy;
+
         private new ParamGlassesComponent Owner { get; }
         public GooProxyWindow(ParamGlassesComponent owner, GooTypeProxy proxy)
             :base()
         {
-            this.Proxy = proxy;
+            this._proxy = proxy;
             this.Owner = owner;
+            this._wireColor = proxy.ShowColor;
+            this._inputProxy = owner.CreateProxyDictInput[proxy.TypeFullName];
+            this._outputProxy = owner.CreateProxyDictOutput[proxy.TypeFullName];
+
             InitializeComponent();
 
             WindowTitle.Text = proxy.TypeName;
@@ -106,8 +114,9 @@ namespace InfoGlasses.WPF
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            //Owner.normalExceptionGuid = this._normalExceptions;
-            //Owner.pluginExceptionGuid = this._pluginExceptions;
+            this._proxy.ShowColor = this._wireColor;
+            Owner.CreateProxyDictInput[this._proxy.TypeFullName] = this._inputProxy;
+            Owner.CreateProxyDictOutput[this._proxy.TypeFullName] = this._outputProxy;
             Owner.ExpireSolution(true);
             this.Close();
         }
