@@ -1232,6 +1232,7 @@ namespace InfoGlasses
 
                 foreach (var item in CreateProxyDictInput)
                 {
+                    if (item.Value.Length == 0) continue;
                     string proxies = "";
                     foreach (var proxy in item.Value)
                     {
