@@ -143,6 +143,55 @@
                         <Grid Margin="2" >
 
                             <Grid x:Name="MajorGrid">
+                                <DataGrid x:Name="Data" CanUserAddRows="False" SelectionUnit="FullRow" CanUserSortColumns="True"
+                              SelectionMode="Extended" Grid.Column="2" AutoGenerateColumns="False"
+                              materialDesign:DataGridAssist.CellPadding="4 2 2 2">
+
+
+                                    <DataGrid.Columns>
+
+                                        <DataGridTemplateColumn Header="Icon" MinWidth="24" x:Name="IconColumn" CanUserSort="False" >
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Image Source="{Binding ShowIcon}"  HorizontalAlignment="Center" MaxHeight="24" MaxWidth="24"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+
+                                        <DataGridTextColumn Binding="{Binding Name}" Header="Name" x:Name="FullNameColumn"
+                                                ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}" IsReadOnly="True"
+                                                EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"/>
+
+                                        <DataGridTextColumn Binding="{Binding Index}" Header="Index" x:Name="IndexColumn"
+                                                ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}" IsReadOnly="True"
+                                                EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"/>
+
+
+                                        <DataGridTextColumn Binding="{Binding Category}" Header="Category" x:Name="CategoryColumn"
+                                                ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}" IsReadOnly="True"
+                                                EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                Foreground="DarkGray"/>
+
+                                        <DataGridTextColumn Binding="{Binding Subcategory}" Header="Subcategory" x:Name="SubcategoryColumn"
+                                                ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}" IsReadOnly="True"
+                                                EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                Foreground="DarkGray"/>
+
+
+                                        <DataGridTextColumn Binding="{Binding Exposure}" Header="Exposure" x:Name="ExposureColumn" Visibility="Hidden"
+                                                ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}" IsReadOnly="True"
+                                                EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                Foreground="DarkGray"/>
+
+                                        <DataGridTextColumn Binding="{Binding Guid}" Header="Guid" x:Name="GuidColumn" Visibility="Hidden"
+                                                ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}" IsReadOnly="True"
+                                                EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                                Foreground="DarkGray"/>
+
+                                    </DataGrid.Columns>
+
+                                </DataGrid>
+
                             </Grid>
 
 

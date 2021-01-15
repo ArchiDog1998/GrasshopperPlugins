@@ -104,6 +104,7 @@ namespace InfoGlasses.WPF
             InitializeComponent();
             WindowSwitchControl_SelectionChanged(null, null);
 
+
             WindowTitle.Text = proxy.TypeName;
 
             LanguageChanged();
@@ -169,47 +170,30 @@ namespace InfoGlasses.WPF
             switch (SelectionBox.SelectedIndex)
             {
                 case 0:
+                    #region Add major
                     ColorPicker color = new ColorPicker() { Color = this.WireColor };
                     MajorGrid.Children.Add(color);
+                    #endregion
 
-                    Button resetButton = new Button() 
-                    {
-                        Margin = new Thickness(4, 0, 4, 0),
-                        Content = new PackIcon()
-                        {
-                            Kind = PackIconKind.Refresh,
-                            Height = 24,
-                            Width = 24,
-                            Foreground = new SolidColorBrush(ColorExtension.ConvertToMediaColor(System.Drawing.Color.DarkRed))
-                        },
-                        ToolTip = LanguagableComponent.GetTransLation(new string[] { "Reset", "重置"}),
-                    };
-                    resetButton.SetValue(Button.StyleProperty, this.Resources["MaterialDesignFloatingActionMiniAccentButton"]);
-                    resetButton.Click += (x, y) => { this.SetWireColor(ColorExtension.ConvertToMediaColor(this._wireColor)); this._proxy.Owner.ExpireSolution(true); };
+                    #region Add Button
+                    ButtonPanel.Children.Add(CreateAIconButton(PackIconKind.Refresh, System.Drawing.Color.DarkRed, 
+                        (x, y) => { this.SetWireColor(ColorExtension.ConvertToMediaColor(this._wireColor)); this._proxy.Owner.ExpireSolution(true); },
+                        LanguagableComponent.GetTransLation(new string[] { "Reset", "重置" })));
 
-                    Button freshButton = new Button() 
-                    {
-                        Margin = new Thickness(4, 0, 4, 0),
-                        Content = new PackIcon()
-                        {
-                            Kind = PackIconKind.Refresh,
-                            Height = 24,
-                            Width = 24,
-                            Foreground = new SolidColorBrush(ColorExtension.ConvertToMediaColor(System.Drawing.Color.DimGray))
-                        },
-                        ToolTip = LanguagableComponent.GetTransLation(new string[] { "Refresh", "刷新" }),
-                    };
-                    freshButton.SetValue(Button.StyleProperty, this.Resources["MaterialDesignFloatingActionMiniAccentButton"]);
+                    ButtonPanel.Children.Add(CreateAIconButton(PackIconKind.Refresh, System.Drawing.Color.DimGray,
+                        (x, y) => { this.SetWireColor(color); this._proxy.Owner.ExpireSolution(true); },
+                        LanguagableComponent.GetTransLation(new string[] { "Refresh", "刷新" })));
 
-                    //Set the respond for color changed.
-                    freshButton.Click += (x, y) => { this.SetWireColor(color); this._proxy.Owner.ExpireSolution(true); };
                     SelectionBox.SelectionChanged += (x, y) => { this.SetWireColor(color); };
                     OKButton.Click += (x, y) => { this.SetWireColor(color); };
-
-                    ButtonPanel.Children.Add(resetButton);
-                    ButtonPanel.Children.Add(freshButton);
+                    #endregion
                     break;
                 case 1:
+                    #region Add major
+                    DataGrid Datas = CreateDataGrid(true);
+                    Datas.ItemsSource = InputProxy;
+                    MajorGrid.Children.Add(Datas);
+                    #endregion
                     break;
                 case 2:
                     break;
@@ -220,6 +204,84 @@ namespace InfoGlasses.WPF
             //DrawDataTree(GetRightStateProxy(Owner.AllProxy));
         }
 
+        private Button CreateAIconButton(PackIconKind icon, System.Drawing.Color forecolor, RoutedEventHandler clickRespond = null, string tooltip = null)
+        {
+            Button button = new Button()
+            {
+                Margin = new Thickness(4, 0, 4, 0),
+                Content = new PackIcon()
+                {
+                    Kind = icon,
+                    Height = 24,
+                    Width = 24,
+                    Foreground = new SolidColorBrush(ColorExtension.ConvertToMediaColor(forecolor))
+                },
+                ToolTip = tooltip,
+            };
+            button.SetValue(Button.StyleProperty, this.Resources["MaterialDesignFloatingActionMiniAccentButton"]);
+            if (clickRespond != null)
+                button.Click += clickRespond;
+
+            return button;
+        }
+
+        private DataGrid CreateDataGrid(bool isInput)
+        {
+            DataGrid Datas = new DataGrid()
+            {
+                SelectionUnit = DataGridSelectionUnit.FullRow,
+                CanUserSortColumns = true,
+                SelectionMode = DataGridSelectionMode.Extended,
+                AutoGenerateColumns = false,
+            };
+            DataGridAssist.SetCellPadding(Datas, new Thickness(4, 2, 2, 2));
+
+            #region Add a iconColumn
+            DataGridTemplateColumn iconColumn = new DataGridTemplateColumn()
+            {
+                Header = "Icon",
+                MinWidth = 24,
+                CanUserSort = false,
+            };
+            FrameworkElementFactory spFactory = new FrameworkElementFactory(typeof(Image));
+            spFactory.SetBinding(Image.SourceProperty, new Binding("ShowIcon"));
+            spFactory.SetValue(Image.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            spFactory.SetValue(Image.MaxHeightProperty, 24.0);
+            spFactory.SetValue(Image.MaxWidthProperty, 24.0);
+            iconColumn.CellTemplate = new DataTemplate()
+            {
+                DataType = typeof(AddProxyParams),
+                VisualTree = spFactory,
+            };
+            Datas.Columns.Add(iconColumn);
+            #endregion
+
+            #region Add other column
+            Datas.Columns.Add(GetATextColumn("Name", LanguagableComponent.GetTransLation(new string[] { "Name", "名称" })));
+            string indexHeader = isInput ? LanguagableComponent.GetTransLation(new string[] { "Input Index", "输入端序号" }) :
+                LanguagableComponent.GetTransLation(new string[] { "Output Index", "输出端序号" });
+            Datas.Columns.Add(GetATextColumn("Index", indexHeader));
+            Datas.Columns.Add(GetATextColumn("Category", LanguagableComponent.GetTransLation(new string[] { "Category", "类别" })));
+            Datas.Columns.Add(GetATextColumn("Subcategory", LanguagableComponent.GetTransLation(new string[] { "Subcategory", "子类别" })));
+            Datas.Columns.Add(GetATextColumn("Exposure", LanguagableComponent.GetTransLation(new string[] { "Exposure", "分栏" })));
+            Datas.Columns.Add(GetATextColumn("Guid", LanguagableComponent.GetTransLation(new string[] { "Guid", "全局唯一标识符（Guid）" })));
+            #endregion
+            return Datas;
+        }
+
+        private System.Windows.Controls.DataGridTextColumn GetATextColumn(string path, string header)
+        {
+            System.Windows.Controls.DataGridTextColumn column = new System.Windows.Controls.DataGridTextColumn()
+            {
+                Binding = new Binding(path),
+                Header = header ,
+                IsReadOnly = true,
+            };
+            column.SetValue(System.Windows.Controls.DataGridTextColumn.ElementStyleProperty, this.Resources["MaterialDesignDataGridTextColumnStyle"]);
+            column.SetValue(System.Windows.Controls.DataGridTextColumn.EditingElementStyleProperty, this.Resources["MaterialDesignDataGridTextColumnEditingStyle"]);
+            return column;
+        }
+
         private void SetWireColor(ColorPicker colorPicker)
         {
             SetWireColor(colorPicker.Color);
@@ -227,6 +289,8 @@ namespace InfoGlasses.WPF
 
         private void SetWireColor(Color color)
         {
+            if (this.WireColor == color) return;
+
             this._proxy.Owner.RecordUndoEvent("Define the wire color");
             this.WireColor = color;
         }
