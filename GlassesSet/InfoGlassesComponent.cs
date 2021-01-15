@@ -303,6 +303,10 @@ namespace InfoGlasses
             this.RenderObjs = new List<IRenderable>();
             this.RenderObjsUnderComponent = new List<IRenderable>();
             this.OnPingDocument().ObjectsAdded -= InfeGlassesComponent_ObjectsAdded;
+            foreach (var item in this.Controls)
+            {
+                item.Enable = false;
+            }
 
             if (_isFirst)
             {
@@ -321,6 +325,10 @@ namespace InfoGlasses
 
             if (_run)
             {
+                foreach (var item in this.Controls)
+                {
+                    item.Enable = true;
+                }
                 foreach (var obj in this.OnPingDocument().Objects)
                 {
                     this.AddOneObject(obj);

@@ -486,14 +486,14 @@ namespace InfoGlasses
             int width = 24;
 
             Func<RectangleF, RectangleF> changeInput;
-            var inFuncs = WinformControlHelper.GetInnerRectLeftFunc(1, 1, new SizeF(width, width), out changeInput);
+            var inFuncs = WinformControlHelper.GetInnerRectLeftFunc(1, 2, new SizeF(width, width), out changeInput);
             this.ChangeInputLayout = changeInput;
 
             Func<RectangleF, RectangleF> changeOutput;
-            var outFuncs = WinformControlHelper.GetInnerRectRightFunc(1, 2, new SizeF(width, width), out changeOutput);
+            var outFuncs = WinformControlHelper.GetInnerRectRightFunc(1, 1, new SizeF(width, width), out changeOutput);
             this.ChangeOutputLayout = changeOutput;
 
-            ClickButtonIcon<LangWindow> LabelButton = new ClickButtonIcon<LangWindow>(_showLabel, this, inFuncs(0), true, Properties.Resources.LabelIcon, _showLabelDefault,
+            ClickButtonIcon<LangWindow> LabelButton = new ClickButtonIcon<LangWindow>(_showLabel, this, inFuncs(1), true, Properties.Resources.LabelIcon, _showLabelDefault,
                tips: new string[] { "Click to choose whether to show the wire's label.", "点击以选择是否要显示连线的名称。" },
                createMenu: () =>
                {
@@ -541,7 +541,7 @@ namespace InfoGlasses
                    return menu;
                });
 
-            ClickButtonIcon<LangWindow> LegendButton = new ClickButtonIcon<LangWindow>(_showLegend, this, outFuncs(0), true, Properties.Resources.LegendIcon, _showLegendDefault,
+            ClickButtonIcon<LangWindow> LegendButton = new ClickButtonIcon<LangWindow>(_showLegend, this, inFuncs(0), true, Properties.Resources.LegendIcon, _showLegendDefault,
                 tips: new string[] { "Click to choose whether to show the wire's legend.", "点击以选择是否要显示连线的图例。" },
                 createMenu: () =>
                 {
@@ -588,7 +588,7 @@ namespace InfoGlasses
                     return menu;
                 });
 
-            ClickButtonIcon<LangWindow> ControlButton = new ClickButtonIcon<LangWindow>(_showControl, this, outFuncs(1), true, Properties.Resources.InputLogo, _showControlDefault,
+            ClickButtonIcon<LangWindow> ControlButton = new ClickButtonIcon<LangWindow>(_showControl, this, outFuncs(0), true, Properties.Resources.InputLogo, _showControlDefault,
                 tips: new string[] { "Click to choose whether to show the param's control.", "点击以选择是否要显示参数的控制项。" },
                 createMenu: () =>
                 {
@@ -718,11 +718,21 @@ namespace InfoGlasses
 
                 _isFirst = false;
             }
+            for (int i = 0; i < this.Controls.Length - 1; i++)
+            {
+                this.Controls[i].Enable = false;
+            }
+
 
             if (_run)
             {
+                foreach (var item in this.Controls)
+                {
+                    item.Enable = true;
+                }
                 AddRespond();
-
+            }
+            {
                 foreach (var obj in this.OnPingDocument().Objects)
                 {
                     this.AddOneObject(obj);
@@ -857,7 +867,8 @@ namespace InfoGlasses
 
         private void AddOneParamInput(IGH_Param param, bool addControl = true)
         {
-            this.RenderObjs.Add(new WireConnectRenderItem(param, this));
+            if (this._run)
+                this.RenderObjs.Add(new WireConnectRenderItem(param, this));
             if (!this.IsShowControl || !addControl) return;
             Type type = param.Type;
 
@@ -1045,7 +1056,7 @@ namespace InfoGlasses
         #region Lanuage & Window
         protected override void ResponseToLanguageChanged(object sender, EventArgs e)
         {
-            string[] input = new string[] { GetTransLation(new string[] { "Run", "启动" }), GetTransLation(new string[] { "R", "启动" }), GetTransLation(new string[] { "Run", "启动" }) };
+            string[] input = new string[] { GetTransLation(new string[] { "Run Wire Colour", "启动曲线颜色" }), GetTransLation(new string[] { "R", "启动" }), GetTransLation(new string[] { "Run Wire Colour", "启动启动曲线颜色" }) };
 
             ChangeComponentAtt(this, new string[] {GetTransLation(new string[] { "ParamGlasses", "参数眼镜" }), GetTransLation(new string[] { "Param", "参数" }),
                 GetTransLation(new string[] { "To show the wire's and parameter's advances information.Right click or double click to have advanced options.",
