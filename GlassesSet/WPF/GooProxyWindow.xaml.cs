@@ -53,7 +53,7 @@ namespace InfoGlasses.WPF
             } 
             set 
             {
-                if(value != null && value.Length != 0)
+                if(value != null)
                 {
                     _paramOwner.CreateProxyDictInput[_proxy.TypeFullName] = value;
                 }
@@ -176,11 +176,11 @@ namespace InfoGlasses.WPF
                     #endregion
 
                     #region Add Button
-                    ButtonPanel.Children.Add(CreateAIconButton(PackIconKind.Refresh, System.Drawing.Color.DarkRed, 
+                    ButtonPanel.Children.Add(CreateARespondIconButton(PackIconKind.Refresh, System.Drawing.Color.DarkRed, 
                         (x, y) => { this.SetWireColor(ColorExtension.ConvertToMediaColor(this._wireColor)); this._proxy.Owner.ExpireSolution(true); },
                         LanguagableComponent.GetTransLation(new string[] { "Reset", "重置" })));
 
-                    ButtonPanel.Children.Add(CreateAIconButton(PackIconKind.Refresh, System.Drawing.Color.DimGray,
+                    ButtonPanel.Children.Add(CreateARespondIconButton(PackIconKind.Refresh, System.Drawing.Color.DimGray,
                         (x, y) => { this.SetWireColor(color); this._proxy.Owner.ExpireSolution(true); },
                         LanguagableComponent.GetTransLation(new string[] { "Refresh", "刷新" })));
 
@@ -190,12 +190,21 @@ namespace InfoGlasses.WPF
                     break;
                 case 1:
                     #region Add major
-                    DataGrid Datas = CreateDataGrid(true);
-                    Datas.ItemsSource = InputProxy;
-                    MajorGrid.Children.Add(Datas);
+                    MajorGrid.Children.Add(CreateDataGrid(true));
+                    #endregion
+
+                    #region Add Button
+                    IOControlButton(true);
                     #endregion
                     break;
                 case 2:
+                    #region Add major
+                    MajorGrid.Children.Add(CreateDataGrid(false));
+                    #endregion
+
+                    #region Add Button
+                    IOControlButton(false);
+                    #endregion
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("selectedindex", "index is out of range.");
@@ -203,8 +212,65 @@ namespace InfoGlasses.WPF
             //DataGridPropertyChange();
             //DrawDataTree(GetRightStateProxy(Owner.AllProxy));
         }
+        private void IOControlButton(bool isInput)
+        {
+            ButtonPanel.Children.Add(CreateAOpenDialogButton(PackIconKind.Plus, System.Drawing.Color.LightSeaGreen,
+                LanguagableComponent.GetTransLation(new string[] { "Add", "添加" })));
 
-        private Button CreateAIconButton(PackIconKind icon, System.Drawing.Color forecolor, RoutedEventHandler clickRespond = null, string tooltip = null)
+            ButtonPanel.Children.Add(CreateARespondIconButton(PackIconKind.Minus, System.Drawing.Color.DarkRed,
+                (x, y) =>
+                {
+                    if (this.MajorGrid.Children.Count == 0)
+                        return;
+                    if (!(this.MajorGrid.Children[0] is DataGrid))
+                        return;
+                    DataGrid grid = this.MajorGrid.Children[0] as DataGrid;
+                    List<AddProxyParams> restProxies = new List<AddProxyParams>();
+                    for (int i = 0; i < grid.Items.Count; i++)
+                    {
+                        DataGridRow ObjRow = (DataGridRow)(grid.ItemContainerGenerator.ContainerFromIndex(i));
+                        if (ObjRow != null)
+                        {
+                            if (!ObjRow.IsSelected)
+                            {
+                                restProxies.Add(isInput ? InputProxy[i] : OutputProxy[i]);
+
+                            }
+                        }
+                    }
+
+                    if (isInput)
+                    {
+                        InputProxy = restProxies.ToArray();
+                        grid.ItemsSource = InputProxy;
+                    }
+                    else
+                    {
+                        OutputProxy = restProxies.ToArray();
+                        grid.ItemsSource = OutputProxy;
+                    }
+
+                },
+                LanguagableComponent.GetTransLation(new string[] { "Remove", "删除" })));
+        }
+
+        private Button CreateARespondIconButton(PackIconKind icon, System.Drawing.Color forecolor, RoutedEventHandler clickRespond = null, string tooltip = null)
+        {
+            Button button = CreateAIconButton(icon, forecolor, tooltip);
+            if (clickRespond != null)
+                button.Click += clickRespond;
+
+            return button;
+        }
+
+        private Button CreateAOpenDialogButton(PackIconKind icon, System.Drawing.Color forecolor, string tooltip = null)
+        {
+            Button button = CreateAIconButton(icon, forecolor, tooltip);
+            button.Command = DialogHost.OpenDialogCommand;
+            return button;
+        }
+
+        private Button CreateAIconButton(PackIconKind icon, System.Drawing.Color forecolor, string tooltip = null)
         {
             Button button = new Button()
             {
@@ -219,9 +285,6 @@ namespace InfoGlasses.WPF
                 ToolTip = tooltip,
             };
             button.SetValue(Button.StyleProperty, this.Resources["MaterialDesignFloatingActionMiniAccentButton"]);
-            if (clickRespond != null)
-                button.Click += clickRespond;
-
             return button;
         }
 
@@ -266,6 +329,8 @@ namespace InfoGlasses.WPF
             Datas.Columns.Add(GetATextColumn("Exposure", LanguagableComponent.GetTransLation(new string[] { "Exposure", "分栏" })));
             Datas.Columns.Add(GetATextColumn("Guid", LanguagableComponent.GetTransLation(new string[] { "Guid", "全局唯一标识符（Guid）" })));
             #endregion
+
+            Datas.ItemsSource = isInput ? InputProxy : OutputProxy;
             return Datas;
         }
 
