@@ -354,12 +354,12 @@ namespace InfoGlasses.WPF
                 }
             }
 
-            List<bool> allBool = new List<bool>();
-            foreach (var item in Datas.ItemsSource)
-            {
-                ExceptionProxy proxy = item as ExceptionProxy;
-                allBool.Add(WindowSwitchControl.SelectedIndex == 0 ? proxy.IsExceptNormal : proxy.IsExceptPlugin);
-            }
+            //List<bool> allBool = new List<bool>();
+            //foreach (var item in Datas.ItemsSource)
+            //{
+            //    ExceptionProxy proxy = item as ExceptionProxy;
+            //    allBool.Add(WindowSwitchControl.SelectedIndex == 0 ? proxy.IsExceptNormal : proxy.IsExceptPlugin);
+            //}
             //CheckAllButton(allBool);
         }
 

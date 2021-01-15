@@ -142,7 +142,8 @@
                      materialDesign:ShadowAssist.ShadowDepth="Depth2" VerticalAlignment="Stretch">
                         <Grid Margin="2" >
 
-                            <Grid x:Name="MajorGrid"/>
+                            <Grid x:Name="MajorGrid">
+                            </Grid>
 
 
                             <materialDesign:Snackbar x:Name="MessageSnackBar" IsActive="False"  HorizontalAlignment="Stretch" Grid.ColumnSpan="3">
@@ -162,6 +163,9 @@
                             <ColumnDefinition Width="90"/>
                             <ColumnDefinition Width="90"/>
                         </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" Grid.Column="0" x:Name="ButtonPanel">
+                            
+                        </StackPanel>
 
                         <Button x:Name="CancelButton"  Click="CancelButton_Click"
                     materialDesign:ButtonAssist.CornerRadius="10" Margin="5"

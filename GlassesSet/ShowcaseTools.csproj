@@ -75,7 +75,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddProxyParams.cs" />
+    <Compile Include="WPF\AddProxyParams.cs" />
     <Compile Include="ComTypeInfo.cs" />
     <Compile Include="ParamGlassesComponent.cs" />
     <Compile Include="WinformControls\ButtonAddObjectOutput.cs" />

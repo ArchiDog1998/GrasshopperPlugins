@@ -1,5 +1,6 @@
 ﻿using ArchiTed_Grasshopper;
 using ArchiTed_Grasshopper.WPF;
+using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,17 +27,82 @@ namespace InfoGlasses.WPF
         private AddProxyParams[] _inputProxy;
         private AddProxyParams[] _outputProxy;
 
-        private new ParamGlassesComponent Owner { get; }
+        private Color WireColor
+        {
+            get
+            {
+                return ColorExtension.ConvertToMediaColor( _proxy.ShowColor);
+            }
+            set
+            {
+                _proxy.ShowColor =System.Drawing.Color.FromArgb(150, value.R, value.G, value.B);
+                //System.Windows.Forms.MessageBox.Show(_proxy.ShowColor.ToString());
+            }
+        }
+        private AddProxyParams[] InputProxy 
+        { get 
+            {
+                try
+                {
+                    return _paramOwner.CreateProxyDictInput[_proxy.TypeFullName];
+                }
+                catch
+                {
+                    return new AddProxyParams[] { };
+                }
+            } 
+            set 
+            {
+                if(value != null && value.Length != 0)
+                {
+                    _paramOwner.CreateProxyDictInput[_proxy.TypeFullName] = value;
+                }
+            } 
+        }
+        private AddProxyParams[] OutputProxy
+        {
+            get
+            {
+                try
+                {
+                    return _paramOwner.CreateProxyDictOutput[_proxy.TypeFullName];
+                }
+                catch
+                {
+                    return new AddProxyParams[] { };
+                }
+            }
+            set
+            {
+                if (value != null && value.Length != 0)
+                {
+                    _paramOwner.CreateProxyDictOutput[_proxy.TypeFullName] = value;
+                }
+            }
+        }
+
+
+        private ParamGlassesComponent _paramOwner { get; }
         public GooProxyWindow(ParamGlassesComponent owner, GooTypeProxy proxy)
             :base()
         {
+
             this._proxy = proxy;
-            this.Owner = owner;
+            this._paramOwner = owner;
             this._wireColor = proxy.ShowColor;
-            this._inputProxy = owner.CreateProxyDictInput[proxy.TypeFullName];
-            this._outputProxy = owner.CreateProxyDictOutput[proxy.TypeFullName];
+            try
+            {
+                this._inputProxy = owner.CreateProxyDictInput[proxy.TypeFullName];
+            }
+            catch { }
+            try
+            {
+                this._outputProxy = owner.CreateProxyDictOutput[proxy.TypeFullName];
+            }
+            catch { }
 
             InitializeComponent();
+            WindowSwitchControl_SelectionChanged(null, null);
 
             WindowTitle.Text = proxy.TypeName;
 
@@ -96,10 +162,52 @@ namespace InfoGlasses.WPF
         }
         private void WindowSwitchControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (MajorGrid == null || ButtonPanel == null) return;
+                
             MajorGrid.Children.Clear();
-            switch(SelectionBox.SelectedIndex)
+            ButtonPanel.Children.Clear();
+            switch (SelectionBox.SelectedIndex)
             {
                 case 0:
+                    ColorPicker color = new ColorPicker() { Color = this.WireColor };
+                    MajorGrid.Children.Add(color);
+
+                    Button resetButton = new Button() 
+                    {
+                        Margin = new Thickness(4, 0, 4, 0),
+                        Content = new PackIcon()
+                        {
+                            Kind = PackIconKind.Refresh,
+                            Height = 24,
+                            Width = 24,
+                            Foreground = new SolidColorBrush(ColorExtension.ConvertToMediaColor(System.Drawing.Color.DarkRed))
+                        },
+                        ToolTip = LanguagableComponent.GetTransLation(new string[] { "Reset", "重置"}),
+                    };
+                    resetButton.SetValue(Button.StyleProperty, this.Resources["MaterialDesignFloatingActionMiniAccentButton"]);
+                    resetButton.Click += (x, y) => { this.SetWireColor(ColorExtension.ConvertToMediaColor(this._wireColor)); this._proxy.Owner.ExpireSolution(true); };
+
+                    Button freshButton = new Button() 
+                    {
+                        Margin = new Thickness(4, 0, 4, 0),
+                        Content = new PackIcon()
+                        {
+                            Kind = PackIconKind.Refresh,
+                            Height = 24,
+                            Width = 24,
+                            Foreground = new SolidColorBrush(ColorExtension.ConvertToMediaColor(System.Drawing.Color.DimGray))
+                        },
+                        ToolTip = LanguagableComponent.GetTransLation(new string[] { "Refresh", "刷新" }),
+                    };
+                    freshButton.SetValue(Button.StyleProperty, this.Resources["MaterialDesignFloatingActionMiniAccentButton"]);
+
+                    //Set the respond for color changed.
+                    freshButton.Click += (x, y) => { this.SetWireColor(color); this._proxy.Owner.ExpireSolution(true); };
+                    SelectionBox.SelectionChanged += (x, y) => { this.SetWireColor(color); };
+                    OKButton.Click += (x, y) => { this.SetWireColor(color); };
+
+                    ButtonPanel.Children.Add(resetButton);
+                    ButtonPanel.Children.Add(freshButton);
                     break;
                 case 1:
                     break;
@@ -110,6 +218,17 @@ namespace InfoGlasses.WPF
             }
             //DataGridPropertyChange();
             //DrawDataTree(GetRightStateProxy(Owner.AllProxy));
+        }
+
+        private void SetWireColor(ColorPicker colorPicker)
+        {
+            SetWireColor(colorPicker.Color);
+        }
+
+        private void SetWireColor(Color color)
+        {
+            this._proxy.Owner.RecordUndoEvent("Define the wire color");
+            this.WireColor = color;
         }
         #endregion
 
@@ -125,15 +244,18 @@ namespace InfoGlasses.WPF
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             this._proxy.ShowColor = this._wireColor;
-            Owner.CreateProxyDictInput[this._proxy.TypeFullName] = this._inputProxy;
-            Owner.CreateProxyDictOutput[this._proxy.TypeFullName] = this._outputProxy;
-            Owner.ExpireSolution(true);
+            if (this._inputProxy != null)
+                _paramOwner.CreateProxyDictInput[this._proxy.TypeFullName] = this._inputProxy;
+            if (this._outputProxy != null)
+                _paramOwner.CreateProxyDictOutput[this._proxy.TypeFullName] = this._outputProxy;
+            _paramOwner.ExpireSolution(true);
             this.Close();
         }
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
-            Owner.ExpireSolution(true);
+            ((ParamSettingsWindow)this.Owner).UpdateProxy();
+            _paramOwner.ExpireSolution(true);
             this.Close();
         }
 

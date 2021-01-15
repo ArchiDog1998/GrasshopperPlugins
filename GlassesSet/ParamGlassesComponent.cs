@@ -1001,11 +1001,20 @@ namespace InfoGlasses
                         Type dataType;
                         if (IsPersistentParam(proxy.Type, out dataType))
                         {
-                            GooTypeProxy paramProxy = new GooTypeProxy(dataType, this);
-                            if (!_allParamProxy.Contains(paramProxy))
+                            #region Check if has this type before
+                            bool flag = false;
+                            foreach (var item in this._allParamProxy)
                             {
-                                _allParamProxy.Add(paramProxy);
+                                if (item.TypeFullName == dataType.FullName)
+                                {
+                                    flag = true;
+                                    break;
+                                }
                             }
+                            if (flag) continue;
+                            #endregion
+
+                            _allParamProxy.Add(new GooTypeProxy(dataType, this));
                         }
                     }
                     catch

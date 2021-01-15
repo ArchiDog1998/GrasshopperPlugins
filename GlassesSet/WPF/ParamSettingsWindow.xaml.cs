@@ -176,10 +176,30 @@ namespace InfoGlasses.WPF
         #endregion
 
         #region Middle Respond
+
+        public void UpdateProxy()
+        {
+            List<GooTypeProxy> updateProxis = new List<GooTypeProxy>();
+            foreach (var item in this.Datas.ItemsSource)
+            {
+                foreach (var proxy in Owner.AllParamProxy)
+                {
+                    if(proxy.TypeFullName == ((GooTypeProxy)item).TypeFullName)
+                    {
+                        updateProxis.Add(proxy);
+                        break;
+                    }
+                }
+                
+            }
+            this.Datas.ItemsSource = updateProxis;
+        }
+
+
         private void SetShowProxy(List<GooTypeProxy> proxies, string AssemName = null)
         {
             if (AssemName != null)
-                proxies = (List<GooTypeProxy>)(proxies.Where((x) => x.AssemName == AssemName).ToList());
+                proxies = (proxies.Where((x) => x.AssemName == AssemName).ToList());
 
             this.Datas.ItemsSource = proxies;
         }
