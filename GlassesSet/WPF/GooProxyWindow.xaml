@@ -144,6 +144,7 @@
 
                             <Grid x:Name="MajorGrid"/>
 
+
                             <materialDesign:Snackbar x:Name="MessageSnackBar" IsActive="False"  HorizontalAlignment="Stretch" Grid.ColumnSpan="3">
                                 <materialDesign:SnackbarMessage Name="MessageBox" Content="MessageSnackBar." ActionClick="SnackbarMessage_ActionClick">
                                     <materialDesign:SnackbarMessage.ActionContent>
