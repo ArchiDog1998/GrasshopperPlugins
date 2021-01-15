@@ -49,8 +49,6 @@ namespace InfoGlasses.WPF
             SetShowProxy(owner.AllProxy);
             DrawDataTree(owner.AllProxy);
 
-            this.Datas.LoadingRow += Datas_LoadingRow;
-
             LanguageChanged();
             LanguagableComponent.LanguageChanged += WindowLanguageChanged;
 
@@ -330,60 +328,6 @@ namespace InfoGlasses.WPF
             MessageSnackBar.IsActive = false;
         }
 
-
-        #region Allbutton Events
-
-        private void Datas_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-
-            //int count = Datas.Items.Count;
-            for (int i = 0; i < Datas.Items.Count; i++)
-            {
-                DataGridRow ObjRow = (DataGridRow)(Datas.ItemContainerGenerator.ContainerFromIndex(i));
-                if (ObjRow != null)
-                {
-                    FrameworkElement objElement = Datas.Columns[0].GetCellContent(ObjRow);
-                    if (objElement != null)
-                    {
-                        CheckBox checkBox = objElement as CheckBox;
-                        checkBox.Click -= selcetion_Click;
-                        checkBox.Click += selcetion_Click;
-                        //checkBox.Click += checkAllButton_Click;
-                    }
-
-                }
-            }
-
-            //List<bool> allBool = new List<bool>();
-            //foreach (var item in Datas.ItemsSource)
-            //{
-            //    ExceptionProxy proxy = item as ExceptionProxy;
-            //    allBool.Add(WindowSwitchControl.SelectedIndex == 0 ? proxy.IsExceptNormal : proxy.IsExceptPlugin);
-            //}
-            //CheckAllButton(allBool);
-        }
-
-        private void selcetion_Click(object sender, RoutedEventArgs e)
-        {
-            for (int i = 0; i < Datas.Items.Count; i++)
-            {
-                DataGridRow ObjRow = (DataGridRow)(Datas.ItemContainerGenerator.ContainerFromIndex(i));
-                if (ObjRow != null)
-                {
-                    if (!ObjRow.IsSelected) continue;
-
-                    FrameworkElement objElement = Datas.Columns[0].GetCellContent(ObjRow);
-                    if (objElement != null)
-                    {
-                        CheckBox checkBox = objElement as CheckBox;
-                        checkBox.IsChecked = ((CheckBox)sender).IsChecked;
-                    }
-
-                }
-            }
-        }
-
-        #endregion
         #endregion
 
         #region Bottom four respond

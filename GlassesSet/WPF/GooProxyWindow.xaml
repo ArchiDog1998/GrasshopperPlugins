@@ -80,18 +80,7 @@
     </Window.Resources>
 
     <materialDesign:DialogHost CloseOnClickAway="True" OverlayBackground="Transparent" DialogOpened="DialogHost_DialogOpened" DialogClosing="DialogHost_DialogClosing">
-        <materialDesign:DialogHost.DialogContent>
-            <StackPanel Orientation="Vertical" MinWidth="150">
-                <!--<ComboBox x:Name="DialogSelect"  Margin="15 20 15 20" materialDesign:HintAssist.Hint="Select Mode" materialDesign:HintAssist.HintOpacity=".26" SelectionChanged="DialogSelect_SelectionChanged">
-                    <ComboBoxItem x:Name="ColorMode" Content="Wire Color"/>
-                    <ComboBoxItem x:Name="InputMode" Content="Input Control"/>
-                    <ComboBoxItem x:Name="OutputMode" Content="Output Control"/>
-                </ComboBox>-->
-                <!--<Button x:Name="DialogAccept" Style="{StaticResource MaterialDesignFlatButton}" IsDefault="True" Click="SaveIO_Click"
-                        Command="materialDesign:DialogHost.CloseDialogCommand" Content="ACCEPT" IsEnabled="False"/>-->
 
-            </StackPanel>
-        </materialDesign:DialogHost.DialogContent>
         <Grid>
             <Border CornerRadius="20" Margin="5" Background="{StaticResource ResourceKey=Brush_Background}" VerticalAlignment="Stretch"
             ClipToBounds="False" materialDesign:ShadowAssist.ShadowDepth="Depth2" BorderThickness="2" BorderBrush="Gray">
@@ -112,22 +101,15 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <StackPanel Grid.Column="0" Orientation="Horizontal">
 
-
-                                <!--<Button Style="{DynamicResource MaterialDesignToolForegroundButton}" x:Name="FilterButton" Click="FilterButton_Click">
-                                    <materialDesign:PackIcon Kind="SelectionSearch" Width="20" Height="20" />
-                                </Button>-->
-
-                                <ComboBox  SelectedIndex="0" Margin="10 0 0 0" BorderThickness="0"  materialDesign:ColorZoneAssist.Mode="Standard" x:Name="SelectionBox"
+                            <ComboBox  SelectedIndex="0" Margin="10 0 0 0" BorderThickness="0"  materialDesign:ColorZoneAssist.Mode="Standard" x:Name="SelectionBox"
                           materialDesign:TextFieldAssist.UnderlineBrush="{DynamicResource MaterialDesignPaper}" SelectionChanged="WindowSwitchControl_SelectionChanged"
                           BorderBrush="{DynamicResource MaterialDesignPaper}">
-                                    <ComboBoxItem x:Name="ColorMode" Content="Wire Color"/>
-                                    <ComboBoxItem x:Name="InputMode" Content="Input Control"/>
-                                    <ComboBoxItem x:Name="OutputMode" Content="Output Control"/>
-                                </ComboBox>
-                            </StackPanel>
-
+                                <ComboBoxItem x:Name="ColorMode" Content="Wire Color"/>
+                                <ComboBoxItem x:Name="InputMode" Content="Input Control"/>
+                                <ComboBoxItem x:Name="OutputMode" Content="Output Control"/>
+                            </ComboBox>
+                            
                             <Border Grid.Column="1"  MouseMove="WindowTitle_MouseMove" 
                                 Background="Transparent">
                                 <TextBlock Style="{StaticResource MaterialDesignHeadline4TextBlock}"  Grid.Column="1" Margin="16 0 16 0"
@@ -143,54 +125,6 @@
                         <Grid Margin="2" >
 
                             <Grid x:Name="MajorGrid">
-                                <DataGrid x:Name="Data" CanUserAddRows="False" SelectionUnit="FullRow" CanUserSortColumns="True"
-                              SelectionMode="Extended" Grid.Column="2" AutoGenerateColumns="False"
-                              materialDesign:DataGridAssist.CellPadding="4 2 2 2">
-
-
-                                    <DataGrid.Columns>
-
-                                        <DataGridTemplateColumn Header="Icon" MinWidth="24" x:Name="IconColumn" CanUserSort="False" >
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <Image Source="{Binding ShowIcon}"  HorizontalAlignment="Center" MaxHeight="24" MaxWidth="24"/>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-
-                                        <DataGridTextColumn Binding="{Binding Name}" Header="Name" x:Name="FullNameColumn"
-                                                ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}" IsReadOnly="True"
-                                                EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"/>
-
-                                        <DataGridTextColumn Binding="{Binding Index}" Header="Index" x:Name="IndexColumn"
-                                                ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}" IsReadOnly="True"
-                                                EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"/>
-
-
-                                        <DataGridTextColumn Binding="{Binding Category}" Header="Category" x:Name="CategoryColumn"
-                                                ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}" IsReadOnly="True"
-                                                EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
-                                                Foreground="DarkGray"/>
-
-                                        <DataGridTextColumn Binding="{Binding Subcategory}" Header="Subcategory" x:Name="SubcategoryColumn"
-                                                ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}" IsReadOnly="True"
-                                                EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
-                                                Foreground="DarkGray"/>
-
-
-                                        <DataGridTextColumn Binding="{Binding Exposure}" Header="Exposure" x:Name="ExposureColumn" Visibility="Hidden"
-                                                ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}" IsReadOnly="True"
-                                                EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
-                                                Foreground="DarkGray"/>
-
-                                        <DataGridTextColumn Binding="{Binding Guid}" Header="Guid" x:Name="GuidColumn" Visibility="Hidden"
-                                                ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}" IsReadOnly="True"
-                                                EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
-                                                Foreground="DarkGray"/>
-
-                                    </DataGrid.Columns>
-
-                                </DataGrid>
 
                             </Grid>
 
@@ -235,7 +169,7 @@
                 </Grid>
             </Border>
             <Border CornerRadius="20" Margin="5" VerticalAlignment="Stretch" x:Name="ActiveBorder"
-            ClipToBounds="False" Visibility="Hidden" Background="#4C808080"/>
+            ClipToBounds="False" Visibility="Visible" Background="#4C808080"/>
         </Grid>
     </materialDesign:DialogHost>
 </arwpf:LangWindow>

@@ -114,6 +114,9 @@
     <Compile Include="WPF\ParamSettingsWindow.xaml.cs">
       <DependentUpon>ParamSettingsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WPF\SelectOneParamWindow.xaml.cs">
+      <DependentUpon>SelectOneParamWindow.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -186,6 +189,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="WPF\ParamSettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WPF\SelectOneParamWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

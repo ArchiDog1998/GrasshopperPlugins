@@ -102,9 +102,8 @@ namespace InfoGlasses.WPF
             catch { }
 
             InitializeComponent();
+
             WindowSwitchControl_SelectionChanged(null, null);
-
-
             WindowTitle.Text = proxy.TypeName;
 
             LanguageChanged();
@@ -161,6 +160,8 @@ namespace InfoGlasses.WPF
                 this.DragMove();
             }
         }
+
+        #region Set the major box
         private void WindowSwitchControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (MajorGrid == null || ButtonPanel == null) return;
@@ -209,12 +210,18 @@ namespace InfoGlasses.WPF
                 default:
                     throw new ArgumentOutOfRangeException("selectedindex", "index is out of range.");
             }
-            //DataGridPropertyChange();
-            //DrawDataTree(GetRightStateProxy(Owner.AllProxy));
         }
+
         private void IOControlButton(bool isInput)
         {
-            ButtonPanel.Children.Add(CreateAOpenDialogButton(PackIconKind.Plus, System.Drawing.Color.LightSeaGreen,
+
+            ButtonPanel.Children.Add(CreateARespondIconButton(PackIconKind.Plus, System.Drawing.Color.LightSeaGreen,
+                (x, y) => { new SelectOneParamWindow(_paramOwner, isInput) { Owner = this}.Show();
+                    ActiveBorder.Visibility = Visibility.Visible;
+                    this.IsEnabled = false; 
+                    MessageBox.Content = LanguagableComponent.GetTransLation(new string[] { "Please finish the child window.", "请先完成子窗口。"});
+                    MessageSnackBar.IsActive = true;
+                },
                 LanguagableComponent.GetTransLation(new string[] { "Add", "添加" })));
 
             ButtonPanel.Children.Add(CreateARespondIconButton(PackIconKind.Minus, System.Drawing.Color.DarkRed,
@@ -290,14 +297,14 @@ namespace InfoGlasses.WPF
 
         private DataGrid CreateDataGrid(bool isInput)
         {
-            DataGrid Datas = new DataGrid()
+            DataGrid dataGrid = new DataGrid()
             {
                 SelectionUnit = DataGridSelectionUnit.FullRow,
                 CanUserSortColumns = true,
                 SelectionMode = DataGridSelectionMode.Extended,
                 AutoGenerateColumns = false,
             };
-            DataGridAssist.SetCellPadding(Datas, new Thickness(4, 2, 2, 2));
+            DataGridAssist.SetCellPadding(dataGrid, new Thickness(4, 2, 2, 2));
 
             #region Add a iconColumn
             DataGridTemplateColumn iconColumn = new DataGridTemplateColumn()
@@ -316,22 +323,22 @@ namespace InfoGlasses.WPF
                 DataType = typeof(AddProxyParams),
                 VisualTree = spFactory,
             };
-            Datas.Columns.Add(iconColumn);
+            dataGrid.Columns.Add(iconColumn);
             #endregion
 
             #region Add other column
-            Datas.Columns.Add(GetATextColumn("Name", LanguagableComponent.GetTransLation(new string[] { "Name", "名称" })));
+            dataGrid.Columns.Add(GetATextColumn("Name", LanguagableComponent.GetTransLation(new string[] { "Name", "名称" })));
             string indexHeader = isInput ? LanguagableComponent.GetTransLation(new string[] { "Input Index", "输入端序号" }) :
                 LanguagableComponent.GetTransLation(new string[] { "Output Index", "输出端序号" });
-            Datas.Columns.Add(GetATextColumn("Index", indexHeader));
-            Datas.Columns.Add(GetATextColumn("Category", LanguagableComponent.GetTransLation(new string[] { "Category", "类别" })));
-            Datas.Columns.Add(GetATextColumn("Subcategory", LanguagableComponent.GetTransLation(new string[] { "Subcategory", "子类别" })));
-            Datas.Columns.Add(GetATextColumn("Exposure", LanguagableComponent.GetTransLation(new string[] { "Exposure", "分栏" })));
-            Datas.Columns.Add(GetATextColumn("Guid", LanguagableComponent.GetTransLation(new string[] { "Guid", "全局唯一标识符（Guid）" })));
+            dataGrid.Columns.Add(GetATextColumn("Index", indexHeader));
+            dataGrid.Columns.Add(GetATextColumn("Category", LanguagableComponent.GetTransLation(new string[] { "Category", "类别" })));
+            dataGrid.Columns.Add(GetATextColumn("Subcategory", LanguagableComponent.GetTransLation(new string[] { "Subcategory", "子类别" })));
+            dataGrid.Columns.Add(GetATextColumn("Exposure", LanguagableComponent.GetTransLation(new string[] { "Exposure", "分栏" })));
+            dataGrid.Columns.Add(GetATextColumn("Guid", LanguagableComponent.GetTransLation(new string[] { "Guid", "全局唯一标识符（Guid）" })));
             #endregion
 
-            Datas.ItemsSource = isInput ? InputProxy : OutputProxy;
-            return Datas;
+            dataGrid.ItemsSource = isInput ? InputProxy : OutputProxy;
+            return dataGrid;
         }
 
         private System.Windows.Controls.DataGridTextColumn GetATextColumn(string path, string header)
@@ -346,7 +353,7 @@ namespace InfoGlasses.WPF
             column.SetValue(System.Windows.Controls.DataGridTextColumn.EditingElementStyleProperty, this.Resources["MaterialDesignDataGridTextColumnEditingStyle"]);
             return column;
         }
-
+        #endregion
         private void SetWireColor(ColorPicker colorPicker)
         {
             SetWireColor(colorPicker.Color);
@@ -398,12 +405,12 @@ namespace InfoGlasses.WPF
 
         private void DialogHost_DialogOpened(object sender, MaterialDesignThemes.Wpf.DialogOpenedEventArgs eventArgs)
         {
-
+            ActiveBorder.Visibility = Visibility.Visible;
         }
 
         private void DialogHost_DialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
         {
-
+            ActiveBorder.Visibility = Visibility.Hidden;
         }
     }
 }
