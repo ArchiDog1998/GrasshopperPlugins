@@ -20,14 +20,14 @@ namespace InfoGlasses
     public struct AddProxyParams
     {
         public Guid Guid { get; }
-        public ushort Index { get; }
+        public byte Index { get; }
         public Iconable Icon { get;}
         public BitmapImage ShowIcon => CanvasRenderEngine.BitmapToBitmapImage(this.Icon.GetIcon(true, true));
         public string Name { get; }
         public string Category { get;}
         public string Subcategory { get; }
         public string Exposure { get; }
-        public AddProxyParams(Guid guid, ushort Index, int picturesize = 24)
+        public AddProxyParams(Guid guid, byte Index, int picturesize = 24)
         {
             this.Guid = guid;
             this.Index = Index;

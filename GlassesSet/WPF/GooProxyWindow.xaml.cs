@@ -39,7 +39,7 @@ namespace InfoGlasses.WPF
                 //System.Windows.Forms.MessageBox.Show(_proxy.ShowColor.ToString());
             }
         }
-        private AddProxyParams[] InputProxy 
+        internal AddProxyParams[] InputProxy 
         { get 
             {
                 try
@@ -59,7 +59,7 @@ namespace InfoGlasses.WPF
                 }
             } 
         }
-        private AddProxyParams[] OutputProxy
+        internal AddProxyParams[] OutputProxy
         {
             get
             {
@@ -74,7 +74,7 @@ namespace InfoGlasses.WPF
             }
             set
             {
-                if (value != null && value.Length != 0)
+                if (value != null)
                 {
                     _paramOwner.CreateProxyDictOutput[_proxy.TypeFullName] = value;
                 }
@@ -154,7 +154,7 @@ namespace InfoGlasses.WPF
         }
 
         #region Set the major box
-        private void WindowSwitchControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        internal void WindowSwitchControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (MajorGrid == null || ButtonPanel == null) return;
                 
@@ -208,15 +208,11 @@ namespace InfoGlasses.WPF
         {
 
             ButtonPanel.Children.Add(CreateARespondIconButton(PackIconKind.Plus, System.Drawing.Color.LightSeaGreen,
-                (x, y) => { new SelectOneParamWindow(_paramOwner, isInput) { Owner = this}.Show();
+                (x, y) => { new SelectOneParamWindow(_paramOwner, isInput, _proxy) { Owner = this}.Show();
                     ActiveBorder.Visibility = Visibility.Visible;
-                    this.RemoveActiveEvents();
                     this.IsEnabled = false;
-                    this.ActiveBorder.Child = new TextBlock() {
-                        Text = LanguagableComponent.GetTransLation(new string[] { "Please finish the child window first.", "请先完成子窗口。" }),
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        VerticalAlignment = VerticalAlignment.Center,
-                    };
+                    MessageBox.Content = LanguagableComponent.GetTransLation(new string[] { "Please finish the child window first.", "请先完成子窗口。" });
+                    MessageSnackBar.IsActive = true;
                 },
                 LanguagableComponent.GetTransLation(new string[] { "Add", "添加" })));
 
@@ -413,12 +409,6 @@ namespace InfoGlasses.WPF
             this.Deactivated += GooProxyWindow_Deactivated;
             this.Activated += GooProxyWindow_Activated;
         }
-
-        public void RemoveActiveEvents()
-        {
-            this.Deactivated -= GooProxyWindow_Deactivated;
-            this.Activated -= GooProxyWindow_Activated;
-        } 
 
         private void GooProxyWindow_Activated(object sender, EventArgs e)
         {

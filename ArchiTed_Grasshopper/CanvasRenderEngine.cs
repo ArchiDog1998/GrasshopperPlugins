@@ -15,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Media.Imaging;
+using ArchiTed_Grasshopper.WinformControls;
 
 namespace ArchiTed_Grasshopper
 {
@@ -203,15 +204,57 @@ namespace ArchiTed_Grasshopper
             return bitmapImage;
         }
 
-        public static Bitmap GetObjectBitmap(IGH_DocumentObject obj , int marginThickness = 10, int maxDistanceToWorkArea = 150)
+        public static Bitmap GetObjectBitmap(IGH_DocumentObject obj, bool isInput, out IGH_Param dataParam, byte? index = null, int marginThickness = 10, int maxDistanceToWorkArea = 150)
         {
-
+            dataParam = null;
 
             GH_Canvas canvas = new GH_Canvas();
             AddAObjectToCanvas(obj, new PointF(), false, canvas);
-            obj.Attributes.Bounds = new System.Drawing.RectangleF(obj.Attributes.Bounds.X - obj.Attributes.Bounds.Width / 2,
-                obj.Attributes.Bounds.Y - obj.Attributes.Bounds.Height / 2, obj.Attributes.Bounds.Width, obj.Attributes.Bounds.Height);
+            obj.Attributes.Bounds = new System.Drawing.RectangleF(- obj.Attributes.Bounds.Width / 2, - obj.Attributes.Bounds.Height / 2, 
+                obj.Attributes.Bounds.Width, obj.Attributes.Bounds.Height);
 
+            if (index.HasValue && obj is IGH_Component)
+            {
+                IGH_Component component = obj as IGH_Component;
+                IGH_Param param = null;
+                RectangleF renderRect = RectangleF.Empty;
+                switch (isInput)
+                {
+                    case true:
+                        if (component.Params.Output.Count <= index.Value) return null;
+                        param = component.Params.Output[index.Value];
+                        renderRect = param.Attributes.Bounds;
+                        float move = obj.Attributes.Bounds.Right - renderRect.Right - 2;
+                        renderRect = new RectangleF(new PointF(renderRect.X + move, renderRect.Y), renderRect.Size);
+                        break;
+                    case false:
+                        if (component.Params.Input.Count <= index.Value) return null;
+                        param = component.Params.Input[index.Value];
+                        renderRect = param.Attributes.Bounds;
+                        float move1 = obj.Attributes.Bounds.Left - renderRect.Left + 2;
+                        renderRect = new RectangleF(new PointF(renderRect.X + move1, renderRect.Y), renderRect.Size);
+                        break;
+                }
+                if(param != null && renderRect != RectangleF.Empty)
+                {
+                    dataParam = param;
+                    canvas.CanvasPostPaintObjects += (cvs) =>
+                    {
+                        canvas.Graphics.DrawPath(new Pen(new SolidBrush(ColorExtension.OnColor), 2), TextBox.GetRoundRectangle(renderRect, 3));
+                    };
+                }
+            }
+            else if (index.HasValue && obj is IGH_Param)
+            {
+                dataParam = obj as IGH_Param;
+            }
+
+            return GetObjectBitmap(obj, canvas, marginThickness, maxDistanceToWorkArea);
+        }
+
+        private static Bitmap GetObjectBitmap(IGH_DocumentObject obj, GH_Canvas canvas, int marginThickness = 10, int maxDistanceToWorkArea = 150)
+        {
+            #region Capture
             int width = (int)(obj.Attributes.Bounds.Width + marginThickness);
             int height = (int)(obj.Attributes.Bounds.Height + marginThickness);
 
@@ -230,7 +273,7 @@ namespace ArchiTed_Grasshopper
                 float mul = Math.Min((rect.Width - maxDistanceToWorkArea) / (float)bitmap.Width, (rect.Height - maxDistanceToWorkArea) / (float)bitmap.Height);
                 bitmap = new System.Drawing.Bitmap(bitmap, (int)(bitmap.Width * mul), (int)(bitmap.Height * mul));
             }
-
+            #endregion
 
             return bitmap;
         }

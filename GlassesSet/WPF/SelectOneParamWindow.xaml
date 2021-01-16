@@ -80,23 +80,28 @@
     <materialDesign:DialogHost CloseOnClickAway="True" OverlayBackground="Transparent" DialogOpened="DialogHost_DialogOpened" DialogClosing="DialogHost_DialogClosing">
         <materialDesign:DialogHost.DialogContent>
             <StackPanel Margin="16">
+                <TextBlock x:Name="ComponentName" HorizontalAlignment="Center" Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
                 <Image x:Name="ShowcaseImage"/>
+                <TextBlock x:Name="SelectedParam" HorizontalAlignment="Center"/>
+
                 <TextBox
-        Margin="0 8 0 0"
-        HorizontalAlignment="Stretch" TextChanged="IndexTextBox_TextChanged"
-        x:Name="IndexTextBox" materialDesign:HintAssist.Hint="Select Index" />
+                    Margin="0 8 0 0"
+                    HorizontalAlignment="Stretch" TextChanged="IndexTextBox_TextChanged"
+                    x:Name="IndexTextBox" materialDesign:HintAssist.Hint="Select Index" />
+                <TextBlock x:Name="SelectedMessage" HorizontalAlignment="Center" Foreground="DimGray"/>
+
                 <StackPanel
-        Orientation="Horizontal"
-        HorizontalAlignment="Right"> 
-                    <Button
-          Style="{StaticResource MaterialDesignFlatButton}"
-          IsCancel="True" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
-          Margin="0 8 8 0" Content="CANCEL" Foreground="DimGray"/>
-                    
-                    <Button
-          Style="{StaticResource MaterialDesignFlatButton}"
-          IsDefault="True"  Click="FinishedClick"
-          Margin="0 8 8 0" Content="ACCEPT"/>
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+                    <Button x:Name="DialogCancelButton"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        IsCancel="True" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                        Margin="0 8 8 0" Content="CANCEL" Foreground="DimGray"/>
+
+                    <Button x:Name="DialogFinishButton"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            IsDefault="True"  Click="FinishedClick"
+                            Margin="0 8 8 0" Content="ACCEPT"/>
 
 
 
@@ -158,7 +163,7 @@
 
                         </Button>
 
-                        <Button Grid.Column="3" Width="80" x:Name="OKButton" IsEnabled="False" Click="OKButton_Click"
+                        <Button Grid.Column="3" Width="80" x:Name="OKButton" IsEnabled="False"
                                             materialDesign:ButtonAssist.CornerRadius="5" Margin="5"
                                             materialDesign:ShadowAssist.ShadowDepth="Depth2" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
                                             Style="{StaticResource MaterialDesignRaisedLightButton}" >

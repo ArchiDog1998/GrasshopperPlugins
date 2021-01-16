@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using Grasshopper.Kernel;
 using Grasshopper.GUI.Canvas;
 using InfoGlasses.WinformControls;
+using MaterialDesignThemes.Wpf;
 
 namespace InfoGlasses.WPF
 {
@@ -25,12 +26,15 @@ namespace InfoGlasses.WPF
     /// </summary>
     public partial class SelectOneParamWindow : LangWindow
     {
+        private GooTypeProxy _proxy { get; }
+        private byte _paramIndex { get; set; }
         private ParamGlassesComponent _paramOwner { get; }
         private bool _isInput { get; }
         private ParamGlassesProxy _selectedProxy;
-        public SelectOneParamWindow(ParamGlassesComponent owner, bool isInput)
+        public SelectOneParamWindow(ParamGlassesComponent owner, bool isInput, GooTypeProxy proxy)
             :base()
         {
+            this._proxy = proxy;
             this._isInput = isInput;
             this._paramOwner = owner;
             InitializeComponent();
@@ -49,7 +53,16 @@ namespace InfoGlasses.WPF
 
         private void DialogHost_DialogOpened(object sender, MaterialDesignThemes.Wpf.DialogOpenedEventArgs eventArgs)
         {
+            IndexTextBox.Text = null;
             ActiveBorder.Visibility = Visibility.Visible;
+            this.ComponentName.Text = _selectedProxy.FullName;
+            System.Drawing.Bitmap bitmap = CanvasRenderEngine.GetObjectBitmap(_selectedProxy.CreateObejct(), this._isInput, out _);
+            ShowcaseImage.Source = CanvasRenderEngine.BitmapToBitmapImage(bitmap);
+
+            this.DialogCancelButton.Content = LanguagableComponent.GetTransLation(new string[] { "CANCEL", "取消" });
+            this.DialogFinishButton.Content = LanguagableComponent.GetTransLation(new string[] { "ACCEPT", "接受" });
+            HintAssist.SetHint(this.IndexTextBox, _isInput ? LanguagableComponent.GetTransLation(new string[] { "Output Index", "输出端索引" }) :
+                LanguagableComponent.GetTransLation(new string[] { "Input Index", "输入端索引" }));
         }
 
         private void DialogHost_DialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
@@ -219,19 +232,85 @@ namespace InfoGlasses.WPF
         protected override void OnClosed(EventArgs e)
         {
             Owner.IsEnabled = true;
-            ((GooProxyWindow)Owner).AddActiveEvents();
-            ((GooProxyWindow)Owner).ActiveBorder.Child = null;
+            ActiveBorder.Visibility = Visibility.Hidden;
+            ((GooProxyWindow)Owner).MessageSnackBar.IsActive = false;
             base.OnClosed(e);
         }
 
         private void FinishedClick(object sender, RoutedEventArgs e)
         {
+            switch (this._isInput)
+            {
+                case true:
+                    {
+                        AddProxyParams[] oldArray = ((GooProxyWindow)Owner).InputProxy;
+                        AddProxyParams[] newArray = new AddProxyParams[oldArray.Length + 1];
+                        newArray[0] = new AddProxyParams(this._selectedProxy.Guid, this._paramIndex);
+                        for (int i = 0; i < oldArray.Length; i++)
+                        {
+                            newArray[i + 1] = oldArray[i];
+                        }
+                        ((GooProxyWindow)Owner).InputProxy = newArray;
+                    }
+                    break;
+                case false:
+                    {
+                        AddProxyParams[] oldArray = ((GooProxyWindow)Owner).OutputProxy;
+                        AddProxyParams[] newArray = new AddProxyParams[oldArray.Length + 1];
+                        newArray[0] = new AddProxyParams(this._selectedProxy.Guid, this._paramIndex);
+                        for (int i = 0; i < oldArray.Length; i++)
+                        {
+                            newArray[i + 1] = oldArray[i];
+                        }
+                        ((GooProxyWindow)Owner).OutputProxy = newArray;
+                    }
+                    break;
+            }
+            ((GooProxyWindow)Owner).WindowSwitchControl_SelectionChanged(null, null);
             this.Close();
         }
 
         private void IndexTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            DialogFinishButton.IsEnabled = true;
+            SelectedMessage.Text = SelectedParam.Text = null; 
+            System.Drawing.Bitmap bitmap;
 
+            SelectedMessage.Foreground = new SolidColorBrush(ColorExtension.ConvertToMediaColor(System.Drawing.Color.DimGray));
+
+            byte index;
+            if(byte.TryParse(IndexTextBox.Text, out index))
+            {
+                IGH_Param dataType;
+                bitmap = CanvasRenderEngine.GetObjectBitmap(_selectedProxy.CreateObejct(), this._isInput, out dataType, index);
+                if(bitmap != null)
+                {
+                    ShowcaseImage.Source = CanvasRenderEngine.BitmapToBitmapImage(bitmap);
+                    SelectedParam.Text = $"{dataType.Name} [{dataType.Type.Name}]";
+                    if(this._proxy.TypeFullName != dataType.Type.FullName)
+                    {
+                        SelectedMessage.Text += LanguagableComponent.GetTransLation(new string[] { "Data Type is not the Same!", "数据类型并不一致！" });
+                        SelectedMessage.Foreground = new SolidColorBrush(ColorExtension.ConvertToMediaColor(System.Drawing.Color.DarkOrange));
+
+                    }
+                }
+                else
+                {
+                    bitmap = CanvasRenderEngine.GetObjectBitmap(_selectedProxy.CreateObejct(), this._isInput, out _);
+                    SelectedMessage.Text = LanguagableComponent.GetTransLation(new string[] { "Input data is out of range!", "输入数据超出索引阈值！" });
+                    SelectedMessage.Foreground = new SolidColorBrush(ColorExtension.ConvertToMediaColor(System.Drawing.Color.DarkRed));
+                    DialogFinishButton.IsEnabled = false;
+                }
+            }
+            else
+            {
+                bitmap = CanvasRenderEngine.GetObjectBitmap(_selectedProxy.CreateObejct(), this._isInput, out _);
+                SelectedMessage.Text = LanguagableComponent.GetTransLation(new string[] { "Please input a number between 0 - 255!", "请输入一个0 - 255的数值！" });
+                SelectedMessage.Foreground = new SolidColorBrush(ColorExtension.ConvertToMediaColor(System.Drawing.Color.DarkRed));
+                DialogFinishButton.IsEnabled = false;
+            }
+            ShowcaseImage.Source = CanvasRenderEngine.BitmapToBitmapImage(bitmap);
+            this._paramIndex = index;
         }
 
 
@@ -242,12 +321,6 @@ namespace InfoGlasses.WPF
             if (e.AddedItems[0] != null)
                 _selectedProxy = (ParamGlassesProxy)e.AddedItems[0];
             OKButton.IsEnabled = true;
-        }
-
-        private void OKButton_Click(object sender, RoutedEventArgs e)
-        {
-            System.Drawing.Bitmap bitmap = CanvasRenderEngine.GetObjectBitmap(_selectedProxy.CreateObejct());
-            ShowcaseImage.Source = CanvasRenderEngine.BitmapToBitmapImage(bitmap);
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)

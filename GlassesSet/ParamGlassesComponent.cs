@@ -987,7 +987,7 @@ namespace InfoGlasses
                     }
                     try
                     {
-                        proxies.Add(new AddProxyParams(new Guid(strCom[0]), ushort.Parse(strCom[1])));
+                        proxies.Add(new AddProxyParams(new Guid(strCom[0]), byte.Parse(strCom[1])));
                     }
                     catch { }
                 }
@@ -1062,7 +1062,7 @@ namespace InfoGlasses
                     }
                     try
                     {
-                        proxies.Add(new AddProxyParams(new Guid(strCom[0]), ushort.Parse(strCom[1])));
+                        proxies.Add(new AddProxyParams(new Guid(strCom[0]), byte.Parse(strCom[1])));
                     }
                     catch { }
                 }
@@ -1173,7 +1173,7 @@ namespace InfoGlasses
                     {
                         var set = CreateProxyDictInput[key][m];
                         writer.SetGuid("autoValueGuid" + n.ToString("D5") + m.ToString(), set.Guid);
-                        writer.SetInt32("autoValueInt" + n.ToString("D5") + m.ToString(), set.Index);
+                        writer.SetByte("autoValueInt" + n.ToString("D5") + m.ToString(), set.Index);
                     }
                     n++;
                 }
@@ -1194,7 +1194,7 @@ namespace InfoGlasses
                     {
                         var set = CreateProxyDictOutput[key][m];
                         writer.SetGuid("autoValueGuidOut" + n.ToString("D5") + m.ToString(), set.Guid);
-                        writer.SetInt32("autoValueIntOut" + n.ToString("D5") + m.ToString(), set.Index);
+                        writer.SetByte("autoValueIntOut" + n.ToString("D5") + m.ToString(), set.Index);
                     }
                     n++;
                 }
@@ -1246,8 +1246,8 @@ namespace InfoGlasses
                     for (int m = 0; m < valueCount; m++)
                     {
                         Guid guid = reader.GetGuid("autoValueGuid" + n.ToString("D5") + m.ToString());
-                        int outIndex = reader.GetInt32("autoValueInt" + n.ToString("D5") + m.ToString());
-                        value[m] = new AddProxyParams(guid, (ushort)outIndex);
+                        int outIndex = reader.GetByte("autoValueInt" + n.ToString("D5") + m.ToString());
+                        value[m] = new AddProxyParams(guid, (byte)outIndex);
                     }
                     CreateProxyDictInput[reader.GetString("autoName" + n.ToString())] = value;
                 }
@@ -1264,8 +1264,8 @@ namespace InfoGlasses
                     for (int m = 0; m < valueCount; m++)
                     {
                         Guid guid = reader.GetGuid("autoValueGuidOut" + n.ToString("D5") + m.ToString());
-                        int outIndex = reader.GetInt32("autoValueIntOut" + n.ToString("D5") + m.ToString());
-                        value[m] = new AddProxyParams(guid, (ushort)outIndex);
+                        int outIndex = reader.GetByte("autoValueIntOut" + n.ToString("D5") + m.ToString());
+                        value[m] = new AddProxyParams(guid, (byte)outIndex);
                     }
                     CreateProxyDictOutput[reader.GetString("autoNameOut" + n.ToString())] = value;
                 }
