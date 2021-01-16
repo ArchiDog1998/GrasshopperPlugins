@@ -110,7 +110,7 @@ namespace InfoGlasses
         #endregion
         #region Tree
         private const string _showTree = "showTree";
-        private const bool _showTreeDefault = false;
+        private const bool _showTreeDefault = true;
         public bool IsShowTree => GetValue(_showTree, _showTreeDefault);
 
         private const string _treeCount = "treeCount";

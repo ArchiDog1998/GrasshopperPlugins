@@ -9,7 +9,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:InfoGlasses.WPF"
         mc:Ignorable="d"
-        Title="GooProxyWindow" Height="500" Width="450" MinWidth="400" MinHeight="200"
+        Title="Data Type Window" Height="500" Width="450" MinWidth="400" MinHeight="200"
                   WindowStartupLocation="CenterScreen">
     
     <Window.Style>

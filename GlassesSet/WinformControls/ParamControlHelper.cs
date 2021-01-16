@@ -127,21 +127,22 @@ namespace InfoGlasses.WinformControls
             graphics.DrawPath(new Pen(Color.DimGray, 1), path);
             graphics.DrawImage(icon, bound);
         }
-        public static bool IsRender<TGoo>(IParamControlBase<TGoo> paramcontrol, GH_Canvas canvas, Graphics graphics, bool isInputSide = true, bool renderLittleZoom = false) where TGoo : class, IGH_Goo
+        public static bool IsRender<TGoo>(IParamControlBase<TGoo> paramcontrol, GH_Canvas canvas, Graphics graphics, bool renderLittleZoom = false, bool isInputSide = true) where TGoo : class, IGH_Goo
         {
             Grasshopper.Instances.ActiveCanvas.MouseDown -= paramcontrol.RespondToMouseDown;
-            if ((paramcontrol.Target.SourceCount > 0 || !paramcontrol.Enable))
+            if (!paramcontrol.Enable) return false;
+
+            // paramcontrol.Target.Recipients.Count > 0
+            if (isInputSide && paramcontrol.Target.SourceCount > 0)
             {
                 return false;
             }
-            else if (isInputSide)
+            else if(isInputSide && false)
             {
                 return false;
             }
-            else
-            {
-                Grasshopper.Instances.ActiveCanvas.MouseDown += paramcontrol.RespondToMouseDown;
-            }
+
+            Grasshopper.Instances.ActiveCanvas.MouseDown += paramcontrol.RespondToMouseDown;
             paramcontrol.Layout(new RectangleF(), paramcontrol.Target.Attributes.Bounds);
             return true;
         }
