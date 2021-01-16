@@ -109,16 +109,8 @@ namespace InfoGlasses.WPF
             LanguageChanged();
             LanguagableComponent.LanguageChanged += WindowLanguageChanged;
 
-            this.Deactivated += (x, y) =>
-            {
-                ActiveBorder.Visibility = Visibility.Visible;
-                //this.Opacity = 0.6;
-            };
-            this.Activated += (x, y) =>
-            {
-                ActiveBorder.Visibility = Visibility.Hidden;
-                //this.Opacity = 1;
-            };
+            AddActiveEvents();
+
         }
         #region language
 
@@ -218,9 +210,13 @@ namespace InfoGlasses.WPF
             ButtonPanel.Children.Add(CreateARespondIconButton(PackIconKind.Plus, System.Drawing.Color.LightSeaGreen,
                 (x, y) => { new SelectOneParamWindow(_paramOwner, isInput) { Owner = this}.Show();
                     ActiveBorder.Visibility = Visibility.Visible;
-                    this.IsEnabled = false; 
-                    MessageBox.Content = LanguagableComponent.GetTransLation(new string[] { "Please finish the child window.", "请先完成子窗口。"});
-                    MessageSnackBar.IsActive = true;
+                    this.RemoveActiveEvents();
+                    this.IsEnabled = false;
+                    this.ActiveBorder.Child = new TextBlock() {
+                        Text = LanguagableComponent.GetTransLation(new string[] { "Please finish the child window first.", "请先完成子窗口。" }),
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                    };
                 },
                 LanguagableComponent.GetTransLation(new string[] { "Add", "添加" })));
 
@@ -241,7 +237,6 @@ namespace InfoGlasses.WPF
                             if (!ObjRow.IsSelected)
                             {
                                 restProxies.Add(isInput ? InputProxy[i] : OutputProxy[i]);
-
                             }
                         }
                     }
@@ -411,6 +406,28 @@ namespace InfoGlasses.WPF
         private void DialogHost_DialogClosing(object sender, MaterialDesignThemes.Wpf.DialogClosingEventArgs eventArgs)
         {
             ActiveBorder.Visibility = Visibility.Hidden;
+        }
+
+        public void AddActiveEvents()
+        {
+            this.Deactivated += GooProxyWindow_Deactivated;
+            this.Activated += GooProxyWindow_Activated;
+        }
+
+        public void RemoveActiveEvents()
+        {
+            this.Deactivated -= GooProxyWindow_Deactivated;
+            this.Activated -= GooProxyWindow_Activated;
+        } 
+
+        private void GooProxyWindow_Activated(object sender, EventArgs e)
+        {
+            ActiveBorder.Visibility = Visibility.Hidden;
+        }
+
+        private void GooProxyWindow_Deactivated(object sender, EventArgs e)
+        {
+            ActiveBorder.Visibility = Visibility.Visible;
         }
     }
 }

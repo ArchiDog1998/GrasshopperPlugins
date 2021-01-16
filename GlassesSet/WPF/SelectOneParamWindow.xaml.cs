@@ -219,7 +219,8 @@ namespace InfoGlasses.WPF
         protected override void OnClosed(EventArgs e)
         {
             Owner.IsEnabled = true;
-            ((GooProxyWindow)Owner).MessageSnackBar.IsActive = false;
+            ((GooProxyWindow)Owner).AddActiveEvents();
+            ((GooProxyWindow)Owner).ActiveBorder.Child = null;
             base.OnClosed(e);
         }
 
@@ -244,8 +245,9 @@ namespace InfoGlasses.WPF
         }
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
-        {   
-            ShowcaseImage.Source = CanvasRenderEngine.BitmapToBitmapImage(CanvasRenderEngine.GetObjectBitmap(_selectedProxy.CreateObejct()));
+        {
+            System.Drawing.Bitmap bitmap = CanvasRenderEngine.GetObjectBitmap(_selectedProxy.CreateObejct());
+            ShowcaseImage.Source = CanvasRenderEngine.BitmapToBitmapImage(bitmap);
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
