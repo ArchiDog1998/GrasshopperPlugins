@@ -61,13 +61,15 @@ namespace ArchiTed_Grasshopper.WPF
             if (string.IsNullOrWhiteSpace(param) || items == null || items.Length == 0)
                 return new List<ISearchItem>();
 
+            param = param.ToLower();
+
             string[] words = param
                                 .Split(new char[] { ' ', '\u3000' }, StringSplitOptions.RemoveEmptyEntries)
                                 .OrderBy(s => s.Length)
                                 .ToArray();
 
             var q = from sentence in items.AsParallel()
-                    let MLL = Mul_LnCS_Length(sentence.FindDesc, words)
+                    let MLL = Mul_LnCS_Length(sentence.FindDesc.ToLower(), words)
                     where MLL >= 0
                     orderby ((MLL + 0.5) / sentence.FindDesc.Length)
                     select sentence;
