@@ -123,16 +123,7 @@ namespace InfoGlasses.WPF
             #endregion
 
             #region Major Box
-            //DataGridPropertyChange();
-            //IconColumn.Header = LanguagableComponent.GetTransLation(new string[] { "Icon", "图标" });
-            //FullNameColumn.Header = LanguagableComponent.GetTransLation(new string[] { "FullName", "全名" });
-            //CategoryColumn.Header = LanguagableComponent.GetTransLation(new string[] { "Category", "类别" });
-            //SubcategoryColumn.Header = LanguagableComponent.GetTransLation(new string[] { "Subcategory", "子类别" });
-            //ExposureColumn.Header = LanguagableComponent.GetTransLation(new string[] { "Exposure", "分栏" });
-            //GuidColumn.Header = LanguagableComponent.GetTransLation(new string[] { "Guid", "全局唯一标识符（Guid）" });
-
-            //FirstExpenderName.Text = LanguagableComponent.GetTransLation(new string[] { "Filter", "过滤器" });
-            //SecondExpenderName.ToolTip = LanguagableComponent.GetTransLation(new string[] { "Column Visibility", "列可视性" });
+            WindowSwitchControl_SelectionChanged(null, null);
             #endregion
 
             #region B0ttom Four Translate
@@ -261,13 +252,6 @@ namespace InfoGlasses.WPF
             return button;
         }
 
-        private Button CreateAOpenDialogButton(PackIconKind icon, System.Drawing.Color forecolor, string tooltip = null)
-        {
-            Button button = CreateAIconButton(icon, forecolor, tooltip);
-            button.Command = DialogHost.OpenDialogCommand;
-            return button;
-        }
-
         private Button CreateAIconButton(PackIconKind icon, System.Drawing.Color forecolor, string tooltip = null)
         {
             Button button = new Button()
@@ -345,6 +329,10 @@ namespace InfoGlasses.WPF
             return column;
         }
         #endregion
+
+        #endregion
+
+        #region Middle Respond
         private void SetWireColor(ColorPicker colorPicker)
         {
             SetWireColor(colorPicker.Color);
@@ -357,9 +345,7 @@ namespace InfoGlasses.WPF
             this._proxy.Owner.RecordUndoEvent("Define the wire color");
             this.WireColor = color;
         }
-        #endregion
 
-        #region Middle Respond
         private void SnackbarMessage_ActionClick(object sender, RoutedEventArgs e)
         {
             MessageSnackBar.IsActive = false;
@@ -394,6 +380,7 @@ namespace InfoGlasses.WPF
 
         #endregion
 
+        #region Others
         private void DialogHost_DialogOpened(object sender, MaterialDesignThemes.Wpf.DialogOpenedEventArgs eventArgs)
         {
             ActiveBorder.Visibility = Visibility.Visible;
@@ -419,5 +406,6 @@ namespace InfoGlasses.WPF
         {
             ActiveBorder.Visibility = Visibility.Visible;
         }
+        #endregion
     }
 }

@@ -43,6 +43,35 @@ namespace InfoGlasses.WPF
             DrawDataTree(_paramOwner.AllProxy);
         }
 
+        #region Language
+        protected override void LanguageChanged()
+        {
+            #region Top Tree Translate
+            WindowTitle.Text = LanguagableComponent.GetTransLation(new string[] { "Select one component", "选择一个运算器" });
+            HintAssist.SetHint(SearchBox, new Label()
+            {
+                Content = LanguagableComponent.GetTransLation(new string[] { "Search", "搜索" }),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center
+            });
+            CancelButton.ToolTip = LanguagableComponent.GetTransLation(new string[] { "Click to cancel the changes and close this window.", "单击以取消修改，并关闭此窗口。" });
+            OKButton.ToolTip = LanguagableComponent.GetTransLation(new string[] { "Click to comfirm the change and close the window.", "单击以确认修改并关闭窗口。" });
+
+            #endregion
+
+            #region Major Box
+            IconColumn.Header = LanguagableComponent.GetTransLation(new string[] { "Icon", "图标" });
+            FullNameColumn.Header = LanguagableComponent.GetTransLation(new string[] { "FullName", "全名" });
+            CategoryColumn.Header = LanguagableComponent.GetTransLation(new string[] { "Category", "类别" });
+            SubcategoryColumn.Header = LanguagableComponent.GetTransLation(new string[] { "Subcategory", "子类别" });
+            ExposureColumn.Header = LanguagableComponent.GetTransLation(new string[] { "Exposure", "分栏" });
+            GuidColumn.Header = LanguagableComponent.GetTransLation(new string[] { "Guid", "全局唯一标识符（Guid）" });
+
+            FirstExpenderName.Text = LanguagableComponent.GetTransLation(new string[] { "Filter", "过滤器" });
+            #endregion
+        }
+        #endregion
+
         private void WindowTitle_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
@@ -231,6 +260,8 @@ namespace InfoGlasses.WPF
 
         protected override void OnClosed(EventArgs e)
         {
+            LanguagableComponent.LanguageChanged -= WindowLanguageChanged;
+
             Owner.IsEnabled = true;
             ActiveBorder.Visibility = Visibility.Hidden;
             ((GooProxyWindow)Owner).MessageSnackBar.IsActive = false;
