@@ -263,6 +263,7 @@ namespace InfoGlasses.WPF
             LanguagableComponent.LanguageChanged -= WindowLanguageChanged;
 
             Owner.IsEnabled = true;
+            Owner.Activate();
             ActiveBorder.Visibility = Visibility.Hidden;
             ((GooProxyWindow)Owner).MessageSnackBar.IsActive = false;
             base.OnClosed(e);

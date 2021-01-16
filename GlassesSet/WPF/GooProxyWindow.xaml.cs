@@ -284,7 +284,7 @@ namespace InfoGlasses.WPF
             #region Add a iconColumn
             DataGridTemplateColumn iconColumn = new DataGridTemplateColumn()
             {
-                Header = "Icon",
+                Header = LanguagableComponent.GetTransLation(new string[] { "Icon", "图标" }),
                 MinWidth = 24,
                 CanUserSort = false,
             };
@@ -369,6 +369,7 @@ namespace InfoGlasses.WPF
         {
             ((ParamSettingsWindow)this.Owner).UpdateProxy();
             _paramOwner.ExpireSolution(true);
+            Owner.Activate();
             this.Close();
         }
 
