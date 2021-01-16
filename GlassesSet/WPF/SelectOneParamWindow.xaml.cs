@@ -237,24 +237,15 @@ namespace InfoGlasses.WPF
         private void Datas_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             //System.Windows.Forms.MessageBox.Show(e.AddedItems[0].ToString());
+            if (e.AddedItems.Count == 0) return;
             if (e.AddedItems[0] != null)
                 _selectedProxy = (ParamGlassesProxy)e.AddedItems[0];
             OKButton.IsEnabled = true;
         }
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
-        {
-            IGH_DocumentObject obj = _selectedProxy.CreateObejct();
-            GH_Canvas canvas = new GH_Canvas();
-
-            ParamControlHelper.AddAObjectToCanvas(obj, new System.Drawing.PointF(), false, canvas);
-            GH_Viewport vp = new GH_Viewport();
-            vp.Focus(obj.Attributes);
-            System.Drawing.Bitmap bitmap = canvas.GenerateHiResImageTile(vp, System.Drawing.Color.Transparent);
-
-
-            ShowcaseImage.Source = CanvasRenderEngine.BitmapToBitmapImage( bitmap);
-            canvas.Dispose();
+        {   
+            ShowcaseImage.Source = CanvasRenderEngine.BitmapToBitmapImage(CanvasRenderEngine.GetObjectBitmap(_selectedProxy.CreateObejct()));
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)

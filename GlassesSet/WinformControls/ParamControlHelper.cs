@@ -273,7 +273,7 @@ namespace InfoGlasses.WinformControls
             {
                 GH_Component com = obj as GH_Component;
 
-                AddAObjectToCanvas(com, comRightCenter, false, init);
+                CanvasRenderEngine.AddAObjectToCanvas(com, comRightCenter, false, init);
 
                 if (isInputSide)
                 {
@@ -291,7 +291,7 @@ namespace InfoGlasses.WinformControls
             {
                 IGH_Param param = obj as IGH_Param;
 
-                AddAObjectToCanvas(param, comRightCenter, false, init);
+                CanvasRenderEngine.AddAObjectToCanvas(param, comRightCenter, false, init);
 
                 if (isInputSide)
                 {
@@ -314,19 +314,7 @@ namespace InfoGlasses.WinformControls
         }
 
 
-        public static void AddAObjectToCanvas(IGH_DocumentObject obj, PointF pivot, bool update, string init = null)
-        {
-            AddAObjectToCanvas(obj, pivot, update, Grasshopper.Instances.ActiveCanvas, init);
-        }
 
-        public static void AddAObjectToCanvas(IGH_DocumentObject obj, PointF pivot, bool update, GH_Canvas canvas, string init = null)
-        {
-            var functions = typeof(GH_Canvas).GetRuntimeMethods().Where(m => m.Name.Contains("InstantiateNewObject") && !m.IsPublic).ToArray();
-            if (functions.Length > 0)
-            {
-                functions[0].Invoke(canvas, new object[] { obj, init, pivot, update });
-            }
-        }
         #endregion
 
         public static bool GetParamSide(IGH_Param param)

@@ -12,6 +12,8 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Windows.Media.Imaging;
 
 namespace ArchiTed_Grasshopper
@@ -201,120 +203,50 @@ namespace ArchiTed_Grasshopper
             return bitmapImage;
         }
 
-        public static Bitmap CutImageTransparentPart(Bitmap bmp, int WhiteBarRate = 0)
+        public static Bitmap GetObjectBitmap(IGH_DocumentObject obj , int marginThickness = 10, int maxDistanceToWorkArea = 150)
         {
-            int top = 0, left = 0;
-            int right = bmp.Width, bottom = bmp.Height;
 
-            for (int i = 0; i < bmp.Height; i++)//行  
+
+            GH_Canvas canvas = new GH_Canvas();
+            AddAObjectToCanvas(obj, new PointF(), false, canvas);
+            obj.Attributes.Bounds = new System.Drawing.RectangleF(obj.Attributes.Bounds.X - obj.Attributes.Bounds.Width / 2,
+                obj.Attributes.Bounds.Y - obj.Attributes.Bounds.Height / 2, obj.Attributes.Bounds.Width, obj.Attributes.Bounds.Height);
+
+            int width = (int)(obj.Attributes.Bounds.Width + marginThickness);
+            int height = (int)(obj.Attributes.Bounds.Height + marginThickness);
+
+            GH_Viewport vp = new GH_Viewport(new System.Drawing.Point(width / 2, height / 2))
             {
-                bool find = false;
-                for (int j = 0; j < bmp.Width; j++)//列  
-                {
-                    Color c = bmp.GetPixel(j, i);
-                    if (IsNotTransparent(c))
-                    {
-                        top = i;
-                        find = true;
-                        break;
-                    }
-                }
-                if (find) break;
-            }
- 
-            for (int i = 0; i < bmp.Width; i++)//列  
+                Width = width,
+                Height = height
+            };
+            vp.ComputeProjection();
+            System.Drawing.Bitmap bitmap = canvas.GenerateHiResImageTile(vp, System.Drawing.Color.Transparent);
+            canvas.Dispose();
+
+            System.Drawing.Rectangle rect = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
+            if (bitmap.Width > rect.Width - maxDistanceToWorkArea || bitmap.Height > rect.Height - maxDistanceToWorkArea)
             {
-                bool find = false;
-                for (int j = top; j < bmp.Height; j++)//行  
-                {
-                    Color c = bmp.GetPixel(i, j);
-                    if (IsNotTransparent(c))
-                    {
-                        left = i;
-                        find = true;
-                        break;
-                    }
-                }
-                if (find) break; ;
+                float mul = Math.Min((rect.Width - maxDistanceToWorkArea) / (float)bitmap.Width, (rect.Height - maxDistanceToWorkArea) / (float)bitmap.Height);
+                bitmap = new System.Drawing.Bitmap(bitmap, (int)(bitmap.Width * mul), (int)(bitmap.Height * mul));
             }
 
-            for (int i = bmp.Height - 1; i >= 0; i--)//行  
-            {
-                bool find = false;
-                for (int j = left; j < bmp.Width; j++)//列  
-                {
-                    Color c = bmp.GetPixel(j, i);
-                    if (IsNotTransparent(c))
-                    {
-                        bottom = i;
-                        find = true;
-                        break;
-                    }
-                }
-                if (find) break;
-            }
 
-            for (int i = bmp.Width - 1; i >= 0; i--)//列  
-            {
-                bool find = false;
-                for (int j = 0; j <= bottom; j++)//行  
-                {
-                    Color c = bmp.GetPixel(i, j);
-                    if (IsNotTransparent(c))
-                    {
-                        right = i;
-                        find = true;
-                        break;
-                    }
-                }
-                if (find) break;
-            }
-            int iWidth = right - left;
-            int iHeight = bottom - left;
-            int blockWidth = Convert.ToInt32(iWidth * WhiteBarRate / 100);
-            return Cut(bmp, left - blockWidth, top - blockWidth, iWidth + 2 * blockWidth, iHeight + 2 * blockWidth) ?? bmp;
+            return bitmap;
         }
 
-        public static Bitmap Cut(Bitmap b, int StartX, int StartY, int iWidth, int iHeight)
+        public static void AddAObjectToCanvas(IGH_DocumentObject obj, PointF pivot, bool update, string init = null)
         {
-            if (b == null)
-            {
-                return null;
-            }
-            int w = b.Width;
-            int h = b.Height;
-            if (StartX >= w || StartY >= h)
-            {
-                return null;
-            }
-            if (StartX + iWidth > w)
-            {
-                iWidth = w - StartX;
-            }
-            if (StartY + iHeight > h)
-            {
-                iHeight = h - StartY;
-            }
-            try
-            {
-                Bitmap bmpOut = new Bitmap(iWidth, iHeight, PixelFormat.Format24bppRgb);
-                Graphics g = Graphics.FromImage(bmpOut);
-                g.Clear(Color.Transparent);
-                g.DrawImage(b, new Rectangle(0, 0, iWidth, iHeight), new Rectangle(StartX, StartY, iWidth, iHeight), GraphicsUnit.Pixel);
-                g.Dispose();
-                return bmpOut;
-            }
-            catch
-            {
-                return null;
-            }
+            AddAObjectToCanvas(obj, pivot, update, Grasshopper.Instances.ActiveCanvas, init);
         }
 
-        public static bool IsNotTransparent(Color c)
+        public static void AddAObjectToCanvas(IGH_DocumentObject obj, PointF pivot, bool update, GH_Canvas canvas, string init = null)
         {
-            if (c.A != 0)
-                return true;
-            else return false;
+            var functions = typeof(GH_Canvas).GetRuntimeMethods().Where(m => m.Name.Contains("InstantiateNewObject") && !m.IsPublic).ToArray();
+            if (functions.Length > 0)
+            {
+                functions[0].Invoke(canvas, new object[] { obj, init, pivot, update });
+            }
         }
     }
 }
