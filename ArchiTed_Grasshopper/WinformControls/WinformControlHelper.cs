@@ -150,16 +150,12 @@ namespace ArchiTed_Grasshopper.WinformControls
             return datas;
         }
 
-        public static Func<int, Func<RectangleF, RectangleF, RectangleF>> GetInnerRectRightFunc(int row, int column, SizeF size, out Func<RectangleF, RectangleF> changeOutputLayout,
+        public static Func<int, Func<RectangleF, RectangleF, RectangleF>> GetInnerRectRightFunc(int row, int column, SizeF size, out PointF outputLayoutMove,
             int width = 3)
         {
 
             int[,] datas = GetIntArrays(row, column);
-            changeOutputLayout = (x) =>
-            {
-                PointF pivot = new PointF(x.X + (size.Width + 2 * width) * column, x.Y);
-                return new RectangleF(pivot, x.Size);
-            };
+            outputLayoutMove = new PointF((size.Width + 2 * width) * column, 0);
 
             return (i) =>
             {
@@ -174,17 +170,13 @@ namespace ArchiTed_Grasshopper.WinformControls
             };
         }
 
-        public static Func<int, Func<RectangleF, RectangleF, RectangleF>> GetInnerRectLeftFunc(int row, int column, SizeF size, out Func<RectangleF, RectangleF> changeInputLayout,
+        public static Func<int, Func<RectangleF, RectangleF, RectangleF>> GetInnerRectLeftFunc(int row, int column, SizeF size,out PointF inputLayoutMove,
             int width = 3)
         {
 
             int[,] datas = GetIntArrays(row, column);
 
-            changeInputLayout = (x) =>
-            {
-                PointF pivot = new PointF(x.X - (size.Width + 2 * width) * column, x.Y);
-                return new RectangleF(pivot, x.Size);
-            };
+            inputLayoutMove = new PointF(-(size.Width + 2 * width) * column, 0);
 
             return (i) =>
             {

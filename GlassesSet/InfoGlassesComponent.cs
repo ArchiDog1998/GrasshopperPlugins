@@ -154,13 +154,13 @@ namespace InfoGlasses
             ResponseToLanguageChanged(this, new EventArgs());
 
             int width = 24;
-            Func<RectangleF, RectangleF> changeInput;
+            PointF changeInput;
             var inputFuncs = WinformControlHelper.GetInnerRectLeftFunc(1, 2, new SizeF(width, width), out changeInput);
-            this.ChangeInputLayout = changeInput;
+            this.InputLayoutMove = changeInput;
 
-            Func<RectangleF, RectangleF> changeOutput;
+            PointF changeOutput;
             var outputFuncs = WinformControlHelper.GetInnerRectRightFunc(1, 2, new SizeF(width, width), out changeOutput);
-            this.ChangeOutputLayout = changeOutput;
+            this.OutputLayoutMove = changeOutput;
 
             ClickButtonIcon<LangWindow> NameButton = new ClickButtonIcon<LangWindow>(_showName, this, inputFuncs(1), true, Properties.Resources.ShowName, _showNameDefault,
                 tips: new string[] { "Click to choose whether to show the component's name.", "点击以选择是否要显示运算器的名称。" },

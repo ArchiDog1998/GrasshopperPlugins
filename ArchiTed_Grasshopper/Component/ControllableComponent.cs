@@ -8,11 +8,14 @@
 using Grasshopper.Kernel;
 using Rhino.Geometry;
 using System;
+using System.Reflection;
 using System.Collections.Generic;
 using System.Drawing;
 using ArchiTed_Grasshopper.WinformControls;
 using ArchiTed_Grasshopper.WPF;
 using Grasshopper.GUI.Canvas;
+using Grasshopper.Kernel.Attributes;
+using System.Linq;
 
 namespace ArchiTed_Grasshopper
 {
@@ -26,9 +29,9 @@ namespace ArchiTed_Grasshopper
 
         public Type WindowsType { get; }
 
-        public Func<RectangleF, RectangleF> ChangeInputLayout { get; protected set; }
+        public PointF InputLayoutMove { get; protected set; } 
 
-        public Func<RectangleF, RectangleF> ChangeOutputLayout { get; protected set; }
+        public PointF OutputLayoutMove { get; protected set; }
 
         public override void CreateAttributes()
         {
@@ -51,9 +54,8 @@ namespace ArchiTed_Grasshopper
                 this.WindowsType = typeof(LangWindow);
             else throw new ArgumentOutOfRangeException("Windows Type");
 
-            ChangeInputLayout = (x) => x;
-            ChangeOutputLayout = (x) => x;
-
+            this.InputLayoutMove = new PointF();
+            this.OutputLayoutMove = new PointF();
         }
 
         protected abstract override void RegisterInputParams(GH_Component.GH_InputParamManager pManager);
@@ -69,11 +71,31 @@ namespace ArchiTed_Grasshopper
         {
             foreach (var input in this.Params.Input)
             {
-                input.Attributes.Bounds = this.ChangeInputLayout(input.Attributes.Bounds);
+                input.Attributes.Bounds = new RectangleF(new PointF(input.Attributes.Bounds.X + this.InputLayoutMove.X, input.Attributes.Bounds.Y + this.InputLayoutMove.Y), input.Attributes.Bounds.Size);
+                ChangeRenderTags((GH_LinkedParamAttributes)input.Attributes, this.InputLayoutMove);
             }
             foreach (var output in this.Params.Output)
             {
-                output.Attributes.Bounds = this.ChangeOutputLayout(output.Attributes.Bounds);
+                output.Attributes.Bounds = new RectangleF(new PointF(output.Attributes.Bounds.X + this.OutputLayoutMove.X, output.Attributes.Bounds.Y + this.OutputLayoutMove.Y), output.Attributes.Bounds.Size);
+                ChangeRenderTags((GH_LinkedParamAttributes)output.Attributes, this.OutputLayoutMove);
+
+            }
+        }
+
+        public static void ChangeRenderTags(GH_LinkedParamAttributes gH_LinkedParamAttributes, PointF rectMove)
+        {
+            if (gH_LinkedParamAttributes == null) return;
+            FieldInfo field = typeof(GH_LinkedParamAttributes).GetRuntimeFields().Where(m => m.Name.Contains("m_renderTags")).First();
+            if (field == null)
+            {
+                System.Windows.Forms.MessageBox.Show("Can't find the Tags!");
+                return;
+            }
+            GH_StateTagList tagList = field.GetValue(gH_LinkedParamAttributes) as GH_StateTagList;
+            if (tagList == null) return;
+            foreach (var tag in tagList)
+            {
+                tag.Stage = new Rectangle(new System.Drawing.Point(tag.Stage.X + (int)rectMove.X, tag.Stage.Y + (int)rectMove.Y), tag.Stage.Size);
             }
         }
 

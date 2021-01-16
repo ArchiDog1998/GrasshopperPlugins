@@ -10,6 +10,7 @@ using Grasshopper.Kernel;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Media.Imaging;
 
@@ -198,6 +199,122 @@ namespace ArchiTed_Grasshopper
             bitmapImage.StreamSource = new MemoryStream(ms.ToArray());
             bitmapImage.EndInit();
             return bitmapImage;
+        }
+
+        public static Bitmap CutImageTransparentPart(Bitmap bmp, int WhiteBarRate = 0)
+        {
+            int top = 0, left = 0;
+            int right = bmp.Width, bottom = bmp.Height;
+
+            for (int i = 0; i < bmp.Height; i++)//行  
+            {
+                bool find = false;
+                for (int j = 0; j < bmp.Width; j++)//列  
+                {
+                    Color c = bmp.GetPixel(j, i);
+                    if (IsNotTransparent(c))
+                    {
+                        top = i;
+                        find = true;
+                        break;
+                    }
+                }
+                if (find) break;
+            }
+ 
+            for (int i = 0; i < bmp.Width; i++)//列  
+            {
+                bool find = false;
+                for (int j = top; j < bmp.Height; j++)//行  
+                {
+                    Color c = bmp.GetPixel(i, j);
+                    if (IsNotTransparent(c))
+                    {
+                        left = i;
+                        find = true;
+                        break;
+                    }
+                }
+                if (find) break; ;
+            }
+
+            for (int i = bmp.Height - 1; i >= 0; i--)//行  
+            {
+                bool find = false;
+                for (int j = left; j < bmp.Width; j++)//列  
+                {
+                    Color c = bmp.GetPixel(j, i);
+                    if (IsNotTransparent(c))
+                    {
+                        bottom = i;
+                        find = true;
+                        break;
+                    }
+                }
+                if (find) break;
+            }
+
+            for (int i = bmp.Width - 1; i >= 0; i--)//列  
+            {
+                bool find = false;
+                for (int j = 0; j <= bottom; j++)//行  
+                {
+                    Color c = bmp.GetPixel(i, j);
+                    if (IsNotTransparent(c))
+                    {
+                        right = i;
+                        find = true;
+                        break;
+                    }
+                }
+                if (find) break;
+            }
+            int iWidth = right - left;
+            int iHeight = bottom - left;
+            int blockWidth = Convert.ToInt32(iWidth * WhiteBarRate / 100);
+            return Cut(bmp, left - blockWidth, top - blockWidth, iWidth + 2 * blockWidth, iHeight + 2 * blockWidth) ?? bmp;
+        }
+
+        public static Bitmap Cut(Bitmap b, int StartX, int StartY, int iWidth, int iHeight)
+        {
+            if (b == null)
+            {
+                return null;
+            }
+            int w = b.Width;
+            int h = b.Height;
+            if (StartX >= w || StartY >= h)
+            {
+                return null;
+            }
+            if (StartX + iWidth > w)
+            {
+                iWidth = w - StartX;
+            }
+            if (StartY + iHeight > h)
+            {
+                iHeight = h - StartY;
+            }
+            try
+            {
+                Bitmap bmpOut = new Bitmap(iWidth, iHeight, PixelFormat.Format24bppRgb);
+                Graphics g = Graphics.FromImage(bmpOut);
+                g.Clear(Color.Transparent);
+                g.DrawImage(b, new Rectangle(0, 0, iWidth, iHeight), new Rectangle(StartX, StartY, iWidth, iHeight), GraphicsUnit.Pixel);
+                g.Dispose();
+                return bmpOut;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public static bool IsNotTransparent(Color c)
+        {
+            if (c.A != 0)
+                return true;
+            else return false;
         }
     }
 }
