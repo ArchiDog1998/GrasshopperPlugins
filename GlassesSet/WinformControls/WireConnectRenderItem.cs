@@ -326,9 +326,10 @@ namespace InfoGlasses.WinformControls
                         graphicsPath = GH_Painter.ConnectionPath(pointA, pointB, directionA, directionB);
                         break;
                     case 1:
-                        float distance = pointB.X - pointA.X;
-                        PointF C = new PointF(pointA.X + distance * (float)Owner.PolywireParam, pointA.Y);
-                        PointF D = new PointF(pointB.X - distance * (float)Owner.PolywireParam, pointB.Y);
+                        float moveMent = (pointA.X - pointB.X) * (float)Owner.PolywireParam;
+                        moveMent = Math.Max(moveMent, 20);
+                        PointF C = new PointF(pointA.X - moveMent, pointA.Y);
+                        PointF D = new PointF(pointB.X + moveMent, pointB.Y);
                         graphicsPath.AddLine(pointA, C);
                         graphicsPath.AddLine(C, D);
                         graphicsPath.AddLine(D, pointB);

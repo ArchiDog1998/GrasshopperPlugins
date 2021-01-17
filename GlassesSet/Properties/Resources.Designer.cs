@@ -163,16 +163,6 @@ namespace InfoGlasses.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap LabelIcon_Locked {
-            get {
-                object obj = ResourceManager.GetObject("LabelIcon_Locked", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap LeftBottomIcon {
             get {
                 object obj = ResourceManager.GetObject("LeftBottomIcon", resourceCulture);
@@ -196,16 +186,6 @@ namespace InfoGlasses.Properties {
         internal static System.Drawing.Bitmap LegendIcon {
             get {
                 object obj = ResourceManager.GetObject("LegendIcon", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap LegendIcon_Locked {
-            get {
-                object obj = ResourceManager.GetObject("LegendIcon_Locked", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

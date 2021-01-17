@@ -19,6 +19,7 @@ namespace InfoGlasses.WPF
 {
     public class GooTypeProxy : ISearchItem
     {
+        public static GH_AssemblyInfo NullInfo = new NullInfo();
         public ParamGlassesComponent Owner { get; }
         public Color ShowColor { get => Owner.GetColor(this.TypeFullName); set => Owner.SetColor(this.TypeFullName, value); }
 
@@ -27,11 +28,11 @@ namespace InfoGlasses.WPF
         public string TypeFullName { get; }
         public string TypeName{ get; }
         public bool IsPlugin { get; } = true;
-        public string AssemName { get; } = string.Empty;
+        public string AssemName { get; } = NullInfo.Name;
 
-        public Guid AssemId { get; } = Guid.Empty;
+        public Guid AssemId { get; } = NullInfo.Id;
 
-        public GH_AssemblyInfo Assembly { get; } = null;
+        public GH_AssemblyInfo Assembly { get; } = NullInfo;
 
         public Type DataType { get; }
 
@@ -56,4 +57,6 @@ namespace InfoGlasses.WPF
             }
         }
     }
+
+
 }

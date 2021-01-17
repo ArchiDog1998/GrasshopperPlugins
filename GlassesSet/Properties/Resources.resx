@@ -148,9 +148,6 @@
   <data name="LabelIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\LabelIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="LabelIcon_Locked" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\LabelIcon_Locked.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="LeftBottomIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\LeftBottomIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -159,9 +156,6 @@
   </data>
   <data name="LegendIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\LegendIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="LegendIcon_Locked" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\LegendIcon_Locked.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ListIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ListIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

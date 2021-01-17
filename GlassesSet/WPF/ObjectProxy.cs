@@ -33,8 +33,8 @@ namespace InfoGlasses.WPF
         public ObjectProxy(IGH_ObjectProxy proxy)
         {
             this.FullName = proxy.Desc.Name;
-            this.Category = proxy.Desc.HasCategory ? proxy.Desc.Category : "";
-            this.Subcategory = proxy.Desc.HasSubCategory ? proxy.Desc.SubCategory : "";
+            this.Category = string.IsNullOrEmpty(proxy.Desc.Category) ? "No Category" : proxy.Desc.Category;
+            this.Subcategory = string.IsNullOrEmpty(proxy.Desc.SubCategory) ? "No SubCategory" : proxy.Desc.SubCategory;
             this.Description = proxy.Desc.Description;
             this.Icon = CanvasRenderEngine.BitmapToBitmapImage(proxy.Icon);
             this.Guid = proxy.Guid;

@@ -108,6 +108,7 @@
       <DependentUpon>GooProxyWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="WPF\IOType.cs" />
+    <Compile Include="WPF\NullInfo.cs" />
     <Compile Include="WPF\ObjectProxy.cs" />
     <Compile Include="WPF\GooTypeProxy.cs" />
     <Compile Include="WPF\ParamGlassesProxy.cs" />

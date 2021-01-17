@@ -188,8 +188,10 @@
 
                             </Expander.Header>
 
+                            <ScrollViewer>
+                                <TreeView x:Name="LeftCateTree" Grid.Row="0" Margin="8"/>
+                            </ScrollViewer>
 
-                            <TreeView x:Name="LeftCateTree" Grid.Row="0" Margin="8"/>
                         </Expander>
 
                         <materialDesign:PopupBox Style="{StaticResource MaterialDesignMultiFloatingActionAccentPopupBox}" Background="Transparent" BorderBrush="Transparent"

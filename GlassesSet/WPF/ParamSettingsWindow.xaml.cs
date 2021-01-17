@@ -247,7 +247,11 @@ namespace InfoGlasses.WPF
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                SetShowProxy(Owner.AllParamProxy, ((Label)((StackPanel)sender).Children[1]).Content as string);
+                try
+                {
+                    SetShowProxy(Owner.AllParamProxy, ((Label)((StackPanel)sender).Children[1]).Content as string);
+                }
+                catch { }
             }
         }
 

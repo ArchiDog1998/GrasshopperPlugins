@@ -263,8 +263,13 @@ namespace InfoGlasses.WPF
         private void SubcateClick(object sender, RoutedEventArgs e)
         {
             string subcate = ((Label)((TreeViewItem)sender).Header).Content as string;
-            string category = ((Label)((StackPanel)((TreeViewItem)((TreeViewItem)sender).Parent).Header).Children[1]).Content as string;
-            SetShowProxy(Owner.AllProxy, category, subcate);
+            try
+            {
+                string category = ((Label)((StackPanel)((TreeViewItem)((TreeViewItem)sender).Parent).Header).Children[1]).Content as string;
+                SetShowProxy(Owner.AllProxy, category, subcate);
+
+            }
+            catch { }
 
         }
 
