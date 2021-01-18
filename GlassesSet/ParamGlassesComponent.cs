@@ -286,9 +286,10 @@ namespace InfoGlasses
 
                    WinFormPlus.AddLoopBoexItem(menu, this, GetTransLation(new string[] { "Accuracy", "数据精度" }), true, new string[]
                    {
-                GetTransLation(new string[]{ "Rough", "粗糙"}),
-                GetTransLation(new string[]{ "Medium", "中等"}),
-                GetTransLation(new string[]{ "High", "高精"}),
+                        GetTransLation(new string[]{ "Rough", "粗糙"}),
+                        GetTransLation(new string[]{ "Medium", "中等"}),
+                        GetTransLation(new string[]{ "High", "高精"}),
+                        GetTransLation(new string[]{ "Extrem High", "超高精"}),
                    }, _accuracyDefault, _accuracy);
 
                    GH_DocumentObject.Menu_AppendSeparator(menu);

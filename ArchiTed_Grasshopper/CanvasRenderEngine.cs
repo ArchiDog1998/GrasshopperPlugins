@@ -209,6 +209,7 @@ namespace ArchiTed_Grasshopper
             dataParam = null;
 
             GH_Canvas canvas = new GH_Canvas();
+            canvas.Document = new GH_Document();
             AddAObjectToCanvas(obj, new PointF(), false, canvas);
             obj.Attributes.Bounds = new System.Drawing.RectangleF(- obj.Attributes.Bounds.Width / 2, - obj.Attributes.Bounds.Height / 2, 
                 obj.Attributes.Bounds.Width, obj.Attributes.Bounds.Height);
@@ -265,6 +266,7 @@ namespace ArchiTed_Grasshopper
             };
             vp.ComputeProjection();
             System.Drawing.Bitmap bitmap = canvas.GenerateHiResImageTile(vp, System.Drawing.Color.Transparent);
+            canvas.Document.Dispose();
             canvas.Dispose();
 
             System.Drawing.Rectangle rect = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;

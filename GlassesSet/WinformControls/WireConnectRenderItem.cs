@@ -23,7 +23,7 @@ using Microsoft.VisualBasic.CompilerServices;
 
 namespace InfoGlasses.WinformControls
 {
-    class WireConnectRenderItem : RenderItem
+    class WireConnectRenderItem : RenderItem, IDisposable
     {
         #region Stastic Properties
         public ParamGlassesComponent Owner { get; }
@@ -47,13 +47,20 @@ namespace InfoGlasses.WinformControls
             ParamProxies = new List<GooTypeProxy>();
             this.Owner = owner;
 
-            //target.OnPingDocument().SolutionEnd += WireConnectRenderItem_SolutionEnd;
+            UpdateParamProxy();  
+            target.SolutionExpired += Target_SolutionExpired;
         }
 
-        private void WireConnectRenderItem_SolutionEnd(object sender, GH_SolutionEventArgs e)
+        private void Target_SolutionExpired(IGH_DocumentObject sender, GH_SolutionExpiredEventArgs e)
         {
             UpdateParamProxy();
         }
+
+        public void Dispose()
+        {
+            this.Target.SolutionExpired -= Target_SolutionExpired;
+        }
+
 
         /// <summary>
         /// Get all wires Bounds.
@@ -191,7 +198,8 @@ namespace InfoGlasses.WinformControls
             }
 
             int count = sources.Count();
-            UpdateParamProxy();
+            if (count != ParamProxies.Count)
+                UpdateParamProxy();
             if (flag)
             {
                 if (CentralSettings.CanvasFancyWires)
@@ -244,14 +252,17 @@ namespace InfoGlasses.WinformControls
                         Type relayName = null;
                         foreach (var item in relayList)
                         {
-                            if (item.Count() > count)
+                            if (item.Count() >= count)
+                            {
                                 relayName = item.Key;
+                                count = item.Count();
+                            }
+
                         }
                         findType = relayName ?? param.VolatileData.AllData(true).ElementAt(0).GetType();
                         break;
                     case 3:
-                        List<Type> types = new List<Type>();
-                        param.VolatileData.AllData(true).GroupBy((x) => { return x.GetType(); }).ToList().ForEach((x) => { if (!types.Contains(x.Key)) types.Add(x.Key); });
+                        List<Type> types = param.VolatileData.AllData(true).Select((x) => x.GetType()).ToList();
                         findType = MinFatherType(types);
                         break;
                     default:
@@ -280,34 +291,68 @@ namespace InfoGlasses.WinformControls
 
         private Type MinFatherType(List<Type> types)
         {
+            List<Type> typesSet = new List<Type>();
             foreach (Type type in types)
             {
-                if (type.IsAssignableFrom(typeof(IGH_Goo)))
-                    return typeof(IGH_Goo);
-            }
-            foreach (Type type1 in types)
-            {
-                bool flag = true;
-                foreach (Type type2 in types)
+                if (!typesSet.Contains(type))
                 {
-                    if (!type1.IsAssignableFrom(type2))
-                    {
-                        flag = false;
-                        break;
-                    }
-                }
-                if (flag)
-                {
-                    return type1;
+                    typesSet.Add(type);
                 }
             }
-            List<Type> types1 = new List<Type>();
-            foreach (Type type3 in types)
+
+            while (typesSet.Count > 1)
             {
-                types1.Add(type3.BaseType);
+                typesSet[0] = MinFatherType(typesSet[0], typesSet[1]);
+                typesSet.RemoveAt(1);
             }
-            return MinFatherType(types1);
+
+            Type finalType = typesSet[0];
+            if (finalType.IsGenericType)
+            {
+                Type[] interfaces = finalType.GetInterfaces();
+                if (interfaces.Length > 0)
+                {
+                    finalType = interfaces[interfaces.Length - 1];
+                }
+            }
+            return finalType;
         }
+
+        private Type MinFatherType(Type type1, Type type2)
+        {
+
+            //if type1 is father, return father.
+            if (IsSubclassOf(type1, type2)) return type1;
+
+            //get type1's baseType.
+            Type baseType = type1.BaseType;
+            if (baseType.IsGenericType)
+            {
+                baseType = baseType.GetGenericTypeDefinition();
+            }
+
+            //return type1's father
+            return MinFatherType(baseType, type2);
+        }
+
+        private bool IsSubclassOf(Type father, Type son)
+        {
+            //Check is object
+            if (son == typeof(object))
+                return false;
+            //Check is father
+            else if (father.IsAssignableFrom(son))
+                return true;
+
+            //get son's true father and check is father.
+            Type baseType = son.BaseType;
+            if (baseType.IsGenericType)
+            {
+                baseType = baseType.GetGenericTypeDefinition();
+            }
+            return IsSubclassOf(father, baseType);
+        }
+
 
         public void DrawConnection(PointF pointA, PointF pointB, GH_WireDirection directionA, GH_WireDirection directionB, bool selectedA, bool selectedB, GH_WireType type, Color colorinput, GH_Canvas canvas, Graphics graphics)
         {
@@ -575,6 +620,8 @@ namespace InfoGlasses.WinformControls
             graphicsPath.Dispose();
             return customLineCap;
         }
+
+
         #endregion
     }
 }
