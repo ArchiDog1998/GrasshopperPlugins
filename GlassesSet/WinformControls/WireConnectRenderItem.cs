@@ -226,36 +226,36 @@ namespace InfoGlasses.WinformControls
 
         private GooTypeProxy FindOrCreateInfo(IGH_Param param)
         {
-            string typeFullName = param.Type.FullName;
+            Type findType = param.Type;
 
             if (param.VolatileData.AllData(true).Count() > 0)
             {
                 switch (Owner.Accuracy)
                 {
                     case 0:
-                        typeFullName = param.Type.FullName;
+                        findType = param.Type;
                         break;
                     case 1:
-                        typeFullName = param.VolatileData.AllData(true).ElementAt(0).GetType().FullName;
+                        findType = param.VolatileData.AllData(true).ElementAt(0).GetType();
                         break;
                     case 2:
                         var relayList = param.VolatileData.AllData(true).GroupBy((x) => { return x.GetType(); });
                         int count = 0;
-                        string relayName = "";
+                        Type relayName = null;
                         foreach (var item in relayList)
                         {
                             if (item.Count() > count)
-                                relayName = item.Key.FullName;
+                                relayName = item.Key;
                         }
-                        typeFullName = relayName;
+                        findType = relayName ?? param.VolatileData.AllData(true).ElementAt(0).GetType();
                         break;
                     case 3:
                         List<Type> types = new List<Type>();
                         param.VolatileData.AllData(true).GroupBy((x) => { return x.GetType(); }).ToList().ForEach((x) => { if (!types.Contains(x.Key)) types.Add(x.Key); });
-                        typeFullName = MinFatherType(types).FullName;
+                        findType = MinFatherType(types);
                         break;
                     default:
-                        typeFullName = param.VolatileData.AllData(true).ElementAt(0).GetType().FullName;
+                        findType = param.VolatileData.AllData(true).ElementAt(0).GetType();
                         break;
                 }
 
@@ -263,7 +263,7 @@ namespace InfoGlasses.WinformControls
 
             foreach (var info in Owner.AllParamProxy)
             {
-                if (info.TypeFullName == typeFullName)
+                if (info.DataType == findType)
                 {
                     if (!Owner.ShowProxy.Contains(info))
                     {
@@ -272,7 +272,7 @@ namespace InfoGlasses.WinformControls
                     return info;
                 }
             }
-            GooTypeProxy newInfo = new GooTypeProxy(param.Type, Owner);
+            GooTypeProxy newInfo = new GooTypeProxy(findType, Owner);
             Owner.AllParamProxy.Add(newInfo);
             Owner.ShowProxy.Add(newInfo);
             return newInfo;
