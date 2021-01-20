@@ -47,18 +47,18 @@ namespace InfoGlasses.WinformControls
             ParamProxies = new List<GooTypeProxy>();
             this.Owner = owner;
 
-            UpdateParamProxy();  
-            target.SolutionExpired += Target_SolutionExpired;
+            UpdateParamProxy();
+            target.OnPingDocument().SolutionEnd += WireConnectRenderItem_SolutionEnd;
         }
 
-        private void Target_SolutionExpired(IGH_DocumentObject sender, GH_SolutionExpiredEventArgs e)
+        private void WireConnectRenderItem_SolutionEnd(object sender, GH_SolutionEventArgs e)
         {
             UpdateParamProxy();
         }
 
         public void Dispose()
         {
-            this.Target.SolutionExpired -= Target_SolutionExpired;
+            Target.OnPingDocument().SolutionEnd -= WireConnectRenderItem_SolutionEnd;
         }
 
 
