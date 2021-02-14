@@ -279,8 +279,8 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>Copy "$(TargetPath)" "C:\Users\教学专用\AppData\Roaming\Grasshopper\Libraries\$(ProjectName).gha"
-Copy "$(TargetPath)" "C:\Users\Administrator\AppData\Roaming\Grasshopper\Libraries\$(ProjectName).gha"</PostBuildEvent>
+    <PostBuildEvent>Copy "$(TargetPath)" "C:\Users\教学专用\AppData\Roaming\Grasshopper\Libraries\ShowcaseTools\$(ProjectName).gha"
+Copy "$(TargetPath)" "C:\Users\Administrator\AppData\Roaming\Grasshopper\Libraries\ShowcaseTools\$(ProjectName).gha"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <FallbackCulture>en-US</FallbackCulture>
