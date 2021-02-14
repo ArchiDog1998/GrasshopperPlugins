@@ -69,7 +69,5 @@ namespace TestProject
             return FindComponentFunction(@object.ComponentGuid);
         }
 
-
-
     }
 }
