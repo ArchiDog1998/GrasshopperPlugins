@@ -43,7 +43,7 @@ namespace InfoGlasses.WinformControls
             get
             {
                 _myProxies = _myProxies ?? ParamControlHelper.GetAddProxyOutputParams(this);
-                return _myProxies;
+                return new AddProxyParams[] { new AddProxyParams(Target.ComponentGuid, 0) }.Union(_myProxies).ToArray();
             }
         }
         public RectangleF IconButtonBound => ParamControlHelper.GetIconBound(this.Bounds, false, 2);

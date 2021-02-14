@@ -58,7 +58,11 @@ namespace InfoGlasses.WinformControls
 
         public void Dispose()
         {
-            Target.OnPingDocument().SolutionEnd -= WireConnectRenderItem_SolutionEnd;
+            try
+            {
+                Target.OnPingDocument().SolutionEnd -= WireConnectRenderItem_SolutionEnd;
+            }
+            catch { }
         }
 
 
