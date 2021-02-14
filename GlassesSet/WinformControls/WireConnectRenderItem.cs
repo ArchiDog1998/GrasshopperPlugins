@@ -180,10 +180,10 @@ namespace InfoGlasses.WinformControls
             {
                 return;
             }
-            bool flag = false;
+            bool _isRender = false;
             if (param.Attributes.Selected)
             {
-                flag = true;
+                _isRender = true;
             }
             else if (style != 0)
             {
@@ -191,20 +191,20 @@ namespace InfoGlasses.WinformControls
                 {
                     if (source.Attributes.GetTopLevel.Selected)
                     {
-                        flag = true;
+                        _isRender = true;
                         break;
                     }
                 }
             }
             else
             {
-                flag = true;
+                _isRender = true;
             }
 
             int count = sources.Count();
             if (count != ParamProxies.Count)
                 UpdateParamProxy();
-            if (flag)
+            if (_isRender)
             {
                 if (CentralSettings.CanvasFancyWires)
                 {
@@ -400,16 +400,25 @@ namespace InfoGlasses.WinformControls
                 }
 
                 Pen pen = GenerateWirePen(pointA, pointB, selectedA, selectedB, type, color, canvas);
-
-                if (selectedA || selectedB)
-                    pen.Width += (float)Owner.SelectWireThickness;
+                Pen Back = null;
 
                 if (pen == null)
                 {
                     pen = new Pen(Color.Black);
                 }
+
+                if (selectedA || selectedB)
+                {
+                    //pen.Width += (float)Owner.SelectWireThickness;
+                    Back = new Pen(ColorExtension.OnColor, pen.Width + (float)Owner.SelectWireThickness);
+                }
+
                 try
                 {
+                    if(Back != null)
+                    {
+                        graphics.DrawPath(Back, graphicsPath);
+                    }
                     graphics.DrawPath(pen, graphicsPath);
                 }
                 catch (Exception ex)
