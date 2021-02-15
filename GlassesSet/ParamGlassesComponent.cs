@@ -51,9 +51,9 @@ namespace InfoGlasses
         private const double _selectWireThicknessDefault = 4;
         public double SelectWireThickness => GetValue(_selectWireThickness, _selectWireThicknessDefault);
 
-        private const string _selectWireSolid = "selectWireSolid";
-        private const int _selectWireSolidDefault = 255;
-        public int SelectWireSolid => GetValue(_selectWireSolid, _selectWireSolidDefault);
+        private const string _selectWireColor = "selectWireColor";
+        private readonly Color _selectWireColorDefault = ColorExtension.OnColor;
+        public Color SelectWireColor => GetValue(_selectWireColor, _selectWireColorDefault);
 
         private const string _wireType = "wireType";
         private const int _wireTypeDefault = 0;
@@ -387,15 +387,13 @@ namespace InfoGlasses
 
             GH_DocumentObject.Menu_AppendSeparator(menu);
 
-
-
             WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Selected Wire Thickness Plus", "选中时连线宽度增值" }),
                 GetTransLation(new string[] { "Set Selected Wire Thickness Plus", "设置选中时连线宽度增值" }),
                 ArchiTed_Grasshopper.Properties.Resources.SizeIcon, true, _selectWireThicknessDefault, 0, 20, _selectWireThickness);
 
-            WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Selected Wire Color Alpha Plus", "选中时连线颜色ALpha通道增量" }),
-                GetTransLation(new string[] { "Set Selected Wire Color Alpha Plus", "选中时连线颜色ALpha通道增量" }),
-                ArchiTed_Grasshopper.Properties.Resources.ColorIcon, true, _selectWireSolidDefault, -255, 255, _selectWireSolid);
+            WinFormPlus.AddColorBoxItem(menu, this, GetTransLation(new string[] { "Selected Wire Color", "选中时连线颜色" }),
+                                GetTransLation(new string[] { "Set Selected Wire Color", "修改选中时连线颜色" }),
+                                ArchiTed_Grasshopper.Properties.Resources.ColorIcon, true, _selectWireColorDefault, _selectWireColor);
 
             GH_DocumentObject.Menu_AppendSeparator(menu);
 

@@ -363,10 +363,10 @@ namespace InfoGlasses.WinformControls
             if (ConnectionVisible(pointA, pointB, canvas))
             {
                 Color color = colorinput;
-                if (selectedA || selectedB)
-                {
-                    color.SolidenColor(Owner.SelectWireSolid);
-                }
+                //if (selectedA || selectedB)
+                //{
+                //    color.SolidenColor(Owner.SelectWireSolid);
+                //}
 
                 GraphicsPath graphicsPath = new GraphicsPath();
                 switch (Owner.WireType)
@@ -410,7 +410,7 @@ namespace InfoGlasses.WinformControls
                 if (selectedA || selectedB)
                 {
                     //pen.Width += (float)Owner.SelectWireThickness;
-                    Back = new Pen(ColorExtension.OnColor, pen.Width + (float)Owner.SelectWireThickness);
+                    Back = new Pen(Owner.SelectWireColor, pen.Width + (float)Owner.SelectWireThickness);
                 }
 
                 try
