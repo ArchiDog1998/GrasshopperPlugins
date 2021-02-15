@@ -76,14 +76,6 @@ namespace ArchiTed_Grasshopper
             
         }
 
-        public static RectangleF DrawTextBox_Obsolete(Graphics graphics, PointF middleDownPivot, Color backgroundColor, Color boundaryColor, string text, Font font, Color textColor, float boundaryWidth = 1, int colorChange = -40, float cornerRadius = 3)
-        {
-            SizeF size = graphics.MeasureString(text, font);
-            RectangleF rect = MiddleDownRect(middleDownPivot, size);
-            DrawRectangleBox_Obsolete(graphics, rect, backgroundColor, boundaryColor, boundaryWidth, colorChange, cornerRadius);
-            graphics.DrawString(text, font, new SolidBrush(textColor), rect);
-            return rect;
-        }
 
         public static void DrawTextBox_Obsolete(Graphics graphics, RectangleF rect, Color backgroundColor, Color boundaryColor, string text, Font font, Color textColor, float boundaryWidth = 1, int colorChange = -40, float cornerRadius = 3)
         {
@@ -165,38 +157,12 @@ namespace ArchiTed_Grasshopper
             gH_Capsule.Dispose();
         }
 
-        public static void RenderButtonIcon_Obsolete(Graphics graphics, GH_Component Owner, RectangleF bound, bool on, Bitmap onMap, Bitmap offMap, int cornerRadius = 6, GH_Palette normalPalette = GH_Palette.Normal)
-        {
-            GH_Palette palette = Owner.RuntimeMessages(GH_RuntimeMessageLevel.Error).Count > 0 ? GH_Palette.Error : Owner.RuntimeMessages(GH_RuntimeMessageLevel.Warning).Count > 0 ? GH_Palette.Warning : normalPalette;
-            GH_PaletteStyle impliedStyle = GH_CapsuleRenderEngine.GetImpliedStyle(palette, Owner.Attributes.Selected, Owner.Locked, Owner.Hidden);
-            GH_Capsule cap = GH_Capsule.CreateCapsule(bound, palette, cornerRadius, 0);
-            cap.Render(graphics, on ? onMap : offMap, impliedStyle);
-        }
-
-        public static void RenderButtonText_Obsolete(Graphics graphics, GH_Component Owner, RectangleF bound, bool on, string text, Color onColor, Color offColor, Font font, int cornerRadius = 6, GH_Palette normalPalette = GH_Palette.Normal)
-        {
-            GH_Palette palette = Owner.RuntimeMessages(GH_RuntimeMessageLevel.Error).Count > 0 ? GH_Palette.Error : Owner.RuntimeMessages(GH_RuntimeMessageLevel.Warning).Count > 0 ? GH_Palette.Warning : normalPalette;
-            GH_PaletteStyle impliedStyle = GH_CapsuleRenderEngine.GetImpliedStyle(palette, Owner.Attributes.Selected, Owner.Locked, Owner.Hidden);
-            GH_Capsule cap = GH_Capsule.CreateCapsule(bound, palette, cornerRadius, 0);
-            cap.Render(graphics, impliedStyle);
-            Brush brush = new SolidBrush(on ? onColor : offColor);
-            graphics.DrawString(text, font, brush, bound);
-
-        }
-
-        public static void RenderButtonText_Obsolete(Graphics graphics, GH_Component Owner, RectangleF bound, bool on, string text, Color onColor, Color offColor, int cornerRadius = 6, GH_Palette normalPalette = GH_Palette.Normal)
-        {
-            RenderButtonText_Obsolete(graphics, Owner, bound, on, text, onColor, offColor, GH_FontServer.Standard, cornerRadius, normalPalette);
-            
-        }
-
-
         public enum InflateMode { Horizontal, Vertical, Both }
 
         public static BitmapImage BitmapToBitmapImage(Bitmap bitmap)
         {
             MemoryStream ms = new MemoryStream();
-            bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+            bitmap.Save(ms, ImageFormat.Png);
             BitmapImage bitmapImage = new BitmapImage();
             bitmapImage.BeginInit();
             bitmapImage.StreamSource = new MemoryStream(ms.ToArray());
@@ -211,7 +177,7 @@ namespace ArchiTed_Grasshopper
             GH_Canvas canvas = new GH_Canvas();
             canvas.Document = new GH_Document();
             AddAObjectToCanvas(obj, new PointF(), false, canvas);
-            obj.Attributes.Bounds = new System.Drawing.RectangleF(- obj.Attributes.Bounds.Width / 2, - obj.Attributes.Bounds.Height / 2, 
+            obj.Attributes.Bounds = new RectangleF(- obj.Attributes.Bounds.Width / 2, - obj.Attributes.Bounds.Height / 2, 
                 obj.Attributes.Bounds.Width, obj.Attributes.Bounds.Height);
 
             if (index.HasValue && obj is IGH_Component)
