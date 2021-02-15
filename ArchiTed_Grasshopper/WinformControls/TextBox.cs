@@ -77,18 +77,48 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// <returns> round Rectangle. </returns>
         public static GraphicsPath GetRoundRectangle(RectangleF rect, float cornerRadius)
         {
+            float _startMovementMult = 1f / 3f;
+            float _controlMovementMult = 2f / 3f;
+
             if (cornerRadius <= 0)
                 throw new ArgumentOutOfRangeException("cornerRadius", "cornerRadius must be larger than 0!");
+            else if (Math.Min(rect.Width, rect.Height) < cornerRadius * (1 + _startMovementMult) * 2)
+                throw new ArgumentOutOfRangeException("cornerRadius", "cornerRadius is too large!");
+
+            float _startMovement = cornerRadius * (1 + _startMovementMult);
+            float _controlMovement = cornerRadius * (1 - _controlMovementMult);
+
+            PointF _cornerA = new PointF(rect.X, rect.Y);
+            PointF _cornerB = new PointF(rect.X + rect.Width, rect.Y);
+            PointF _cornerC = new PointF(rect.X + rect.Width, rect.Y + rect.Height);
+            PointF _cornerD = new PointF(rect.X, rect.Y + rect.Height);
+
+            PointF _cornerA1 = new PointF(_cornerA.X, _cornerA.Y + _startMovement);
+            PointF _cornerA2 = new PointF(_cornerA.X, _cornerA.Y + _controlMovement);
+            PointF _cornerA3 = new PointF(_cornerA.X + _controlMovement, _cornerA.Y);
+            PointF _cornerA4 = new PointF(_cornerA.X + _startMovement, _cornerA.Y);
+
+            PointF _cornerB1 = new PointF(_cornerB.X - _startMovement, _cornerB.Y);
+            PointF _cornerB2 = new PointF(_cornerB.X - _controlMovement, _cornerB.Y);
+            PointF _cornerB3 = new PointF(_cornerB.X, _cornerB.Y + _controlMovement);
+            PointF _cornerB4 = new PointF(_cornerB.X, _cornerB.Y + _startMovement);
+
+            PointF _cornerC1 = new PointF(_cornerC.X, _cornerC.Y - _startMovement);
+            PointF _cornerC2 = new PointF(_cornerC.X, _cornerC.Y - _controlMovement);
+            PointF _cornerC3 = new PointF(_cornerC.X - _controlMovement, _cornerC.Y);
+            PointF _cornerC4 = new PointF(_cornerC.X - _startMovement, _cornerC.Y);
+
+            PointF _cornerD1 = new PointF(_cornerD.X + _startMovement, _cornerD.Y);
+            PointF _cornerD2 = new PointF(_cornerD.X + _controlMovement, _cornerD.Y);
+            PointF _cornerD3 = new PointF(_cornerD.X, _cornerD.Y - _controlMovement);
+            PointF _cornerD4 = new PointF(_cornerD.X, _cornerD.Y - _startMovement);
 
             GraphicsPath roundedRect = new GraphicsPath();
-            roundedRect.AddArc(rect.X, rect.Y, cornerRadius * 2, cornerRadius * 2, 180, 90);
-            roundedRect.AddLine(rect.X + cornerRadius, rect.Y, rect.Right - cornerRadius * 2, rect.Y);
-            roundedRect.AddArc(rect.X + rect.Width - cornerRadius * 2, rect.Y, cornerRadius * 2, cornerRadius * 2, 270, 90);
-            roundedRect.AddLine(rect.Right, rect.Y + cornerRadius * 2, rect.Right, rect.Y + rect.Height - cornerRadius * 2);
-            roundedRect.AddArc(rect.X + rect.Width - cornerRadius * 2, rect.Y + rect.Height - cornerRadius * 2, cornerRadius * 2, cornerRadius * 2, 0, 90);
-            roundedRect.AddLine(rect.Right - cornerRadius * 2, rect.Bottom, rect.X + cornerRadius * 2, rect.Bottom);
-            roundedRect.AddArc(rect.X, rect.Bottom - cornerRadius * 2, cornerRadius * 2, cornerRadius * 2, 90, 90);
-            roundedRect.AddLine(rect.X, rect.Bottom - cornerRadius * 2, rect.X, rect.Y + cornerRadius * 2);
+            roundedRect.AddBezier(_cornerA1, _cornerA2, _cornerA3, _cornerA4);
+            roundedRect.AddBezier(_cornerB1, _cornerB2, _cornerB3, _cornerB4);
+            roundedRect.AddBezier(_cornerC1, _cornerC2, _cornerC3, _cornerC4);
+            roundedRect.AddBezier(_cornerD1, _cornerD2, _cornerD3, _cornerD4);
+
             roundedRect.CloseFigure();
             return roundedRect;
         }
