@@ -57,7 +57,7 @@ namespace InfoGlasses
             get
             {
                 //Return a string representing your preferred contact details.
-                return "1123993881@qq.ocm";
+                return "1123993881@qq.com";
             }
         }
 
