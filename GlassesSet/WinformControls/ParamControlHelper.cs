@@ -217,11 +217,11 @@ namespace InfoGlasses.WinformControls
         {
             if (paramcontrol.IconButtonBound.Contains(vp.UnprojectPoint(e.Location)))
             {
-                if (paramcontrol.MyProxies.Length == 1)
-                {
-                    CreateNewObject(paramcontrol, isInputSide,0, leftMove, init);
-                }
-                else if (paramcontrol.MyProxies.Length > 1)
+                //if (paramcontrol.MyProxies.Length == 1)
+                //{
+                //    CreateNewObject(paramcontrol, isInputSide,0, leftMove, init);
+                //}
+                //else if (paramcontrol.MyProxies.Length > 1)
                 {
                     ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
                     for (int i = 0; i < paramcontrol.MyProxies.Length; i++)

@@ -367,7 +367,7 @@ namespace ArchiTed_Grasshopper
                 item.Image = itemIcon;
             return item;
         }
-        public static ToolStripMenuItem CreateOneItem(string itemName, string itemTip, Bitmap itemIcon, bool enable)
+        public static ToolStripMenuItem CreateOneItem(string itemName, string itemTip, Image itemIcon, bool enable)
         {
             ToolStripMenuItem item = new ToolStripMenuItem(itemName);
             item.ToolTipText = itemTip;
