@@ -41,7 +41,7 @@ namespace TestProject
             IEnumerable<FieldInfo> infos = typeof(NodeInCodeTable).GetRuntimeFields().Where((info) => info.Name.Contains("m_guids"));
 
             // check whether to find the info.
-            if (infos.Count() != 1) return null;
+            if (infos.Count() == 0) return null;
 
             //return the right dictionary;
             return infos.ElementAt(0).GetValue(Components.NodeInCodeFunctions) as ConcurrentDictionary<Guid, ComponentFunctionInfo>;

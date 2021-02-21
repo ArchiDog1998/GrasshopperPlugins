@@ -253,6 +253,16 @@ namespace InfoGlasses.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ShowcaseTools {
+            get {
+                object obj = ResourceManager.GetObject("ShowcaseTools", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ShowName {
             get {
                 object obj = ResourceManager.GetObject("ShowName", resourceCulture);

@@ -433,8 +433,6 @@ namespace ArchiTed_Grasshopper
             form.Show();
         }
 
-
-
         public enum ItemIconType {Youtube, Bilibili, Wechat, GitHub }
     }
 }

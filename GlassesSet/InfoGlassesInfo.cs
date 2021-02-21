@@ -7,7 +7,10 @@
 
 using System;
 using System.Drawing;
+using Grasshopper.GUI;
+using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
+using InfoGlasses.WinformMenu;
 
 namespace InfoGlasses
 {
@@ -67,6 +70,25 @@ namespace InfoGlasses
             {
                 return "1.2.8.v" + DateTime.Now.ToString("yyyyMMdd");
             }
+        }
+    }
+
+    public class ShowcaseToolsPrior : GH_AssemblyPriority
+    {
+        public override GH_LoadingInstruction PriorityLoad()
+        {
+            Grasshopper.Instances.CanvasCreated += Instances_CanvasCreated;
+            return GH_LoadingInstruction.Proceed;
+        }
+
+        private void Instances_CanvasCreated(GH_Canvas canvas)
+        {
+            Grasshopper.Instances.CanvasCreated -= Instances_CanvasCreated;
+
+            GH_DocumentEditor editor = Grasshopper.Instances.DocumentEditor;
+            if (editor == null) return;
+
+            editor.MainMenuStrip.Items.Add(new ShowcaseToolsMenu());
         }
     }
 }

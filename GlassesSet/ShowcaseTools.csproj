@@ -76,6 +76,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CheckCategoryIcon.cs" />
+    <Compile Include="WinformMenu\Settings.cs" />
+    <Compile Include="WinformMenu\ShowcaseToolsMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="WPF\AddProxyParams.cs" />
     <Compile Include="ComTypeInfo.cs" />
     <Compile Include="ParamGlassesComponent.cs" />
@@ -270,6 +274,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\InfoGlasses.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ShowcaseTools.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
