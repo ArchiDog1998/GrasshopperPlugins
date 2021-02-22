@@ -284,7 +284,7 @@ namespace InfoGlasses
                    GetTransLation(new string[] { "Adjust color.", "调整颜色。" }), ArchiTed_Grasshopper.Properties.Resources.ColorIcon, true, sets);
 
 
-                   WinFormPlus.AddLoopBoexItem(menu, this, GetTransLation(new string[] { "Accuracy", "数据精度" }), true, new string[]
+                   WinFormPlus.AddLoopBoxItem(menu, this, GetTransLation(new string[] { "Accuracy", "数据精度" }), true, new string[]
                    {
                         GetTransLation(new string[]{ "Rough", "粗糙"}),
                         GetTransLation(new string[]{ "Medium", "中等"}),
@@ -312,7 +312,7 @@ namespace InfoGlasses
                     ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
                     WinFormPlus.AddLabelItem(menu, GetTransLation(new string[] { "Legend Options", "图例选项" }));
 
-                    WinFormPlus.AddLoopBoexItem(menu, this, GetTransLation(new string[] { "Legend Location", "图例位置" }), true, new string[]
+                    WinFormPlus.AddLoopBoxItem(menu, this, GetTransLation(new string[] { "Legend Location", "图例位置" }), true, new string[]
                     {
                         GetTransLation(new string[] { "Left Top", "左上角" }),
                         GetTransLation(new string[] { "Left Buttom", "左下角" }),
@@ -397,7 +397,7 @@ namespace InfoGlasses
 
             GH_DocumentObject.Menu_AppendSeparator(menu);
 
-            WinFormPlus.AddLoopBoexItem(menu, this, GetTransLation(new string[] { "Wire Type", "连线类型" }), true, new string[]
+            WinFormPlus.AddLoopBoxItem(menu, this, GetTransLation(new string[] { "Wire Type", "连线类型" }), true, new string[]
             {
                 GetTransLation(new string[]{ "Bezier Curve", "贝塞尔曲线"}),
                 GetTransLation(new string[]{ "PolyLine", "多段线"}),

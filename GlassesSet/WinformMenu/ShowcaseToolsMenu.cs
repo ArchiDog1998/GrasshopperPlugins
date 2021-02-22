@@ -20,13 +20,20 @@ namespace InfoGlasses.WinformMenu
 {
     public class ShowcaseToolsMenu : ToolStripMenuItem
     {
+        public ShowcaseToolsMenu()
+            : base("ShowcaseTools", Properties.Resources.ShowcaseTools)
+        {
+            this.DropDown.Items.Add(GetFixCategoryIcon());
+        }
+
+        #region FixCategoryIcon
         private SortedList<string, Bitmap> _alreadyhave = null;
 
         public SortedList<string, Bitmap> AlreadyHave
         {
             get
             {
-                if(_alreadyhave == null)
+                if (_alreadyhave == null)
                 {
                     //find the m_guids private field.
                     IEnumerable<FieldInfo> infos = typeof(GH_ComponentServer).GetRuntimeFields().Where((info) => info.Name.Contains("_categoryIcons"));
@@ -50,7 +57,7 @@ namespace InfoGlasses.WinformMenu
         {
             get
             {
-                if(_canChangeCategoryIcon == null)
+                if (_canChangeCategoryIcon == null)
                 {
                     _canChangeCategoryIcon = new Dictionary<string, Bitmap>();
 
@@ -77,13 +84,7 @@ namespace InfoGlasses.WinformMenu
             }
         }
 
-        public ShowcaseToolsMenu()
-            : base("ShowcaseTools", Properties.Resources.ShowcaseTools)
-        {
-            this.DropDown.Items.Add(GetFixCategory());
-        }
-
-        private ToolStripMenuItem GetFixCategory()
+        private ToolStripMenuItem GetFixCategoryIcon()
         {
             ToolStripMenuItem item = WinFormPlus.CreateOneItem("Fix Catogory Icon", "Fix as most category icon as possible.", Grasshopper.Instances.ComponentServer.GetCategoryIcon("Params"));
 
@@ -133,5 +134,6 @@ namespace InfoGlasses.WinformMenu
             item.CheckedChanged += Item_CheckedChanged;
             Item_CheckedChanged(null, new EventArgs());
         }
+        #endregion
     }
 }

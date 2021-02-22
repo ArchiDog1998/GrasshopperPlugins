@@ -278,7 +278,7 @@ namespace ArchiTed_Grasshopper
         /// <param name="IconList"></param>
         /// <param name="defaultIndex"></param>
         /// <param name="valueName"></param>
-        public static void AddLoopBoexItem(ToolStripDropDown menu, LanguagableComponent component, string itemName, bool enable,
+        public static void AddLoopBoxItem(ToolStripDropDown menu, LanguagableComponent component, string itemName, bool enable,
             string[] NameList, int defaultIndex, string valueName, Bitmap[] IconList = null)
         {
             if (defaultIndex > NameList.Length - 1)
