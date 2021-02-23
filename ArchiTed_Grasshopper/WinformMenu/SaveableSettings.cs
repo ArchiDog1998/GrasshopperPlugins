@@ -15,41 +15,8 @@ using Grasshopper.Kernel;
 
 namespace ArchiTed_Grasshopper
 {
-    public class SaveableSettings<T> where T : Enum
+    public class SaveableSettings<T>: LanguageSetting where T : Enum
     {
-        #region Language
-        public static List<string> ComponentLanguages { get; } = new List<string> { "English", "中文" };
-
-        public static event EventHandler LanguageChanged;
-
-        public static int language
-        {
-            get => Grasshopper.Instances.Settings.GetValue(nameof(language),
-                System.Threading.Thread.CurrentThread.CurrentUICulture.Name == "zh-CN" ? 1 : 0);
-            set 
-            {
-                Grasshopper.Instances.Settings.GetValue(nameof(language), value);
-                LanguageChanged.Invoke(null, new EventArgs());
-            }
-        }
-
-        public static string GetTransLation(string[] strs)
-        {
-            try
-            {
-                string result = strs[language];
-                if (result != "")
-                    return result;
-                else
-                    return strs[0];
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                return strs[0];
-            }
-        }
-        #endregion
-
         public Dictionary<T, object> DefaultDictionary { get; }
 
         public SaveableSettings(Dictionary<T, object> defaults)

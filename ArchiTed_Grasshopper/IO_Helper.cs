@@ -138,6 +138,7 @@ namespace ArchiTed_Grasshopper
         public static void OpenDirectionaryDialog(Action<string> selectedAction)
         {
             FolderBrowserDialog fileDialog = new FolderBrowserDialog();
+
             if(fileDialog.ShowDialog() == DialogResult.OK)
             {
                 selectedAction.Invoke(fileDialog.SelectedPath);

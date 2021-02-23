@@ -10,6 +10,7 @@ using Grasshopper.Kernel;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -18,27 +19,59 @@ using System.Windows.Forms;
 
 namespace InfoGlasses.WinformMenu
 {
-    public enum ShowcaseToolsSettingsProperty
+    public enum ShowcaseToolsProperties
     {
         IsFixCategoryIcon,
+        FixCategoryFolder,
     }
-    public class ShowcaseToolsMenu : ToolStripMenuItem, ISettings<ShowcaseToolsSettingsProperty>
+    public class ShowcaseToolsMenu : ToolStripMenuItem, ISettings<ShowcaseToolsProperties>, ILanguageChangeable
     {
-        public SaveableSettings<ShowcaseToolsSettingsProperty> Settings { get; } = new SaveableSettings<ShowcaseToolsSettingsProperty>(new Dictionary<ShowcaseToolsSettingsProperty, object>()
+        public SaveableSettings<ShowcaseToolsProperties> Settings { get; } = new SaveableSettings<ShowcaseToolsProperties>(new Dictionary<ShowcaseToolsProperties, object>()
         {
-            { ShowcaseToolsSettingsProperty.IsFixCategoryIcon, true },
+            { ShowcaseToolsProperties.IsFixCategoryIcon, true },
+            { ShowcaseToolsProperties.FixCategoryFolder, Grasshopper.Folders.UserObjectFolders[0] },
         });
 
-        public ShowcaseToolsMenu()
-            : base("ShowcaseTools", Properties.Resources.ShowcaseTools)
+        public void ResponseToLanguageChanged()
         {
-            this.DropDown.Items.Add(GetFixCategoryIcon());
+            this.Text = LanguageSetting.GetTransLation("ShowcaseTools", "展示工具");
+
+            FixCategoryMenuItem.Text = LanguageSetting.GetTransLation("Fix Catogory Icon", "修复类别图标");
+            FixCategoryMenuItem.ToolTipText = LanguageSetting.GetTransLation("Fix as most category icon as possible.", "修复尽可能多的类别图标。");
+            
+            CateIconFoderNameChange();
+        }
+
+        public ToolStripMenuItem FixCategoryMenuItem { get; }
+        public ToolStripMenuItem FixCategoryIconFolder { get; }
+        public ShowcaseToolsMenu()
+            : base("", Properties.Resources.ShowcaseTools)
+        {
+            //Add to Language Changes.
+            LanguageSetting.AddLangObj(this);
+
+            //this.DropDown.MaximumSize = new Size(150, int.MaxValue);
+
+            //Create items.
+            this.FixCategoryIconFolder = GetCategoryIconFolder();
+            this.FixCategoryMenuItem = GetFixCategoryIcon();
+
+            //Add items.
+            this.DropDown.Items.Add(FixCategoryMenuItem);
+            this.DropDown.Items.Add(FixCategoryIconFolder);
+
+            GH_DocumentObject.Menu_AppendSeparator(this.DropDown);
+
+            this.DropDown.Items.Add(LanguageSetting.LanguageMenuItem);
+
+            //Change Language.
+            ResponseToLanguageChanged();
         }
 
         #region FixCategoryIcon
         private SortedList<string, Bitmap> _alreadyhave = null;
 
-        public SortedList<string, Bitmap> AlreadyHave
+        private SortedList<string, Bitmap> AlreadyHave
         {
             get
             {
@@ -63,15 +96,13 @@ namespace InfoGlasses.WinformMenu
         /// <summary>
         /// hold the categoryicon that can be changed!
         /// </summary>
-        public Dictionary<string, Bitmap> CanChangeCategoryIcon
+        private Dictionary<string, Bitmap> CanChangeCategoryIcon
         {
             get
             {
                 if (_canChangeCategoryIcon == null)
                 {
                     _canChangeCategoryIcon = new Dictionary<string, Bitmap>();
-
-
 
                     foreach (IGH_ObjectProxy proxy in Grasshopper.Instances.ComponentServer.ObjectProxies)
                     {
@@ -81,6 +112,24 @@ namespace InfoGlasses.WinformMenu
                         if (proxy.Kind != GH_ObjectType.CompiledObject) continue;
 
                         //Other function
+                        string folderPath = (string)Settings.GetProperty(ShowcaseToolsProperties.FixCategoryFolder);
+                        if (Directory.Exists(folderPath))
+                        {
+                            bool isSucceed = false;
+                            foreach (string itemFilePath in Directory.GetFiles(folderPath))
+                            {
+                                if (!itemFilePath.Contains(proxy.Desc.Category)) continue;
+                                try
+                                {
+                                    Bitmap bitmap = new Bitmap(itemFilePath);
+                                    _canChangeCategoryIcon.Add(proxy.Desc.Category, bitmap);
+                                    isSucceed = true;
+                                    break;
+                                }
+                                catch { continue; }
+                            }
+                            if (isSucceed) continue;
+                        }
 
                         //Find the library.
                         GH_AssemblyInfo info = Grasshopper.Instances.ComponentServer.FindAssembly(proxy.LibraryGuid);
@@ -97,15 +146,16 @@ namespace InfoGlasses.WinformMenu
 
         private ToolStripMenuItem GetFixCategoryIcon()
         {
-            ToolStripMenuItem item = WinFormPlus.CreateOneItem("Fix Catogory Icon", "Fix as most category icon as possible.", Grasshopper.Instances.ComponentServer.GetCategoryIcon("Params"));
+            ToolStripMenuItem item = WinFormPlus.CreateOneItem("","", Grasshopper.Instances.ComponentServer.GetCategoryIcon("Params"));
 
-            MakeRespondItem(item, ShowcaseToolsSettingsProperty.IsFixCategoryIcon, () =>
+            MakeRespondItem(item, ShowcaseToolsProperties.IsFixCategoryIcon, () =>
             {
                 foreach (string cateName in CanChangeCategoryIcon.Keys)
                 {
                     Grasshopper.Instances.ComponentServer.AddCategoryIcon(cateName, CanChangeCategoryIcon[cateName]);
                 }
                 GH_ComponentServer.UpdateRibbonUI();
+                FixCategoryIconFolder.Enabled = true;
             }, () =>
             {
                 foreach (string cateName in CanChangeCategoryIcon.Keys)
@@ -113,17 +163,40 @@ namespace InfoGlasses.WinformMenu
                     AlreadyHave.Remove(cateName);
                 }
                 GH_ComponentServer.UpdateRibbonUI();
+                FixCategoryIconFolder.Enabled = false;
             });
+            return item;
+        }
+
+        private ToolStripMenuItem GetCategoryIconFolder()
+        {
+            string latestFolder = (string)Settings.GetProperty(ShowcaseToolsProperties.FixCategoryFolder);
+            ToolStripMenuItem item = new ToolStripMenuItem(latestFolder);
+            item.Enabled = (bool)Settings.GetProperty(ShowcaseToolsProperties.IsFixCategoryIcon);
+            item.Click += Item_Click;
+
+            void Item_Click(object sender, EventArgs e)
+            {
+                IO_Helper.OpenDirectionaryDialog((folder) => Settings.SetProperty(ShowcaseToolsProperties.FixCategoryFolder, folder));
+                CateIconFoderNameChange();
+            }
 
             return item;
         }
 
-        private void MakeRespondItem(ToolStripMenuItem item, ShowcaseToolsSettingsProperty name, Action checkAction, Action uncheckAction)
+        private void CateIconFoderNameChange()
+        {
+            FixCategoryIconFolder.Text = LanguageSetting.GetTransLation("Change Icons' Folder", "修改图标所在文件");
+            FixCategoryIconFolder.ToolTipText = LanguageSetting.GetTransLation("Click to change the folder.", "单击以修改路径") + 
+                "\n \n" + (string)Settings.GetProperty(ShowcaseToolsProperties.FixCategoryFolder);
+        }
+
+        private void MakeRespondItem(ToolStripMenuItem item, ShowcaseToolsProperties name, Action checkAction, Action uncheckAction)
         {
             #region Define event.
             void Item_Click(object sender, EventArgs e)
             {
-                Settings.SetProperty(name, Settings.GetProperty(name));
+                Settings.SetProperty(name, !(bool)Settings.GetProperty(name));
                 item.Checked = (bool)Settings.GetProperty(name);
             }
 
@@ -146,6 +219,10 @@ namespace InfoGlasses.WinformMenu
             item.CheckedChanged += Item_CheckedChanged;
             Item_CheckedChanged(null, new EventArgs());
         }
+
+
         #endregion
+
+
     }
 }
