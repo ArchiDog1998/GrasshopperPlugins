@@ -18,8 +18,17 @@ using System.Windows.Forms;
 
 namespace InfoGlasses.WinformMenu
 {
-    public class ShowcaseToolsMenu : ToolStripMenuItem
+    public enum ShowcaseToolsSettingsProperty
     {
+        IsFixCategoryIcon,
+    }
+    public class ShowcaseToolsMenu : ToolStripMenuItem, ISettings<ShowcaseToolsSettingsProperty>
+    {
+        public SaveableSettings<ShowcaseToolsSettingsProperty> Settings { get; } = new SaveableSettings<ShowcaseToolsSettingsProperty>(new Dictionary<ShowcaseToolsSettingsProperty, object>()
+        {
+            { ShowcaseToolsSettingsProperty.IsFixCategoryIcon, true },
+        });
+
         public ShowcaseToolsMenu()
             : base("ShowcaseTools", Properties.Resources.ShowcaseTools)
         {
@@ -50,6 +59,7 @@ namespace InfoGlasses.WinformMenu
 
 
         private Dictionary<string, Bitmap> _canChangeCategoryIcon = null;
+
         /// <summary>
         /// hold the categoryicon that can be changed!
         /// </summary>
@@ -70,6 +80,8 @@ namespace InfoGlasses.WinformMenu
                         if (_canChangeCategoryIcon.ContainsKey(proxy.Desc.Category)) continue;
                         if (proxy.Kind != GH_ObjectType.CompiledObject) continue;
 
+                        //Other function
+
                         //Find the library.
                         GH_AssemblyInfo info = Grasshopper.Instances.ComponentServer.FindAssembly(proxy.LibraryGuid);
                         if (info == null) continue;
@@ -77,7 +89,6 @@ namespace InfoGlasses.WinformMenu
 
                         //add it to dictionary.
                         _canChangeCategoryIcon.Add(proxy.Desc.Category, info.Icon);
-                        //MessageBox.Show(proxy.Desc.Category);
                     }
                 }
                 return _canChangeCategoryIcon;
@@ -88,7 +99,7 @@ namespace InfoGlasses.WinformMenu
         {
             ToolStripMenuItem item = WinFormPlus.CreateOneItem("Fix Catogory Icon", "Fix as most category icon as possible.", Grasshopper.Instances.ComponentServer.GetCategoryIcon("Params"));
 
-            MakeRespondItem(item, PropertyName.IsFixCategoryIcon, () =>
+            MakeRespondItem(item, ShowcaseToolsSettingsProperty.IsFixCategoryIcon, () =>
             {
                 foreach (string cateName in CanChangeCategoryIcon.Keys)
                 {
@@ -107,12 +118,13 @@ namespace InfoGlasses.WinformMenu
             return item;
         }
 
-        private void MakeRespondItem(ToolStripMenuItem item, PropertyName name, Action checkAction, Action uncheckAction)
+        private void MakeRespondItem(ToolStripMenuItem item, ShowcaseToolsSettingsProperty name, Action checkAction, Action uncheckAction)
         {
             #region Define event.
             void Item_Click(object sender, EventArgs e)
             {
-                item.Checked = Settings.ChangeSettingValue(name, true);
+                Settings.SetProperty(name, Settings.GetProperty(name));
+                item.Checked = (bool)Settings.GetProperty(name);
             }
 
             void Item_CheckedChanged(object sender, EventArgs e)
@@ -129,7 +141,7 @@ namespace InfoGlasses.WinformMenu
             }
             #endregion
 
-            item.Checked = Settings.ChangeSettingValue(name, false);
+            item.Checked = (bool)Settings.GetProperty(name);
             item.Click += Item_Click;
             item.CheckedChanged += Item_CheckedChanged;
             Item_CheckedChanged(null, new EventArgs());

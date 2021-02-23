@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -63,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IO_Helper.cs" />
+    <Compile Include="Unsafe\UnsafeHelper.cs" />
     <Compile Include="WinformControls\HighLightRect.cs" />
     <Compile Include="WinformControls\NickNameOrNameTextBox.cs" />
     <Compile Include="WinformControls\RenderItem.cs" />
@@ -107,7 +109,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="WinFormPlus.cs" />
+    <Compile Include="WinformMenu\ISettings.cs" />
+    <Compile Include="WinformMenu\SaveableSettings.cs" />
+    <Compile Include="WinformMenu\WinFormPlus.cs" />
     <Compile Include="WPF\ISearchItem.cs" />
     <Compile Include="WPF\LangWindow.cs" />
   </ItemGroup>

@@ -76,7 +76,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CheckCategoryIcon.cs" />
-    <Compile Include="WinformMenu\Settings.cs" />
     <Compile Include="WinformMenu\ShowcaseToolsMenu.cs">
       <SubType>Component</SubType>
     </Compile>

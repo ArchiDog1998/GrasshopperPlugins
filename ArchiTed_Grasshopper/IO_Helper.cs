@@ -135,10 +135,19 @@ namespace ArchiTed_Grasshopper
             return all;
         }
 
+        public static void OpenDirectionaryDialog(Action<string> selectedAction)
+        {
+            FolderBrowserDialog fileDialog = new FolderBrowserDialog();
+            if(fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                selectedAction.Invoke(fileDialog.SelectedPath);
+            }
+        }
+
         public static void ImportOpenFileDialog(Action<string> openAction)
         {
 
-            System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = LanguagableComponent.GetTransLation(new string[] { "Select a template", "选择一个模板" });
 
 
