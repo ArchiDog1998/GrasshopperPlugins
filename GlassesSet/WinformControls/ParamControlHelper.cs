@@ -195,6 +195,7 @@ namespace InfoGlasses.WinformControls
                 }
                 else if (paramcontrol.MyProxies.Length == 1)
                 {
+                    if (paramcontrol.MyProxies[0].Icon == null) return;
                     ParamControlHelper.RenderParamButtonIcon(graphics, paramcontrol.MyProxies[0].Icon.GetIcon(!paramcontrol.Target.Locked, true), paramcontrol.IconButtonBound);
                 }
             }

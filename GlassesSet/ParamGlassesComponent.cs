@@ -268,19 +268,19 @@ namespace InfoGlasses
                     GetTransLation(new string[] { "Set Lebel Font Size", "设置气泡框中字体大小" }),
                     ArchiTed_Grasshopper.Properties.Resources.SizeIcon, true, _labelFontSizeDefault, 3, 20, _labelFontSize);
 
-                   WinFormPlus.ItemSet<Color>[] sets = new WinFormPlus.ItemSet<Color>[] {
+                   WinFormPlus.ItemSet_Obsolete<Color>[] sets = new WinFormPlus.ItemSet_Obsolete<Color>[] {
 
-                    new WinFormPlus.ItemSet<Color>( GetTransLation(new string[] { "Text Color", "文字颜色" }),GetTransLation(new string[] { "Adjust text color.", "调整文字颜色。" }),
+                    new WinFormPlus.ItemSet_Obsolete<Color>( GetTransLation(new string[] { "Text Color", "文字颜色" }),GetTransLation(new string[] { "Adjust text color.", "调整文字颜色。" }),
                     null, true, _labelTextColorDefault, _labelTextColor),
 
-                    new WinFormPlus.ItemSet<Color>( GetTransLation(new string[] { "Background Color", "背景颜色" }), GetTransLation(new string[] { "Adjust background color.", "调整背景颜色。" }),
+                    new WinFormPlus.ItemSet_Obsolete<Color>( GetTransLation(new string[] { "Background Color", "背景颜色" }), GetTransLation(new string[] { "Adjust background color.", "调整背景颜色。" }),
                     null, true, _labelDackgroundColorDefault, _labelBackgroundColor),
 
-                    new WinFormPlus.ItemSet<Color>(GetTransLation(new string[] { "Boundary Color", "边框颜色" }),
+                    new WinFormPlus.ItemSet_Obsolete<Color>(GetTransLation(new string[] { "Boundary Color", "边框颜色" }),
                             GetTransLation(new string[] { "Adjust boundary color.", "调整边框颜色。" }), null, true,
                             _labelBoundaryColorDefault, _labelBoundaryColor),
                     };
-                   WinFormPlus.AddColorBoxItems(menu, this, GetTransLation(new string[] { "Colors", "颜色" }),
+                   WinFormPlus.AddColorBoxItems_Obsolete(menu, this, GetTransLation(new string[] { "Colors", "颜色" }),
                    GetTransLation(new string[] { "Adjust color.", "调整颜色。" }), ArchiTed_Grasshopper.Properties.Resources.ColorIcon, true, sets);
 
 
@@ -334,19 +334,19 @@ namespace InfoGlasses
                         GetTransLation(new string[] { "Set Legend Spacing to Border", "设置图例到窗体边缘的距离" }),
                         ArchiTed_Grasshopper.Properties.Resources.DistanceIcon, true, _legendSpacingDefault, 0, 200, _legendSpacing);
 
-                    WinFormPlus.ItemSet<Color>[] sets = new WinFormPlus.ItemSet<Color>[] {
+                    WinFormPlus.ItemSet_Obsolete<Color>[] sets = new WinFormPlus.ItemSet_Obsolete<Color>[] {
 
-                    new WinFormPlus.ItemSet<Color>( GetTransLation(new string[] { "Text Color", "文字颜色" }),GetTransLation(new string[] { "Adjust text color.", "调整文字颜色。" }),
+                    new WinFormPlus.ItemSet_Obsolete<Color>( GetTransLation(new string[] { "Text Color", "文字颜色" }),GetTransLation(new string[] { "Adjust text color.", "调整文字颜色。" }),
                     null, true, _legendTextColorDefault, _legendTextColor),
 
-                    new WinFormPlus.ItemSet<Color>( GetTransLation(new string[] { "Background Color", "背景颜色" }), GetTransLation(new string[] { "Adjust background color.", "调整背景颜色。" }),
+                    new WinFormPlus.ItemSet_Obsolete<Color>( GetTransLation(new string[] { "Background Color", "背景颜色" }), GetTransLation(new string[] { "Adjust background color.", "调整背景颜色。" }),
                     null, true, _legendDackgroundColorDefault, _legendBackgroundColor),
 
-                    new WinFormPlus.ItemSet<Color>(GetTransLation(new string[] { "Boundary Color", "边框颜色" }),
+                    new WinFormPlus.ItemSet_Obsolete<Color>(GetTransLation(new string[] { "Boundary Color", "边框颜色" }),
                             GetTransLation(new string[] { "Adjust boundary color.", "调整边框颜色。" }), null, true,
                             _legendBoundaryColorDefault, _legendBoundaryColor),
                     };
-                    WinFormPlus.AddColorBoxItems(menu, this, GetTransLation(new string[] { "Colors", "颜色" }),
+                    WinFormPlus.AddColorBoxItems_Obsolete(menu, this, GetTransLation(new string[] { "Colors", "颜色" }),
                     GetTransLation(new string[] { "Adjust color.", "调整颜色。" }), ArchiTed_Grasshopper.Properties.Resources.ColorIcon, true, sets);
 
                     return menu;
@@ -391,7 +391,7 @@ namespace InfoGlasses
                 GetTransLation(new string[] { "Set Selected Wire Thickness Plus", "设置选中时连线宽度增值" }),
                 ArchiTed_Grasshopper.Properties.Resources.SizeIcon, true, _selectWireThicknessDefault, 0, 20, _selectWireThickness);
 
-            WinFormPlus.AddColorBoxItem(menu, this, GetTransLation(new string[] { "Selected Wire Color", "选中时连线颜色" }),
+            WinFormPlus.AddColorBoxItem_Obsolete(menu, this, GetTransLation(new string[] { "Selected Wire Color", "选中时连线颜色" }),
                                 GetTransLation(new string[] { "Set Selected Wire Color", "修改选中时连线颜色" }),
                                 ArchiTed_Grasshopper.Properties.Resources.ColorIcon, true, _selectWireColorDefault, _selectWireColor);
 
@@ -412,26 +412,26 @@ namespace InfoGlasses
             }
 
 
-            WinFormPlus.ItemSet<Color>[] sets2 = new WinFormPlus.ItemSet<Color>[]
+            WinFormPlus.ItemSet_Obsolete<Color>[] sets2 = new WinFormPlus.ItemSet_Obsolete<Color>[]
             {
 
-                new WinFormPlus.ItemSet<Color>( GetTransLation(new string[] { "Default Wire Color", "默认连线颜色" }),
+                new WinFormPlus.ItemSet_Obsolete<Color>( GetTransLation(new string[] { "Default Wire Color", "默认连线颜色" }),
                     GetTransLation(new string[] { "Adjust default wire color.", "调整默认连线颜色。" }),
                     null, true, _defaultColorDefault, _defaultColor),
 
-                new WinFormPlus.ItemSet<Color>( GetTransLation(new string[] { "Selected Wire Color", "选中连线颜色" }),
+                new WinFormPlus.ItemSet_Obsolete<Color>( GetTransLation(new string[] { "Selected Wire Color", "选中连线颜色" }),
                     GetTransLation(new string[] { "Adjust selected wire color.", "调整选中连线颜色。" }),
                     null, true, _selectedColorDefault, _selectedColor),
 
-                new WinFormPlus.ItemSet<Color>(GetTransLation(new string[] { "Unselected Wire Color", "未选中连线颜色" }),
+                new WinFormPlus.ItemSet_Obsolete<Color>(GetTransLation(new string[] { "Unselected Wire Color", "未选中连线颜色" }),
                     GetTransLation(new string[] { "Adjust unselected wire color.", "调整未选中连线颜色。" }),
                     null, true, _unselectColorDefalut, _unselectColor),
 
-                new WinFormPlus.ItemSet<Color>(GetTransLation(new string[] { "Empty Wire Color", "空连线颜色" }),
+                new WinFormPlus.ItemSet_Obsolete<Color>(GetTransLation(new string[] { "Empty Wire Color", "空连线颜色" }),
                     GetTransLation(new string[] { "Adjust empty wire color.", "调整空连线颜色。" }),
                     null, true, _emptyColorDefault, _emptyColor),
             };
-            WinFormPlus.AddColorBoxItems(menu, this, GetTransLation(new string[] { "Wire Colors", "连线颜色" }),
+            WinFormPlus.AddColorBoxItems_Obsolete(menu, this, GetTransLation(new string[] { "Wire Colors", "连线颜色" }),
             GetTransLation(new string[] { "Adjust wire color.", "调整连线颜色。" }), ArchiTed_Grasshopper.Properties.Resources.ColorIcon, true, sets2);
 
         }

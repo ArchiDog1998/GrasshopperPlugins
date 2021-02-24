@@ -16,6 +16,8 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ArchiTed_Grasshopper.WinformControls;
+using Grasshopper.GUI.Canvas;
 
 namespace InfoGlasses.WinformMenu
 {
@@ -23,15 +25,26 @@ namespace InfoGlasses.WinformMenu
     {
         IsFixCategoryIcon,
         FixCategoryFolder,
+        IsUseInfoGlass,
+        NormalExceptionGuid,
+        PluginExceptionGuid,
+        TextColor,
+        BackgroundColor,
+        BoundaryColor,
     }
-    public class ShowcaseToolsMenu : ToolStripMenuItem, ISettings<ShowcaseToolsProperties>, ILanguageChangeable
+    public class ShowcaseToolsMenu : ToolStripMenuItem, ISettings<ShowcaseToolsProperties>
     {
         public SaveableSettings<ShowcaseToolsProperties> Settings { get; } = new SaveableSettings<ShowcaseToolsProperties>(new Dictionary<ShowcaseToolsProperties, object>()
         {
             { ShowcaseToolsProperties.IsFixCategoryIcon, true },
             { ShowcaseToolsProperties.FixCategoryFolder, Grasshopper.Folders.UserObjectFolders[0] },
-        });
-
+            { ShowcaseToolsProperties.IsUseInfoGlass, true },
+            { ShowcaseToolsProperties.NormalExceptionGuid, new List<Guid>() },
+            { ShowcaseToolsProperties.PluginExceptionGuid, new List<Guid>() },
+            { ShowcaseToolsProperties.TextColor, Color.Black},
+            { ShowcaseToolsProperties.BackgroundColor, Color.WhiteSmoke },
+            { ShowcaseToolsProperties.BoundaryColor, Color.FromArgb(30, 30, 30) },
+        }, Grasshopper.Instances.Settings);
         public void ResponseToLanguageChanged()
         {
             this.Text = LanguageSetting.GetTransLation("ShowcaseTools", "展示工具");
@@ -40,21 +53,42 @@ namespace InfoGlasses.WinformMenu
             FixCategoryMenuItem.ToolTipText = LanguageSetting.GetTransLation("Fix as most category icon as possible.", "修复尽可能多的类别图标。");
             
             CateIconFoderNameChange();
+
+            DonateMenuItem.Text = LanguageSetting.GetTransLation("Donate To Us!", "向我们赞赏吧！");
+            DonateMenuItem.ToolTipText = LanguageSetting.GetTransLation("Select one way to donate to us!", "选择一个渠道赞赏我们！");
+            DonateMenuItem.DropDown.Items[0].Text = LanguageSetting.GetTransLation("Alipay", "支付宝");
+            DonateMenuItem.DropDown.Items[0].ToolTipText = LanguageSetting.GetTransLation("Click to donate to us with Alipay!", "点击以使用支付宝赞赏我们！");
+            DonateMenuItem.DropDown.Items[1].Text = LanguageSetting.GetTransLation("WechatPay", "微信");
+            DonateMenuItem.DropDown.Items[1].ToolTipText = LanguageSetting.GetTransLation("Click to donate to us with WechatPay!", "点击以使用微信赞赏我们！");
+
+            ContactMenuItem.Text = LanguageSetting.GetTransLation("Contact us!", "联系我们！");
+            ContactMenuItem.ToolTipText = LanguageSetting.GetTransLation("Select one contact way to contact us!", "选择一种联系方式联系我们！");
+            ContactMenuItem.DropDown.Items[0].Text = LanguageSetting.GetTransLation("InfoGlasses QQ Group", "InfoGlasses QQ交流群");
+            ContactMenuItem.DropDown.Items[0].ToolTipText = LanguageSetting.GetTransLation("Click to contact us in InfoGlasses QQ Group!", "点击以加入InfoGlasses QQ交流群。");
+            ContactMenuItem.DropDown.Items[1].Text = LanguageSetting.GetTransLation("Bright Zone of Rhino QQ Group", "犀牛之光 QQ交流群");
+            ContactMenuItem.DropDown.Items[1].ToolTipText = LanguageSetting.GetTransLation("Click to contact us in Bright Zone of Rhino QQ Group!", "点击以加入犀牛之光 QQ交流群。");
+            ContactMenuItem.DropDown.Items[3].Text = LanguageSetting.GetTransLation("Parameterization QQ Group", "参数化交流 QQ群");
+            ContactMenuItem.DropDown.Items[3].ToolTipText = LanguageSetting.GetTransLation("Click to contact us in Parameterization QQ Group!", "点击以加入参数化交流 QQ群。");
         }
 
-        public ToolStripMenuItem FixCategoryMenuItem { get; }
-        public ToolStripMenuItem FixCategoryIconFolder { get; }
         public ShowcaseToolsMenu()
             : base("", Properties.Resources.ShowcaseTools)
         {
-            //Add to Language Changes.
-            LanguageSetting.AddLangObj(this);
+            //Add all Events.
+            Grasshopper.Instances.ActiveCanvas.CanvasPostPaintGroups += ActiveCanvas_CanvasPostPaintGroups;
+            Grasshopper.Instances.ActiveCanvas.CanvasPostPaintWires += ActiveCanvas_CanvasPostPaintWires;
+            Grasshopper.Instances.ActiveCanvas.CanvasPostPaintObjects += ActiveCanvas_CanvasPostPaintObjects;
+            Grasshopper.Instances.ActiveCanvas.CanvasPrePaintOverlay += ActiveCanvas_CanvasPrePaintOverlay;
 
             //this.DropDown.MaximumSize = new Size(150, int.MaxValue);
 
             //Create items.
             this.FixCategoryIconFolder = GetCategoryIconFolder();
             this.FixCategoryMenuItem = GetFixCategoryIcon();
+            this.DonateMenuItem = GetDonateItem();
+            this.ContactMenuItem = GetContactItem();
+            this.InfoGlassesMajorMenuItem = GetInfoGlassesMajorItem();
+            this.InfoGlassesColourMenuItem = GetInfoGlassesColourItem();
 
             //Add items.
             this.DropDown.Items.Add(FixCategoryMenuItem);
@@ -62,13 +96,22 @@ namespace InfoGlasses.WinformMenu
 
             GH_DocumentObject.Menu_AppendSeparator(this.DropDown);
 
+            this.DropDown.Items.Add(InfoGlassesMajorMenuItem);
+            this.DropDown.Items.Add(InfoGlassesColourMenuItem);
+
+            GH_DocumentObject.Menu_AppendSeparator(this.DropDown);
+
+            this.DropDown.Items.Add(DonateMenuItem);
+            this.DropDown.Items.Add(ContactMenuItem);
             this.DropDown.Items.Add(LanguageSetting.LanguageMenuItem);
 
             //Change Language.
             ResponseToLanguageChanged();
         }
-
+        #region CategoryIcon
         #region FixCategoryIcon
+        public ToolStripMenuItem FixCategoryMenuItem { get; }
+
         private SortedList<string, Bitmap> _alreadyhave = null;
 
         private SortedList<string, Bitmap> AlreadyHave
@@ -168,6 +211,12 @@ namespace InfoGlasses.WinformMenu
             return item;
         }
 
+
+        #endregion
+
+        #region CategoryIconFolder
+        public ToolStripMenuItem FixCategoryIconFolder { get; }
+
         private ToolStripMenuItem GetCategoryIconFolder()
         {
             string latestFolder = (string)Settings.GetProperty(ShowcaseToolsProperties.FixCategoryFolder);
@@ -187,9 +236,237 @@ namespace InfoGlasses.WinformMenu
         private void CateIconFoderNameChange()
         {
             FixCategoryIconFolder.Text = LanguageSetting.GetTransLation("Change Icons' Folder", "修改图标所在文件");
-            FixCategoryIconFolder.ToolTipText = LanguageSetting.GetTransLation("Click to change the folder.", "单击以修改路径") + 
+            FixCategoryIconFolder.ToolTipText = LanguageSetting.GetTransLation("Click to change the folder.", "单击以修改路径") +
                 "\n \n" + (string)Settings.GetProperty(ShowcaseToolsProperties.FixCategoryFolder);
         }
+        #endregion
+        #endregion
+
+        public List<IRenderable> Renderables { get; set; } = new List<IRenderable>();
+
+        #region InfoGlasses
+
+        #region Major
+        public ToolStripMenuItem InfoGlassesMajorMenuItem { get; }
+        private ToolStripMenuItem GetInfoGlassesMajorItem()
+        {
+            ToolStripMenuItem item = WinFormPlus.CreateOneItem("", "", Properties.Resources.InfoGlasses);
+
+            MakeRespondItem(item, ShowcaseToolsProperties.IsUseInfoGlass, () =>
+            {
+                //Grasshopper.Instances.ActiveCanvas.DocumentChanged += ActiveCanvas_DocumentChanged;
+                //Grasshopper.Instances.ActiveCanvas.Document.ObjectsAdded += InfeGlasses_ObjectsAdded;
+                //FixCategoryIconFolder.Enabled = false;
+            }, () =>
+            {
+                //Grasshopper.Instances.ActiveCanvas.DocumentChanged -= ActiveCanvas_DocumentChanged;
+                //Grasshopper.Instances.ActiveCanvas.Document.ObjectsAdded -= InfeGlasses_ObjectsAdded;
+                //FixCategoryIconFolder.Enabled = false;
+            });
+
+            return item;
+        }
+
+        private void ActiveCanvas_DocumentChanged(GH_Canvas sender, GH_CanvasDocumentChangedEventArgs e)
+        {
+            try
+            {
+                e.OldDocument.ObjectsAdded -= InfeGlasses_ObjectsAdded;
+            }
+            catch { }
+            e.NewDocument.ObjectsAdded += InfeGlasses_ObjectsAdded;
+        }
+
+        private void InfeGlasses_ObjectsAdded(object sender, GH_DocObjectEventArgs e)
+        {
+            //foreach (var obj in e.Objects)
+            //{
+            //    this.AddOneObject(obj);
+            //}
+        }
+
+        //private void AddOneObject(IGH_DocumentObject obj)
+        //{
+        //    bool showNormal = !((List<Guid>)Settings.GetProperty(ShowcaseToolsProperties.NormalExceptionGuid)).Contains(obj.ComponentGuid);
+        //    bool showPlugin = !((List<Guid>)Settings.GetProperty(ShowcaseToolsProperties.PluginExceptionGuid)).Contains(obj.ComponentGuid);
+        //    if (showNormal)
+        //    {
+
+        //        Font nameFont = new Font(GH_FontServer.Standard.FontFamily, NameBoxFontSize);
+        //        TextBoxRenderSet nameSet = new TextBoxRenderSet((Color)Settings.GetProperty(ShowcaseToolsProperties.BackgroundColor),
+        //            (Color)Settings.GetProperty(ShowcaseToolsProperties.BoundaryColor), nameFont, 
+        //            (Color)Settings.GetProperty(ShowcaseToolsProperties.TextColor));
+        //        if (this.IsShowName)
+        //        {
+        //            Func<SizeF, RectangleF, RectangleF> layout = (x, y) =>
+        //            {
+        //                PointF pivot = new PointF(y.Left + y.Width / 2, y.Top - NameBoxDistance);
+        //                return CanvasRenderEngine.MiddleDownRect(pivot, x);
+        //            };
+        //            this.RenderObjs.Add(new NickNameOrNameTextBox(this.IsShowNickName, obj, layout, nameSet));
+        //        }
+
+        //        string cate = IsShowFullCate ? obj.Category : Grasshopper.Instances.ComponentServer.GetCategoryShortName(obj.Category);
+        //        string subcate = obj.SubCategory;
+
+        //        if (this.IsShowCategory)
+        //        {
+
+        //            if (IsMergeCateBox)
+        //            {
+        //                string cateName = cate + " - " + subcate;
+        //                this.RenderObjs.Add(new TextBox(cateName, obj, (x, y) =>
+        //                {
+        //                    PointF pivot = new PointF(y.Left + y.Width / 2, y.Top - NameBoxDistance - ((this.IsShowName ? x.Height : 0) + 3));
+        //                    return CanvasRenderEngine.MiddleDownRect(pivot, x);
+        //                }, nameSet));
+        //            }
+        //            else
+        //            {
+        //                this.RenderObjs.Add(new TextBox(subcate, obj, (x, y) =>
+        //                {
+        //                    PointF pivot = new PointF(y.Left + y.Width / 2, y.Top - NameBoxDistance - ((this.IsShowName ? x.Height : 0) + 3));
+        //                    return CanvasRenderEngine.MiddleDownRect(pivot, x);
+        //                }, nameSet));
+
+        //                this.RenderObjs.Add(new TextBox(cate, obj, (x, y) =>
+        //                {
+        //                    PointF pivot = new PointF(y.Left + y.Width / 2, y.Top - NameBoxDistance - ((this.IsShowName ? x.Height : 0) + 3) * 2);
+        //                    return CanvasRenderEngine.MiddleDownRect(pivot, x);
+        //                }, nameSet));
+        //            }
+        //        }
+        //    }
+
+
+        //    if ((this.IsShowAssem) || (this.IsShowPlugin && showPlugin))
+        //    {
+        //        string fullName = "";
+        //        string location = "";
+
+        //        Type type = obj.GetType();
+        //        if (type != null)
+        //        {
+        //            fullName = type.FullName;
+
+        //            GH_AssemblyInfo info = null;
+        //            foreach (GH_AssemblyInfo lib in Grasshopper.Instances.ComponentServer.Libraries)
+        //            {
+        //                if (lib.Assembly == obj.GetType().Assembly)
+        //                {
+        //                    info = lib;
+        //                    break;
+        //                }
+        //            }
+        //            if (info != null)
+        //            {
+        //                location = info.Location;
+        //                if (!info.IsCoreLibrary)
+        //                {
+        //                    if (IsShowPlugin && showPlugin)
+        //                    {
+        //                        this.RenderObjsUnderComponent.Add(new HighLightRect(obj, PluginHighLightColor, HighLightRadius));
+        //                    }
+        //                }
+        //            }
+
+
+        //        }
+
+        //        if (!string.IsNullOrEmpty(fullName) && this.IsShowAssem)
+        //        {
+        //            float height = AssemBoxHeight * 14;
+        //            if (IsAutoAssem)
+        //            {
+        //                if (obj is IGH_Component)
+        //                {
+        //                    IGH_Component com = obj as IGH_Component;
+        //                    height = CanvasRenderEngine.MessageBoxHeight(com.Message, (int)obj.Attributes.Bounds.Width);
+        //                }
+        //                else
+        //                {
+        //                    height = 0;
+        //                }
+
+        //                if (IsAvoidProfiler)
+        //                {
+        //                    if (height == 0)
+        //                        height = Math.Max(height, 16);
+        //                    else
+        //                        height = Math.Max(height, 32);
+        //                }
+        //            }
+        //            height += 5;
+
+        //            Font assemFont = new Font(GH_FontServer.Standard.FontFamily, AssemFontSize);
+        //            TextBoxRenderSet assemSet = new TextBoxRenderSet(Color.FromArgb(BackGroundColor.A / 2, BackGroundColor), BoundaryColor, assemFont, TextColor);
+        //            string fullStr = fullName;
+        //            if (location != null)
+        //                fullStr += "\n \n" + location;
+
+        //            this.RenderObjs.Add(new TextBox(fullStr, obj, (x, y) =>
+        //            {
+        //                PointF pivot = new PointF(y.Left + y.Width / 2, y.Bottom + height);
+        //                return CanvasRenderEngine.MiddleUpRect(pivot, x);
+        //            }, assemSet, (x, y, z) =>
+        //            {
+        //                return x.MeasureString(y, z, AssemBoxWidth);
+        //            }, showFunc: () => { return obj.Attributes.Selected; }));
+        //        }
+        //    }
+
+
+        //}
+        #endregion
+
+        #region Colour
+        public ToolStripMenuItem InfoGlassesColourMenuItem { get; }
+        public ToolStripMenuItem GetInfoGlassesColourItem()
+        {
+            WinFormPlus.ItemSet<ShowcaseToolsProperties>[] sets = new WinFormPlus.ItemSet<ShowcaseToolsProperties>[]
+            {
+                new WinFormPlus.ItemSet<ShowcaseToolsProperties>(new string[] { "Text Color", "文字颜色" }, new string[] { "Adjust text color.", "调整文字颜色。" },
+                    null, true, ShowcaseToolsProperties.TextColor),
+
+                new WinFormPlus.ItemSet<ShowcaseToolsProperties>(new string[] { "Background Color", "背景颜色" }, new string[] { "Adjust background color.", "调整背景颜色。" },
+                    null, true, ShowcaseToolsProperties.BackgroundColor),
+
+                new WinFormPlus.ItemSet<ShowcaseToolsProperties>(new string[] { "Boundary Color", "边框颜色"  }, new string[] { "Adjust boundary color.", "调整边框颜色。" },
+                    null, true, ShowcaseToolsProperties.BoundaryColor),
+            };
+
+            return WinFormPlus.CreateColorBoxItems(Settings, new string[] { "Colors", "颜色" }, new string[] { "Adjust color.", "调整颜色。" }, 
+                ArchiTed_Grasshopper.Properties.Resources.ColorIcon, true, sets);
+        }
+        #endregion
+
+        #endregion
+
+        #region Donate
+        public ToolStripMenuItem DonateMenuItem { get; }
+        private ToolStripMenuItem GetDonateItem()
+        {
+            ToolStripMenuItem donateItem = WinFormPlus.CreateOneItem("", "", ArchiTed_Grasshopper. Properties.Resources.DonateIcon);
+            WinFormPlus.AddMessageBoxItem(donateItem, "", "", ArchiTed_Grasshopper.Properties.Resources.AlipayLogo, ArchiTed_Grasshopper.Properties.Resources.DonateAlipayQRcode);
+            WinFormPlus.AddMessageBoxItem(donateItem, "", "", ArchiTed_Grasshopper.Properties.Resources.WechatLogo, ArchiTed_Grasshopper.Properties.Resources.DonateWechatQRcode);
+            return donateItem;
+        }
+        #endregion
+
+        #region Contact
+        public ToolStripMenuItem ContactMenuItem { get; }
+
+        private ToolStripMenuItem GetContactItem()
+        {
+            ToolStripMenuItem contactItem = WinFormPlus.CreateOneItem("", "", ArchiTed_Grasshopper.Properties.Resources.ContactIcon);
+            WinFormPlus.AddMessageBoxItem(contactItem, "", "", ArchiTed_Grasshopper.Properties.Resources.QQLogo, ArchiTed_Grasshopper.Properties.Resources.InfoGlasses_QQGroup_QRcode);
+            WinFormPlus.AddMessageBoxItem(contactItem, "", "", ArchiTed_Grasshopper.Properties.Resources.QQLogo, ArchiTed_Grasshopper.Properties.Resources.BrightZoneOfRhino_QQGroup_QRcode);
+            GH_DocumentObject.Menu_AppendSeparator(contactItem.DropDown);
+            WinFormPlus.AddMessageBoxItem(contactItem, "", "", ArchiTed_Grasshopper.Properties.Resources.QQLogo, ArchiTed_Grasshopper.Properties.Resources.Parameterization_QQGroup_QRcode);
+
+            return contactItem;
+        }
+        #endregion
 
         private void MakeRespondItem(ToolStripMenuItem item, ShowcaseToolsProperties name, Action checkAction, Action uncheckAction)
         {
@@ -220,9 +497,30 @@ namespace InfoGlasses.WinformMenu
             Item_CheckedChanged(null, new EventArgs());
         }
 
+        private void ActiveCanvas_CanvasPostPaintGroups(GH_Canvas sender)
+        {
+            ActiveRender(sender, GH_CanvasChannel.Groups);
+        }
 
-        #endregion
+        private void ActiveCanvas_CanvasPostPaintWires(GH_Canvas sender)
+        {
+            ActiveRender(sender, GH_CanvasChannel.Wires);
+        }
 
-
+        private void ActiveCanvas_CanvasPostPaintObjects(GH_Canvas sender)
+        {
+            ActiveRender(sender, GH_CanvasChannel.Objects);
+        }
+        private void ActiveCanvas_CanvasPrePaintOverlay(GH_Canvas sender)
+        {
+            ActiveRender(sender, GH_CanvasChannel.Overlay);
+        }
+        private void ActiveRender(GH_Canvas canvas, GH_CanvasChannel channel)
+        {
+            foreach (var rendarable in this.Renderables)
+            {
+                rendarable.RenderToCanvas(canvas, canvas.Graphics, channel);
+            }
+        }
     }
 }

@@ -18,10 +18,11 @@ namespace ArchiTed_Grasshopper
     public class SaveableSettings<T>: LanguageSetting where T : Enum
     {
         public Dictionary<T, object> DefaultDictionary { get; }
-
-        public SaveableSettings(Dictionary<T, object> defaults)
+        public GH_SettingsServer SettingsServer { get;}
+        public SaveableSettings(Dictionary<T, object> defaults, GH_SettingsServer server)
         {
             DefaultDictionary = defaults;
+            SettingsServer = server;
         }
 
         public object GetProperty(T property)
@@ -30,25 +31,30 @@ namespace ArchiTed_Grasshopper
             if (!DefaultDictionary.TryGetValue(property, out @default)) throw new Exception(property.ToString() + " doesn't have a default!");
 
             if (@default is bool)
-                return Grasshopper.Instances.Settings.GetValue(property.ToString(), (bool)@default);
+                return SettingsServer.GetValue(property.ToString(), (bool)@default);
             else if (@default is byte)
-                return Grasshopper.Instances.Settings.GetValue(property.ToString(), (byte)@default);
+                return SettingsServer.GetValue(property.ToString(), (byte)@default);
             else if (@default is DateTime)
-                return Grasshopper.Instances.Settings.GetValue(property.ToString(), (DateTime)@default);
+                return SettingsServer.GetValue(property.ToString(), (DateTime)@default);
             else if (@default is double)
-                return Grasshopper.Instances.Settings.GetValue(property.ToString(), (double)@default);
+                return SettingsServer.GetValue(property.ToString(), (double)@default);
             else if (@default is int)
-                return Grasshopper.Instances.Settings.GetValue(property.ToString(), (int)@default);
+                return SettingsServer.GetValue(property.ToString(), (int)@default);
             else if (@default is string)
-                return Grasshopper.Instances.Settings.GetValue(property.ToString(), (string)@default);
+                return SettingsServer.GetValue(property.ToString(), (string)@default);
             else if (@default is Point)
-                return Grasshopper.Instances.Settings.GetValue(property.ToString(), (Point)@default);
+                return SettingsServer.GetValue(property.ToString(), (Point)@default);
             else if (@default is Color)
-                return Grasshopper.Instances.Settings.GetValue(property.ToString(), (Color)@default);
+                return SettingsServer.GetValue(property.ToString(), (Color)@default);
             else if (@default is Rectangle)
-                return Grasshopper.Instances.Settings.GetValue(property.ToString(), (Rectangle)@default);
+                return SettingsServer.GetValue(property.ToString(), (Rectangle)@default);
             else if (@default is Size)
-                return Grasshopper.Instances.Settings.GetValue(property.ToString(), (Size)@default);
+                return SettingsServer.GetValue(property.ToString(), (Size)@default);
+            else if (@default is Guid)
+                return SettingsServer.GetValue(property.ToString(), (Guid)@default);
+            else if(@default is IEnumerable<Guid>)
+                return SettingsServer.GetValue(property.ToString(), (IEnumerable<Guid>)@default);
+
 
             throw new Exception(property.ToString() + " is a invalid type!");
         }
@@ -56,25 +62,30 @@ namespace ArchiTed_Grasshopper
         public void SetProperty(T property, object value)
         {
             if (value is bool)
-                Grasshopper.Instances.Settings.SetValue(property.ToString(), (bool)value);
+                SettingsServer.SetValue(property.ToString(), (bool)value);
             else if (value is byte)
-                Grasshopper.Instances.Settings.SetValue(property.ToString(), (byte)value);
+                SettingsServer.SetValue(property.ToString(), (byte)value);
             else if (value is DateTime)
-                Grasshopper.Instances.Settings.SetValue(property.ToString(), (DateTime)value);
+                SettingsServer.SetValue(property.ToString(), (DateTime)value);
             else if (value is double)
-                Grasshopper.Instances.Settings.SetValue(property.ToString(), (double)value);
+                SettingsServer.SetValue(property.ToString(), (double)value);
             else if (value is int)
-                Grasshopper.Instances.Settings.SetValue(property.ToString(), (int)value);
+                SettingsServer.SetValue(property.ToString(), (int)value);
             else if (value is string)
-                Grasshopper.Instances.Settings.SetValue(property.ToString(), (string)value);
+                SettingsServer.SetValue(property.ToString(), (string)value);
             else if (value is Point)
-                Grasshopper.Instances.Settings.SetValue(property.ToString(), (Point)value);
+                SettingsServer.SetValue(property.ToString(), (Point)value);
             else if (value is Color)
-                Grasshopper.Instances.Settings.SetValue(property.ToString(), (Color)value);
+                SettingsServer.SetValue(property.ToString(), (Color)value);
             else if (value is Rectangle)
-                Grasshopper.Instances.Settings.SetValue(property.ToString(), (Rectangle)value);
+                SettingsServer.SetValue(property.ToString(), (Rectangle)value);
             else if (value is Size)
-                Grasshopper.Instances.Settings.SetValue(property.ToString(), (Size)value);
+                SettingsServer.SetValue(property.ToString(), (Size)value);
+            else if (value is Guid)
+                SettingsServer.SetValue(property.ToString(), (Guid)value);
+            else if(value is IEnumerable<Guid>)
+                SettingsServer.SetValue(property.ToString(), (IEnumerable<Guid>)value);
+
         }
     }
 }

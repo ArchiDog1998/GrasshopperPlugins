@@ -64,7 +64,6 @@ namespace ArchiTed_Grasshopper.WinformControls
                 gH_Capsule.Dispose();
             }
             IsNotFirstRender = true;
-
         }
 
         protected override RectangleF Layout(GH_Canvas canvas, Graphics graphics, RectangleF rect)

@@ -222,7 +222,7 @@ namespace InfoGlasses
                {
                    ContextMenuStrip menu = new ContextMenuStrip() { ShowImageMargin = true };
                    WinFormPlus.AddLabelItem(menu, GetTransLation(new string[] { "Plug-in Options", "插件选项" }));
-                   WinFormPlus.AddColorBoxItem(menu, this, GetTransLation(new string[] { "Highlight Color", "高亮显示颜色" }), GetTransLation(new string[] { "Modify the highlight color.", "修改高亮显示颜色。" }),
+                   WinFormPlus.AddColorBoxItem_Obsolete(menu, this, GetTransLation(new string[] { "Highlight Color", "高亮显示颜色" }), GetTransLation(new string[] { "Modify the highlight color.", "修改高亮显示颜色。" }),
                        ArchiTed_Grasshopper.Properties.Resources.ColorIcon, true, _pluginColorDefault, _pluginColor);
 
                    WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Highlight Radius", "高亮显示半径" }), GetTransLation(new string[] { "Modify the highlight corner radius.", "修改高亮显示导角半径。" }),
@@ -251,19 +251,19 @@ namespace InfoGlasses
             WinFormPlus.AddNumberBoxItem(menu, this, GetTransLation(new string[] { "Set Name FontSize", "设置命名字体大小" }), GetTransLation(new string[] { "Set the name box's font size.", "设置名称气泡框的字体大小。" }),
                 ArchiTed_Grasshopper.Properties.Resources.TextIcon, true, _nameBoxFontSizeDefault, 4, 50, _nameBoxFontSize);
 
-            WinFormPlus.ItemSet<Color>[] sets = new WinFormPlus.ItemSet<Color>[] {
+            WinFormPlus.ItemSet_Obsolete<Color>[] sets = new WinFormPlus.ItemSet_Obsolete<Color>[] {
 
-                    new WinFormPlus.ItemSet<Color>( GetTransLation(new string[] { "Text Color", "文字颜色" }),GetTransLation(new string[] { "Adjust text color.", "调整文字颜色。" }),
+                    new WinFormPlus.ItemSet_Obsolete<Color>( GetTransLation(new string[] { "Text Color", "文字颜色" }),GetTransLation(new string[] { "Adjust text color.", "调整文字颜色。" }),
                     null, true, _textColorDefault, _textColor),
 
-                    new WinFormPlus.ItemSet<Color>( GetTransLation(new string[] { "Background Color", "背景颜色" }), GetTransLation(new string[] { "Adjust background color.", "调整背景颜色。" }),
+                    new WinFormPlus.ItemSet_Obsolete<Color>( GetTransLation(new string[] { "Background Color", "背景颜色" }), GetTransLation(new string[] { "Adjust background color.", "调整背景颜色。" }),
                     null, true, _backgroundColorDefault, _backgroundColor),
 
-                    new WinFormPlus.ItemSet<Color>(GetTransLation(new string[] { "Boundary Color", "边框颜色" }),
+                    new WinFormPlus.ItemSet_Obsolete<Color>(GetTransLation(new string[] { "Boundary Color", "边框颜色" }),
                             GetTransLation(new string[] { "Adjust boundary color.", "调整边框颜色。" }), null, true,
                             _boundaryColorDefault, _boundaryColor),
                     };
-            WinFormPlus.AddColorBoxItems(menu, this, GetTransLation(new string[] { "Colors", "颜色" }),
+            WinFormPlus.AddColorBoxItems_Obsolete(menu, this, GetTransLation(new string[] { "Colors", "颜色" }),
             GetTransLation(new string[] { "Adjust color.", "调整颜色。" }), ArchiTed_Grasshopper.Properties.Resources.ColorIcon, true, sets);
         }
 

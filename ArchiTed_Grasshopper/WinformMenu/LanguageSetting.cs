@@ -20,7 +20,7 @@ namespace ArchiTed_Grasshopper
         #region LanguageSettings
         public static List<string> Languages { get; } = new List<string> { "English", "中文" };
 
-        private static List<ILanguageChangeable> ChangesObjects { get; } = new List<ILanguageChangeable>() { };
+        public static event Action LanguageChange;
 
         public static string Language => Languages[LanguageIndex];
 
@@ -33,7 +33,7 @@ namespace ArchiTed_Grasshopper
                 if (LanguageIndex == value) return;
                 if (value >= Languages.Count) throw new ArgumentOutOfRangeException(nameof(LanguageIndex));
                 Grasshopper.Instances.Settings.SetValue(nameof(LanguageIndex), value);
-                ChangesObjects.ForEach((obj) => obj.ResponseToLanguageChanged());
+                LanguageChange.Invoke();
 
                 //Change self
                 LanguageMenuItem.ToolTipText = LanguageSetting.GetTransLation(new string[] { "Select one Language.Note: It will Recompute the component with language options!", "请选择一个语言。注意：这将让有语言选项的电池重新计算！" });
@@ -57,11 +57,9 @@ namespace ArchiTed_Grasshopper
             }
         }
 
-        public static void AddLangObj(ILanguageChangeable obj) => ChangesObjects.Add(obj);
-        public static void RemoveLangObj(ILanguageChangeable obj) => ChangesObjects.Remove(obj);
         #endregion
 
-        #region LanguageIcon
+        #region LanguageItem
         public static ToolStripMenuItem LanguageMenuItem { get; } = GetLanguageIcon();
         private static ToolStripMenuItem GetLanguageIcon()
         {

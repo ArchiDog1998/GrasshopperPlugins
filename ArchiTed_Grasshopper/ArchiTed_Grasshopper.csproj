@@ -109,7 +109,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="WinformMenu\ILanguageChangeable.cs" />
+    <Compile Include="WinformMenu\GH_SettingsServerExtention.cs" />
     <Compile Include="WinformMenu\ISettings.cs" />
     <Compile Include="WinformMenu\LanguageSetting.cs" />
     <Compile Include="WinformMenu\SaveableSettings.cs" />

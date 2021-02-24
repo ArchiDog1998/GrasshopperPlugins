@@ -11,20 +11,12 @@ using Grasshopper.Kernel;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Forms.Design;
 
 namespace ArchiTed_Grasshopper
 {
     public static class WinFormPlus
     {
-
-
-
         #region ValueBox
         public static void AddTextItem(ToolStripDropDown menu, LanguagableComponent component, string itemName, string itemTip, Bitmap itemIcon, bool enable,
             string Default, string valueName, int width = 100)
@@ -37,11 +29,7 @@ namespace ArchiTed_Grasshopper
                 flag = false;
                 component.ExpireSolution(true);
             }
-
-
         }
-
-
 
         public static void AddNumberBoxItem(ToolStripDropDown menu,LanguagableComponent component,  string itemName, string itemTip, Bitmap itemIcon, bool enable, 
             int Default, int Min, int Max, string valueName, int width = 150)
@@ -144,18 +132,36 @@ namespace ArchiTed_Grasshopper
         #endregion
 
         #region ColorBox
-        public struct ItemSet<T>
+        public struct ItemSet<T> where T : Enum
         {
-            public string itemName { get; set; }
+            public string[] Text { get; }
+            public string[] Tip { get; }
+            public Bitmap Icon { get; }
+            public bool Enable { get; }
+            public T ValueName { get; }
+
+            public ItemSet(string[] itemText, string[] itemTip, Bitmap itemIcon, bool enable, T valueName)
+            {
+                this.Text = itemText;
+                this.Tip = itemTip;
+                this.Icon = itemIcon;
+                this.Enable = enable;
+                this.ValueName = valueName;
+            }
+        }
+
+        public struct ItemSet_Obsolete<T>
+        {
+            public string itemText { get; set; }
             public string itemTip { get; set; }
             public Bitmap itemIcon { get; set; }
             public bool enable { get; set; }
             public T Default { get; set; }
             public string valueName { get; set; }
 
-            public ItemSet(string itemName, string itemTip, Bitmap itemIcon, bool enable,T Default, string valueName)
+            public ItemSet_Obsolete(string itemText, string itemTip, Bitmap itemIcon, bool enable,T Default, string valueName)
             {
-                this.itemName = itemName;
+                this.itemText = itemText;
                 this.itemTip = itemTip;
                 this.itemIcon = itemIcon;
                 this.enable = enable;
@@ -164,13 +170,13 @@ namespace ArchiTed_Grasshopper
             }
         }
 
-        public static void AddColorBoxItems(ToolStripDropDown menu, LanguagableComponent component, string itemName, string itemTip, Bitmap itemIcon, bool enable,ItemSet<Color>[] sets)
+        public static void AddColorBoxItems_Obsolete(ToolStripDropDown menu, LanguagableComponent component, string itemName, string itemTip, Bitmap itemIcon, bool enable,ItemSet_Obsolete<Color>[] sets)
         {
             ToolStripMenuItem item = CreateOneItem(itemName, itemTip, itemIcon, enable);
 
             foreach (var set in sets)
             {
-                AddColorBoxItem(item.DropDown, component, set);
+                AddColorBoxItem_Obsolete(item.DropDown, component, set);
             }
 
             GH_DocumentObject.Menu_AppendItem(item.DropDown, LanguagableComponent.GetTransLation(new string[] { "Reset Color", "重置颜色" }), resetClick, Properties.Resources.ResetLogo,
@@ -186,12 +192,13 @@ namespace ArchiTed_Grasshopper
             menu.Items.Add(item);
         }
 
-        public static void AddColorBoxItem(ToolStripDropDown menu, LanguagableComponent component, ItemSet<Color> set)
+        public static void AddColorBoxItem_Obsolete(ToolStripDropDown menu, LanguagableComponent component, ItemSet_Obsolete<Color> set)
         {
-            AddColorBoxItem(menu, component, set.itemName, set.itemTip, set.itemIcon, set.enable, set.Default, set.valueName);
+            AddColorBoxItem_Obsolete(menu, component, set.itemText, set.itemTip, set.itemIcon, set.enable, set.Default, set.valueName);
         }
 
-        public static void AddColorBoxItem(ToolStripDropDown menu, LanguagableComponent component, string itemName, string itemTip, Bitmap itemIcon, bool enable,
+
+        public static void AddColorBoxItem_Obsolete(ToolStripDropDown menu, LanguagableComponent component, string itemName, string itemTip, Bitmap itemIcon, bool enable,
             Color @default, string valueName)
         {
             bool flag = true;
@@ -212,11 +219,80 @@ namespace ArchiTed_Grasshopper
             }
             menu.Items.Add(item);
         }
+
+        public static ToolStripMenuItem CreateColorBoxItems<T>(SaveableSettings<T> setting, string[] itemName, string[] itemTip, Bitmap itemIcon, bool enable, ItemSet<T>[] sets) where T : Enum
+        {
+            ToolStripMenuItem item = CreateOneItem("", "", itemIcon, enable);
+
+            //Add all ColourPickers and save actions.
+            for (int i = 0; i < sets.Length; i++)
+            {
+                item.DropDownItems.Add(CreateColorBoxItem(setting, sets[i]));
+            }
+
+            //Add Reset Button at last.
+            GH_DocumentObject.Menu_AppendItem(item.DropDown, "", resetClick, Properties.Resources.ResetLogo,
+                           true, false);
+            void resetClick(object sender, EventArgs e)
+            {
+                foreach (var set in sets)
+                {
+                    setting.SetProperty(set.ValueName, setting.DefaultDictionary[set.ValueName]);
+                }
+            }
+
+            //Change Language Actions.
+            Action languageChange = () =>
+            {
+                item.Text = LanguageSetting.GetTransLation(itemName);
+                item.ToolTipText = LanguageSetting.GetTransLation(itemTip);
+
+                item.DropDownItems[item.DropDownItems.Count - 1].Text = LanguageSetting.GetTransLation("Reset Color", "重置颜色");
+                item.DropDownItems[item.DropDownItems.Count - 1].ToolTipText = LanguageSetting.GetTransLation("Click to reset colors.", "点击以重置颜色。");
+            };
+            languageChange.Invoke();
+            LanguageSetting.LanguageChange += languageChange;
+
+            return item;
+        }
+
+        public static ToolStripMenuItem CreateColorBoxItem<T>(SaveableSettings<T> setting, ItemSet<T> set) where T : Enum
+        {
+            return CreateColorBoxItem<T>(setting, set.Text, set.Tip, set.Icon, set.Enable, set.ValueName);
+        }
+
+        public static ToolStripMenuItem CreateColorBoxItem<T>(SaveableSettings<T> setting, string[] itemName, string[] itemTip, Bitmap itemIcon, bool enable, T valueName) where T : Enum
+        {
+            Color @default = (Color)setting.DefaultDictionary[valueName];
+
+            ToolStripMenuItem item = CreateOneItem("", "", itemIcon, enable);
+
+            //Add a ColourPicker
+            GH_DocumentObject.Menu_AppendColourPicker(item.DropDown, (Color)setting.GetProperty(valueName), 
+                (x, e) => { setting.SetProperty(valueName, e.Colour); });
+
+            //Reset Item.
+            GH_DocumentObject.Menu_AppendItem(item.DropDown, "", (x, y) => { setting.SetProperty(valueName, @default); },
+                Properties.Resources.ResetLogo, true, false); 
+
+            Action languageChange = () =>
+            {
+                item.Text = LanguageSetting.GetTransLation(itemName);
+                item.ToolTipText = LanguageSetting.GetTransLation(itemTip);
+                item.DropDown.Items[item.DropDown.Items.Count - 1].Text = LanguageSetting.GetTransLation("Reset Color", "重置颜色");
+                item.DropDown.Items[item.DropDown.Items.Count - 1].ToolTipText = LanguageSetting.GetTransLation("Click to reset colors.", "点击以重置颜色。");
+            };
+
+            languageChange.Invoke();
+            LanguageSetting.LanguageChange += languageChange;
+
+            return item;
+        }
         #endregion
 
         #region ComboBox
 
-        public static void AddComboBoxItemsSingle(ToolStripDropDown menu, LanguagableComponent component, string itemName, string itemTip,string valueName, Bitmap itemIcon, bool enable, ItemSet<bool>[] sets)
+        public static void AddComboBoxItemsSingle(ToolStripDropDown menu, LanguagableComponent component, string itemName, string itemTip,string valueName, Bitmap itemIcon, bool enable, ItemSet_Obsolete<bool>[] sets)
         {
             ToolStripMenuItem item = CreateOneItem(itemName, itemTip, itemIcon, enable);
 
@@ -228,10 +304,10 @@ namespace ArchiTed_Grasshopper
             menu.Items.Add(item);
         }
 
-        public static void AddComboBoxItemSingle(ToolStripDropDown menu, LanguagableComponent component, ItemSet<bool> set, string valueName, int index)
+        public static void AddComboBoxItemSingle(ToolStripDropDown menu, LanguagableComponent component, ItemSet_Obsolete<bool> set, string valueName, int index)
         {
 
-            GH_DocumentObject.Menu_AppendItem(menu, set.itemName, click, set.itemIcon, set.enable, component.GetValuePub(valueName, 0) == index).ToolTipText = set.itemTip;
+            GH_DocumentObject.Menu_AppendItem(menu, set.itemText, click, set.itemIcon, set.enable, component.GetValuePub(valueName, 0) == index).ToolTipText = set.itemTip;
 
             void click(object sender, EventArgs e)
             {
@@ -241,7 +317,7 @@ namespace ArchiTed_Grasshopper
 
 
 
-        public static void AddComboBoxItemsMulty(ToolStripDropDown menu, LanguagableComponent component, string itemName, string itemTip, Bitmap itemIcon, bool enable,ItemSet<bool>[] sets)
+        public static void AddComboBoxItemsMulty(ToolStripDropDown menu, LanguagableComponent component, string itemName, string itemTip, Bitmap itemIcon, bool enable,ItemSet_Obsolete<bool>[] sets)
         {
             ToolStripMenuItem item = CreateOneItem(itemName, itemTip, itemIcon, enable);
 
@@ -253,10 +329,10 @@ namespace ArchiTed_Grasshopper
             menu.Items.Add(item);
         }
 
-        public static void AddComboBoxItemMulty(ToolStripDropDown menu, LanguagableComponent component, ItemSet<bool> set)
+        public static void AddComboBoxItemMulty(ToolStripDropDown menu, LanguagableComponent component, ItemSet_Obsolete<bool> set)
         {
 
-            GH_DocumentObject.Menu_AppendItem(menu, set.itemName, click, set.itemIcon, set.enable, component.GetValuePub(set.valueName, set.Default)).ToolTipText = set.itemTip;
+            GH_DocumentObject.Menu_AppendItem(menu, set.itemText, click, set.itemIcon, set.enable, component.GetValuePub(set.valueName, set.Default)).ToolTipText = set.itemTip;
 
             void click(object sender, EventArgs e)
             {
