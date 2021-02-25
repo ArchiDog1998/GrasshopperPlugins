@@ -9,6 +9,7 @@ using Grasshopper.GUI;
 using Grasshopper.GUI.Base;
 using Grasshopper.Kernel;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -222,7 +223,7 @@ namespace ArchiTed_Grasshopper
         #endregion
         public static ToolStripMenuItem CreateColorBoxItems<T>(SaveableSettings<T> setting, string[] itemName, string[] itemTip, Bitmap itemIcon, bool enable, ItemSet<T>[] sets) where T : Enum
         {
-            ToolStripMenuItem item = CreateOneItem("", "", itemIcon, enable);
+            ToolStripMenuItem item = CreateOneItem(itemName, itemTip, itemIcon, @checked: false, enable: enable);
 
             //Add all ColourPickers and save actions.
             for (int i = 0; i < sets.Length; i++)
@@ -230,63 +231,75 @@ namespace ArchiTed_Grasshopper
                 item.DropDownItems.Add(CreateColorBoxItem(setting, sets[i]));
             }
 
-            //Add Reset Button at last.
-            GH_DocumentObject.Menu_AppendItem(item.DropDown, "", resetClick, Properties.Resources.ResetLogo,
-                           true, false);
-            void resetClick(object sender, EventArgs e)
-            {
-                foreach (var set in sets)
+            item.DropDownItems.Add(CreateClickItem(new string[] { "Reset Color", "重置颜色" }, new string[] { "Click to reset colors.", "点击以重置颜色。" },
+                Properties.Resources.ResetLogo, (x, y) =>
                 {
-                    setting.SetProperty(set.ValueName, setting.DefaultDictionary[set.ValueName]);
-                }
-            }
-
-            //Change Language Actions.
-            LanguageSetting.AddToLangChangeEvt((getTran) =>
-            {
-                    item.Text = getTran(itemName);
-                    item.ToolTipText = getTran(itemTip);
-
-                    item.DropDownItems[item.DropDownItems.Count - 1].Text = getTran(new string[] { "Reset Color", "重置颜色" });
-                    item.DropDownItems[item.DropDownItems.Count - 1].ToolTipText = getTran(new string[] { "Click to reset colors.", "点击以重置颜色。" });
-            });
+                    //Reset every Colours.
+                    sets.ToList().ForEach((set) => setting.ResetProperty(set.ValueName));
+                }));
 
             return item;
         }
 
         public static ToolStripMenuItem CreateColorBoxItem<T>(SaveableSettings<T> setting, ItemSet<T> set) where T : Enum
         {
-            return CreateColorBoxItem<T>(setting, set.Text, set.Tip, set.Icon, set.Enable, set.ValueName);
+            return CreateColorBoxItem(setting, set.Text, set.Tip, set.Icon, set.Enable, set.ValueName);
         }
 
         public static ToolStripMenuItem CreateColorBoxItem<T>(SaveableSettings<T> setting, string[] itemName, string[] itemTip, Bitmap itemIcon, bool enable, T valueName) where T : Enum
         {
-            Color @default = (Color)setting.DefaultDictionary[valueName];
-
-            ToolStripMenuItem item = CreateOneItem("", "", itemIcon, enable);
+            //Create a new item.
+            ToolStripMenuItem item = CreateOneItem(itemName, itemTip, itemIcon, @checked: false, enable: enable);
 
             //Add a ColourPicker
             GH_DocumentObject.Menu_AppendColourPicker(item.DropDown, (Color)setting.GetProperty(valueName), 
                 (x, e) => { setting.SetProperty(valueName, e.Colour); });
 
-            //Reset Item.
-            GH_DocumentObject.Menu_AppendItem(item.DropDown, "", (x, y) => { setting.SetProperty(valueName, @default); },
-                Properties.Resources.ResetLogo, true, false);
-
-            LanguageSetting.AddToLangChangeEvt((getTran) =>
-            {
-                item.Text = getTran(itemName);
-                item.ToolTipText = getTran(itemTip);
-                item.DropDown.Items[item.DropDown.Items.Count - 1].Text = getTran(new string[] { "Reset Color", "重置颜色" });
-                item.DropDown.Items[item.DropDown.Items.Count - 1].ToolTipText = getTran(new string[] { "Click to reset colors.", "点击以重置颜色。" });
-
-            });
+            //Add a Reset Item.
+            item.DropDownItems.Add(CreateClickItem(new string[] { "Reset Color", "重置颜色" }, new string[] { "Click to reset colors.", "点击以重置颜色。" },
+                 Properties.Resources.ResetLogo, (x, y) => { setting.ResetProperty(valueName); }));
 
             return item;
         }
         #endregion
 
         //#region ComboBox
+
+        public static ToolStripMenuItem CreateComboBoxItemSingle<T>(string[] itemName, string[] itemTip, Image icon,
+            SaveableSettings<T> server, T valueName, string[][] nameList, string[][] tipList = null,
+            Image[] IconList = null, bool enable = true) where T : Enum
+        {
+            //Reset Array.
+            if (IconList == null) IconList = new Image[nameList.Length];
+            if (tipList == null)
+            {
+                List<string[]> tiplist = new List<string[]>();
+                nameList.ToList().ForEach((x) => tiplist.Add(new string[1]));
+                tipList = tiplist.ToArray();
+            }
+
+            ToolStripMenuItem item = CreateOneItem(itemName, itemTip, icon, false, enable);
+            
+            //Add each sub items.
+            for (int i = 0; i < nameList.Length; i++)
+            {
+                ToolStripMenuItem temp = CreateClickItem(nameList[i], tipList[i], IconList[i], (x, y)=>
+                {
+                    //Uncheck previous checked item.
+                    ((ToolStripMenuItem)item.DropDownItems[(int)server.GetProperty(valueName)]).Checked = false;
+
+                    //Set Value.
+                    server.SetProperty(valueName, ((ToolStripMenuItem)x).Tag);
+
+                    //set this one to checked.
+                    ((ToolStripMenuItem)x).Checked = true;
+                }, (int)server.GetProperty(valueName) == i);
+                temp.Tag = i;
+                item.DropDown.Items.Add(temp);
+            }
+
+            return item;
+        }
         //[Obsolete]
         //public static void AddComboBoxItemsSingle(ToolStripDropDown menu, LanguagableComponent component, string itemName, string itemTip,string valueName, Bitmap itemIcon, bool enable, ItemSet_Obsolete<bool>[] sets)
         //{
@@ -340,7 +353,7 @@ namespace ArchiTed_Grasshopper
 
         //#endregion
 
-        #region ClickBox
+            #region ClickBox
         /// <summary>
         /// Set a Loop Box item in Winform Menu
         /// </summary>
@@ -378,9 +391,10 @@ namespace ArchiTed_Grasshopper
             }
             menu.Items.Add(item);
         }
+
         public static ToolStripMenuItem CreateLoopBoxItem<T>(string[] itemName, string[] itemTip,
             SaveableSettings<T> server, T valueName, string[][] nameList,
-            Bitmap[] IconList = null, bool enable = true) where T:Enum
+            Image[] IconList = null, bool enable = true) where T:Enum
         {
             //int index = (int)server.GetProperty(valueName);
             if ((int)server.GetProperty(valueName) > nameList.Length - 1)
@@ -391,13 +405,13 @@ namespace ArchiTed_Grasshopper
             ToolStripMenuItem item = new ToolStripMenuItem() { Enabled = enable , Checked = false};
 
             //Change icon and language.
-            LanguageChangedHandler IndexAndlanguageChange = LanguageSetting.AddToLangChangeEvt((getTrans) =>
+            Action IndexAndlanguageChange = LanguageSetting.AddToLangChangeEvt((getTrans) =>
             {
                 int index = (int)server.GetProperty(valueName);
                 if (IconList != null)
                     item.Image = IconList[index];
                 item.Text = getTrans(itemName) + getTrans(new string[] { ": ", "：" }) + getTrans(nameList[index]);
-                item.ToolTipText = getTrans(new string[] { "Click to switch to ", "单击以切换到" }) + getTrans(nameList[(index + 1) % nameList.Length]);
+                item.ToolTipText = getTrans(itemTip) + getTrans(new string[] { "Click to switch to ", "单击以切换到" }) + getTrans(nameList[(index + 1) % nameList.Length]);
             });
 
             //Add click event.
@@ -407,14 +421,14 @@ namespace ArchiTed_Grasshopper
                 server.SetProperty(valueName, ((int)server.GetProperty(valueName) + 1) % nameList.Length);
 
                 //Change icon and language.
-                IndexAndlanguageChange.Invoke(LanguageSetting.GetTransLation);
+                IndexAndlanguageChange.Invoke();
             };
 
             return item;
         }
 
         public static ToolStripMenuItem CreateCheckItem<T>(string[] itemName, string[] itemTip, Image itemIcon, 
-            SaveableSettings<T> server, T valueName, Action checkAction, Action uncheckAction,
+            SaveableSettings<T> server, T valueName, Action<ToolStripMenuItem> clickedAction = null,
             bool @default = false, bool enable = true) where T : Enum
         {
 
@@ -426,16 +440,8 @@ namespace ArchiTed_Grasshopper
                 server.SetProperty(valueName, !(bool)server.GetProperty(valueName));
                 item.Checked = (bool)server.GetProperty(valueName);
 
-                //respond to check changed.
-                switch (item.Checked)
-                {
-                    case true:
-                        checkAction.Invoke();
-                        break;
-                    case false:
-                        uncheckAction.Invoke();
-                        break;
-                }
+                if (clickedAction != null)
+                    clickedAction.Invoke((ToolStripMenuItem)sender);
             }
             item.Click += Item_Click;
 
@@ -558,7 +564,7 @@ namespace ArchiTed_Grasshopper
             return item;
         }
 
-
+        [Obsolete]
         public static ToolStripMenuItem CreateClickItem<T>(string[] itemName, string[] itemTip, Image itemIcon, T tag, Action<object, EventArgs, T> click, bool @default = false, bool enable = true)
         {
             void Item_Click(object sender, EventArgs e)
@@ -636,6 +642,8 @@ namespace ArchiTed_Grasshopper
             ToolStripMenuItem item = new ToolStripMenuItem();
             if (itemIcon != null)
                 item.Image = itemIcon;
+            if (itemTip == null)
+                itemTip = new string[] { "" };
             item.Checked = @checked;
             item.Enabled = enable;
 
@@ -698,5 +706,18 @@ namespace ArchiTed_Grasshopper
         }
 
         public enum ItemIconType {Youtube, Bilibili, Wechat, GitHub }
+
+        public static ToolStripMenuItem[] AddSubItems(this ToolStripMenuItem item, params ToolStripMenuItem[] subItems)
+        {
+            item.Click += (x, y) =>
+            {
+                subItems.ToList().ForEach((subItem) => subItem.Enabled = item.Checked);
+            };
+
+            //Add result.
+            List<ToolStripMenuItem> result = new List<ToolStripMenuItem>() { item };
+            result.AddRange(subItems);
+            return result.ToArray();
+        }
     }
 }

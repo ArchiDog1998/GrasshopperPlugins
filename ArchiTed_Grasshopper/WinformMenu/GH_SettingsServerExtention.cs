@@ -17,6 +17,89 @@ namespace ArchiTed_Grasshopper
 {
     public static class GH_SettingsServerExtention
     {
+        #region Major
+        internal static void PropResetValue<T>(this GH_SettingsServer server, SettingsPreset<T> preset) where T : Enum
+        {
+            PropSetValue<T>(server, preset, preset.Default);
+        }
+
+        internal static void PropSetValue<T>(this GH_SettingsServer server, SettingsPreset<T> preset, object value) where T : Enum
+        {
+            //Check if the value type is right.
+            if (!value.GetType().IsAssignableFrom(preset.Default.GetType()))
+                throw new Exception(nameof(value) + " is not the right type!");
+
+            //Check if Value is not changed.
+            if (PropGetValue(server, preset).Equals(value)) return;
+
+            //Set value.
+            if (value is bool)
+                server.SetValue(preset.Name.ToString(), (bool)value);
+            else if (value is byte)
+                server.SetValue(preset.Name.ToString(), (byte)value);
+            else if (value is DateTime)
+                server.SetValue(preset.Name.ToString(), (DateTime)value);
+            else if (value is double)
+                server.SetValue(preset.Name.ToString(), (double)value);
+            else if (value is int)
+                server.SetValue(preset.Name.ToString(), (int)value);
+            else if (value is string)
+                server.SetValue(preset.Name.ToString(), (string)value);
+            else if (value is Point)
+                server.SetValue(preset.Name.ToString(), (Point)value);
+            else if (value is Color)
+                server.SetValue(preset.Name.ToString(), (Color)value);
+            else if (value is Rectangle)
+                server.SetValue(preset.Name.ToString(), (Rectangle)value);
+            else if (value is Size)
+                server.SetValue(preset.Name.ToString(), (Size)value);
+            else if (value is Guid)
+                server.SetValue(preset.Name.ToString(), (Guid)value);
+            else if (value is IEnumerable<Guid>)
+                server.SetValue(preset.Name.ToString(), (IEnumerable<Guid>)value);
+            else
+                throw new Exception(nameof(value) + " is not the right type!");
+
+            //ValueChanged.
+            if (preset.ValueChanged != null)
+                preset.ValueChanged.Invoke();
+        }
+
+        internal static object PropGetValue<T>(this GH_SettingsServer server, SettingsPreset<T> preset) where T : Enum
+        {
+            //Get the default
+            object @default = preset.Default;
+
+            //Get value
+            if (@default is bool)
+                return server.GetValue(preset.Name.ToString(), (bool)@default);
+            else if (@default is byte)
+                return server.GetValue(preset.Name.ToString(), (byte)@default);
+            else if (@default is DateTime)
+                return server.GetValue(preset.Name.ToString(), (DateTime)@default);
+            else if (@default is double)
+                return server.GetValue(preset.Name.ToString(), (double)@default);
+            else if (@default is int)
+                return server.GetValue(preset.Name.ToString(), (int)@default);
+            else if (@default is string)
+                return server.GetValue(preset.Name.ToString(), (string)@default);
+            else if (@default is Point)
+                return server.GetValue(preset.Name.ToString(), (Point)@default);
+            else if (@default is Color)
+                return server.GetValue(preset.Name.ToString(), (Color)@default);
+            else if (@default is Rectangle)
+                return server.GetValue(preset.Name.ToString(), (Rectangle)@default);
+            else if (@default is Size)
+                return server.GetValue(preset.Name.ToString(), (Size)@default);
+            else if (@default is Guid)
+                return server.GetValue(preset.Name.ToString(), (Guid)@default);
+            else if (@default is IEnumerable<Guid>)
+                return server.GetValue(preset.Name.ToString(), (IEnumerable<Guid>)@default);
+
+            throw new Exception(preset.Name.ToString() + " is a invalid type!");
+        }
+        #endregion
+
         #region Guid
         public static Guid GetValue(this GH_SettingsServer server, string key, Guid @default)
         {

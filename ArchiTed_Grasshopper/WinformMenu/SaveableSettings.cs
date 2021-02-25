@@ -6,6 +6,7 @@
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -15,77 +16,53 @@ using Grasshopper.Kernel;
 
 namespace ArchiTed_Grasshopper
 {
+
+    public struct SettingsPreset<T> where T : Enum
+    {
+        public T Name { get; }
+        public object Default { get; }
+        public Action ValueChanged { get; }
+        public Type Type { get; }
+        public SettingsPreset(T name, object @default, Action valugChanged = null)
+        {
+            this.Name = name;
+            this.Default = @default;
+            this.ValueChanged = valugChanged;
+            this.Type = @default.GetType();
+        }
+    }
+
     public class SaveableSettings<T> where T : Enum
     {
-        public Dictionary<T, object> DefaultDictionary { get; }
+        public SettingsPreset<T>[] PropertiesSet { get; }
         public GH_SettingsServer SettingsServer { get;}
-        public SaveableSettings(Dictionary<T, object> defaults, GH_SettingsServer server)
+        public SaveableSettings(SettingsPreset<T>[] defaults, GH_SettingsServer server)
         {
-            DefaultDictionary = defaults;
+            PropertiesSet = defaults;
             SettingsServer = server;
+        }
+        private SettingsPreset<T> FindProperty(T property)
+        {
+            IEnumerable<SettingsPreset<T>> result = PropertiesSet.Where((item) => item.Name.ToString() == property.ToString());
+
+            if (result.Count() == 0) throw new Exception(property.ToString() + " haven't been set a " + nameof(SettingsPreset<T>));
+
+            return result.ElementAt(0);
         }
 
         public object GetProperty(T property)
         {
-            object @default;
-            if (!DefaultDictionary.TryGetValue(property, out @default)) throw new Exception(property.ToString() + " doesn't have a default!");
+            return SettingsServer.PropGetValue(FindProperty(property));
+        }
 
-            if (@default is bool)
-                return SettingsServer.GetValue(property.ToString(), (bool)@default);
-            else if (@default is byte)
-                return SettingsServer.GetValue(property.ToString(), (byte)@default);
-            else if (@default is DateTime)
-                return SettingsServer.GetValue(property.ToString(), (DateTime)@default);
-            else if (@default is double)
-                return SettingsServer.GetValue(property.ToString(), (double)@default);
-            else if (@default is int)
-                return SettingsServer.GetValue(property.ToString(), (int)@default);
-            else if (@default is string)
-                return SettingsServer.GetValue(property.ToString(), (string)@default);
-            else if (@default is Point)
-                return SettingsServer.GetValue(property.ToString(), (Point)@default);
-            else if (@default is Color)
-                return SettingsServer.GetValue(property.ToString(), (Color)@default);
-            else if (@default is Rectangle)
-                return SettingsServer.GetValue(property.ToString(), (Rectangle)@default);
-            else if (@default is Size)
-                return SettingsServer.GetValue(property.ToString(), (Size)@default);
-            else if (@default is Guid)
-                return SettingsServer.GetValue(property.ToString(), (Guid)@default);
-            else if(@default is IEnumerable<Guid>)
-                return SettingsServer.GetValue(property.ToString(), (IEnumerable<Guid>)@default);
-
-
-            throw new Exception(property.ToString() + " is a invalid type!");
+        public void ResetProperty(T property)
+        {
+            SettingsServer.PropResetValue(FindProperty(property));
         }
 
         public void SetProperty(T property, object value)
         {
-            if (value is bool)
-                SettingsServer.SetValue(property.ToString(), (bool)value);
-            else if (value is byte)
-                SettingsServer.SetValue(property.ToString(), (byte)value);
-            else if (value is DateTime)
-                SettingsServer.SetValue(property.ToString(), (DateTime)value);
-            else if (value is double)
-                SettingsServer.SetValue(property.ToString(), (double)value);
-            else if (value is int)
-                SettingsServer.SetValue(property.ToString(), (int)value);
-            else if (value is string)
-                SettingsServer.SetValue(property.ToString(), (string)value);
-            else if (value is Point)
-                SettingsServer.SetValue(property.ToString(), (Point)value);
-            else if (value is Color)
-                SettingsServer.SetValue(property.ToString(), (Color)value);
-            else if (value is Rectangle)
-                SettingsServer.SetValue(property.ToString(), (Rectangle)value);
-            else if (value is Size)
-                SettingsServer.SetValue(property.ToString(), (Size)value);
-            else if (value is Guid)
-                SettingsServer.SetValue(property.ToString(), (Guid)value);
-            else if(value is IEnumerable<Guid>)
-                SettingsServer.SetValue(property.ToString(), (IEnumerable<Guid>)value);
-
+            SettingsServer.PropSetValue(FindProperty(property), value);
         }
     }
 }

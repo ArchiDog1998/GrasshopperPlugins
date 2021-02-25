@@ -21,7 +21,7 @@ using Grasshopper.GUI.Canvas;
 
 namespace InfoGlasses.WinformMenu
 {
-    public enum ShowcaseToolsProperties
+    public enum ShowToolsProps
     {
         IsFixCategoryIcon,
         FixCategoryFolder,
@@ -32,47 +32,55 @@ namespace InfoGlasses.WinformMenu
         BackgroundColor,
         BoundaryColor,
     }
-    public class ShowcaseToolsMenu : ToolStripMenuItem, ISettings<ShowcaseToolsProperties>
+    public class ShowcaseToolsMenu: ISettings<ShowToolsProps>
     {
-        public SaveableSettings<ShowcaseToolsProperties> Settings { get; } = new SaveableSettings<ShowcaseToolsProperties>(new Dictionary<ShowcaseToolsProperties, object>()
+        public SaveableSettings<ShowToolsProps> Settings { get; } = new SaveableSettings<ShowToolsProps>(new SettingsPreset<ShowToolsProps>[]
         {
-            { ShowcaseToolsProperties.IsFixCategoryIcon, true },
-            { ShowcaseToolsProperties.FixCategoryFolder, Grasshopper.Folders.UserObjectFolders[0] },
-            { ShowcaseToolsProperties.IsUseInfoGlass, true },
-            { ShowcaseToolsProperties.NormalExceptionGuid, new List<Guid>() },
-            { ShowcaseToolsProperties.PluginExceptionGuid, new List<Guid>() },
-            { ShowcaseToolsProperties.TextColor, Color.Black},
-            { ShowcaseToolsProperties.BackgroundColor, Color.WhiteSmoke },
-            { ShowcaseToolsProperties.BoundaryColor, Color.FromArgb(30, 30, 30) },
+            new SettingsPreset<ShowToolsProps>(ShowToolsProps.IsFixCategoryIcon, true, GH_ComponentServer.UpdateRibbonUI),
+            new SettingsPreset<ShowToolsProps>(ShowToolsProps.FixCategoryFolder, Grasshopper.Folders.UserObjectFolders[0]),
+            new SettingsPreset<ShowToolsProps>(ShowToolsProps.IsUseInfoGlass, true, () =>
+            {
+
+            }),
+            new SettingsPreset<ShowToolsProps>(ShowToolsProps.NormalExceptionGuid, new List<Guid>() ),
+            new SettingsPreset<ShowToolsProps>(ShowToolsProps.PluginExceptionGuid, new List<Guid>()),
+            new SettingsPreset<ShowToolsProps>(ShowToolsProps.TextColor, Color.Black),
+            new SettingsPreset<ShowToolsProps>(ShowToolsProps.BackgroundColor, Color.WhiteSmoke),
+            new SettingsPreset<ShowToolsProps>(ShowToolsProps.BoundaryColor, Color.FromArgb(30, 30, 30)),
+
         }, Grasshopper.Instances.Settings);
-        public void ResponseToLanguageChanged()
-        {
-            this.Text = LanguageSetting.GetTransLation("ShowcaseTools", "展示工具");
+        //public void ResponseToLanguageChanged()
+        //{
+        //    this.Text = LanguageSetting.GetTransLation("ShowcaseTools", "展示工具");
 
-            FixCategoryMenuItem.Text = LanguageSetting.GetTransLation("Fix Catogory Icon", "修复类别图标");
-            FixCategoryMenuItem.ToolTipText = LanguageSetting.GetTransLation("Fix as most category icon as possible.", "修复尽可能多的类别图标。");
+        //    FixCategoryMenuItem.Text = LanguageSetting.GetTransLation("Fix Catogory Icon", "修复类别图标");
+        //    FixCategoryMenuItem.ToolTipText = LanguageSetting.GetTransLation("Fix as most category icon as possible.", "修复尽可能多的类别图标。");
             
-            CateIconFoderNameChange();
+        //    CateIconFoderNameChange();
 
-            DonateMenuItem.Text = LanguageSetting.GetTransLation("Donate To Us!", "向我们赞赏吧！");
-            DonateMenuItem.ToolTipText = LanguageSetting.GetTransLation("Select one way to donate to us!", "选择一个渠道赞赏我们！");
-            DonateMenuItem.DropDown.Items[0].Text = LanguageSetting.GetTransLation("Alipay", "支付宝");
-            DonateMenuItem.DropDown.Items[0].ToolTipText = LanguageSetting.GetTransLation("Click to donate to us with Alipay!", "点击以使用支付宝赞赏我们！");
-            DonateMenuItem.DropDown.Items[1].Text = LanguageSetting.GetTransLation("WechatPay", "微信");
-            DonateMenuItem.DropDown.Items[1].ToolTipText = LanguageSetting.GetTransLation("Click to donate to us with WechatPay!", "点击以使用微信赞赏我们！");
+        //}
 
-            ContactMenuItem.Text = LanguageSetting.GetTransLation("Contact us!", "联系我们！");
-            ContactMenuItem.ToolTipText = LanguageSetting.GetTransLation("Select one contact way to contact us!", "选择一种联系方式联系我们！");
-            ContactMenuItem.DropDown.Items[0].Text = LanguageSetting.GetTransLation("InfoGlasses QQ Group", "InfoGlasses QQ交流群");
-            ContactMenuItem.DropDown.Items[0].ToolTipText = LanguageSetting.GetTransLation("Click to contact us in InfoGlasses QQ Group!", "点击以加入InfoGlasses QQ交流群。");
-            ContactMenuItem.DropDown.Items[1].Text = LanguageSetting.GetTransLation("Bright Zone of Rhino QQ Group", "犀牛之光 QQ交流群");
-            ContactMenuItem.DropDown.Items[1].ToolTipText = LanguageSetting.GetTransLation("Click to contact us in Bright Zone of Rhino QQ Group!", "点击以加入犀牛之光 QQ交流群。");
-            ContactMenuItem.DropDown.Items[3].Text = LanguageSetting.GetTransLation("Parameterization QQ Group", "参数化交流 QQ群");
-            ContactMenuItem.DropDown.Items[3].ToolTipText = LanguageSetting.GetTransLation("Click to contact us in Parameterization QQ Group!", "点击以加入参数化交流 QQ群。");
+        public ToolStripMenuItem CreateMajor()
+        {
+            ToolStripMenuItem item = new ToolStripMenuItem(Properties.Resources.ShowcaseTools);
+            //Add items.
+            item.DropDown.Items.AddRange(GetFixCategoryIcons());
+
+            GH_DocumentObject.Menu_AppendSeparator(item.DropDown);
+
+            item.DropDown.Items.Add(InfoGlassesMajorMenuItem);
+            item.DropDown.Items.Add(InfoGlassesColourMenuItem);
+
+            GH_DocumentObject.Menu_AppendSeparator(item.DropDown);
+
+            item.DropDown.Items.Add(DonateMenuItem);
+            item.DropDown.Items.Add(ContactMenuItem);
+            item.DropDown.Items.Add(LanguageSetting.LanguageMenuItem);
+
+            return item;
         }
 
         public ShowcaseToolsMenu()
-            : base("", Properties.Resources.ShowcaseTools)
         {
             //Add all Events.
             Grasshopper.Instances.ActiveCanvas.CanvasPostPaintGroups += ActiveCanvas_CanvasPostPaintGroups;
@@ -83,34 +91,55 @@ namespace InfoGlasses.WinformMenu
             //this.DropDown.MaximumSize = new Size(150, int.MaxValue);
 
             //Create items.
-            this.FixCategoryIconFolder = GetCategoryIconFolder();
-            this.FixCategoryMenuItem = GetFixCategoryIcon();
             this.DonateMenuItem = GetDonateItem();
             this.ContactMenuItem = GetContactItem();
             this.InfoGlassesMajorMenuItem = GetInfoGlassesMajorItem();
             this.InfoGlassesColourMenuItem = GetInfoGlassesColourItem();
 
-            //Add items.
-            this.DropDown.Items.Add(FixCategoryMenuItem);
-            this.DropDown.Items.Add(FixCategoryIconFolder);
 
-            GH_DocumentObject.Menu_AppendSeparator(this.DropDown);
-
-            this.DropDown.Items.Add(InfoGlassesMajorMenuItem);
-            this.DropDown.Items.Add(InfoGlassesColourMenuItem);
-
-            GH_DocumentObject.Menu_AppendSeparator(this.DropDown);
-
-            this.DropDown.Items.Add(DonateMenuItem);
-            this.DropDown.Items.Add(ContactMenuItem);
-            this.DropDown.Items.Add(LanguageSetting.LanguageMenuItem);
 
             //Change Language.
-            ResponseToLanguageChanged();
+            //ResponseToLanguageChanged();
         }
         #region CategoryIcon
+        private ToolStripMenuItem[] GetFixCategoryIcons()
+        {
+            ToolStripMenuItem folderItem = WinFormPlus.CreateClickItem(new string[] { "Change Icons' Folder", "修改图标所在文件" },
+                new string[] { "Click to change the folder.\n", "单击以修改路径。\n" }, null, (x, y) =>
+                {
+                    //Find Dictionary Dialog.
+                    IO_Helper.OpenDirectionaryDialog((folder) => Settings.SetProperty(ShowToolsProps.FixCategoryFolder, folder));
+
+                    //Change ToolTips.
+                    ((ToolStripMenuItem)x).ToolTipText = ((ToolStripMenuItem)x).ToolTipText.Split('\n')[0] + "\n \n"
+                        + (string)Settings.GetProperty(ShowToolsProps.FixCategoryFolder);
+
+                }, enable: (bool)Settings.GetProperty(ShowToolsProps.IsFixCategoryIcon));
+
+            ToolStripMenuItem fixMajor = WinFormPlus.CreateCheckItem(new string[] { "Fix Catogory Icon", "修复类别图标" },
+                new string[] { "Fix as most category icon as possible.", "修复尽可能多的类别图标。" }, Grasshopper.Instances.ComponentServer.GetCategoryIcon("Params"),
+                Settings, ShowToolsProps.IsFixCategoryIcon, (x)=>
+                {
+                    switch (x.Checked)
+                    {
+                        case true:
+                            foreach (string cateName in CanChangeCategoryIcon.Keys)
+                            {
+                                Grasshopper.Instances.ComponentServer.AddCategoryIcon(cateName, CanChangeCategoryIcon[cateName]);
+                            }
+                            break;
+                        case false:
+                            foreach (string cateName in CanChangeCategoryIcon.Keys)
+                            {
+                                AlreadyHave.Remove(cateName);
+                            }
+                            break;
+                    }
+                });
+
+            return fixMajor.AddSubItems(folderItem);
+        }
         #region FixCategoryIcon
-        public ToolStripMenuItem FixCategoryMenuItem { get; }
 
         private SortedList<string, Bitmap> _alreadyhave = null;
 
@@ -155,7 +184,7 @@ namespace InfoGlasses.WinformMenu
                         if (proxy.Kind != GH_ObjectType.CompiledObject) continue;
 
                         //Other function
-                        string folderPath = (string)Settings.GetProperty(ShowcaseToolsProperties.FixCategoryFolder);
+                        string folderPath = (string)Settings.GetProperty(ShowToolsProps.FixCategoryFolder);
                         if (Directory.Exists(folderPath))
                         {
                             bool isSucceed = false;
@@ -187,58 +216,8 @@ namespace InfoGlasses.WinformMenu
             }
         }
 
-        private ToolStripMenuItem GetFixCategoryIcon()
-        {
-            ToolStripMenuItem item = WinFormPlus.CreateOneItem("","", Grasshopper.Instances.ComponentServer.GetCategoryIcon("Params"));
-
-            MakeRespondItem(item, ShowcaseToolsProperties.IsFixCategoryIcon, () =>
-            {
-                foreach (string cateName in CanChangeCategoryIcon.Keys)
-                {
-                    Grasshopper.Instances.ComponentServer.AddCategoryIcon(cateName, CanChangeCategoryIcon[cateName]);
-                }
-                GH_ComponentServer.UpdateRibbonUI();
-                FixCategoryIconFolder.Enabled = true;
-            }, () =>
-            {
-                foreach (string cateName in CanChangeCategoryIcon.Keys)
-                {
-                    AlreadyHave.Remove(cateName);
-                }
-                GH_ComponentServer.UpdateRibbonUI();
-                FixCategoryIconFolder.Enabled = false;
-            });
-            return item;
-        }
 
 
-        #endregion
-
-        #region CategoryIconFolder
-        public ToolStripMenuItem FixCategoryIconFolder { get; }
-
-        private ToolStripMenuItem GetCategoryIconFolder()
-        {
-            string latestFolder = (string)Settings.GetProperty(ShowcaseToolsProperties.FixCategoryFolder);
-            ToolStripMenuItem item = new ToolStripMenuItem(latestFolder);
-            item.Enabled = (bool)Settings.GetProperty(ShowcaseToolsProperties.IsFixCategoryIcon);
-            item.Click += Item_Click;
-
-            void Item_Click(object sender, EventArgs e)
-            {
-                IO_Helper.OpenDirectionaryDialog((folder) => Settings.SetProperty(ShowcaseToolsProperties.FixCategoryFolder, folder));
-                CateIconFoderNameChange();
-            }
-
-            return item;
-        }
-
-        private void CateIconFoderNameChange()
-        {
-            FixCategoryIconFolder.Text = LanguageSetting.GetTransLation("Change Icons' Folder", "修改图标所在文件");
-            FixCategoryIconFolder.ToolTipText = LanguageSetting.GetTransLation("Click to change the folder.", "单击以修改路径") +
-                "\n \n" + (string)Settings.GetProperty(ShowcaseToolsProperties.FixCategoryFolder);
-        }
         #endregion
         #endregion
 
@@ -252,7 +231,7 @@ namespace InfoGlasses.WinformMenu
         {
             ToolStripMenuItem item = WinFormPlus.CreateOneItem("", "", Properties.Resources.InfoGlasses);
 
-            MakeRespondItem(item, ShowcaseToolsProperties.IsUseInfoGlass, () =>
+            MakeRespondItem(item, ShowToolsProps.IsUseInfoGlass, () =>
             {
                 //Grasshopper.Instances.ActiveCanvas.DocumentChanged += ActiveCanvas_DocumentChanged;
                 //Grasshopper.Instances.ActiveCanvas.Document.ObjectsAdded += InfeGlasses_ObjectsAdded;
@@ -423,16 +402,16 @@ namespace InfoGlasses.WinformMenu
         public ToolStripMenuItem InfoGlassesColourMenuItem { get; }
         public ToolStripMenuItem GetInfoGlassesColourItem()
         {
-            WinFormPlus.ItemSet<ShowcaseToolsProperties>[] sets = new WinFormPlus.ItemSet<ShowcaseToolsProperties>[]
+            WinFormPlus.ItemSet<ShowToolsProps>[] sets = new WinFormPlus.ItemSet<ShowToolsProps>[]
             {
-                new WinFormPlus.ItemSet<ShowcaseToolsProperties>(new string[] { "Text Color", "文字颜色" }, new string[] { "Adjust text color.", "调整文字颜色。" },
-                    null, true, ShowcaseToolsProperties.TextColor),
+                new WinFormPlus.ItemSet<ShowToolsProps>(new string[] { "Text Color", "文字颜色" }, new string[] { "Adjust text color.", "调整文字颜色。" },
+                    null, true, ShowToolsProps.TextColor),
 
-                new WinFormPlus.ItemSet<ShowcaseToolsProperties>(new string[] { "Background Color", "背景颜色" }, new string[] { "Adjust background color.", "调整背景颜色。" },
-                    null, true, ShowcaseToolsProperties.BackgroundColor),
+                new WinFormPlus.ItemSet<ShowToolsProps>(new string[] { "Background Color", "背景颜色" }, new string[] { "Adjust background color.", "调整背景颜色。" },
+                    null, true, ShowToolsProps.BackgroundColor),
 
-                new WinFormPlus.ItemSet<ShowcaseToolsProperties>(new string[] { "Boundary Color", "边框颜色"  }, new string[] { "Adjust boundary color.", "调整边框颜色。" },
-                    null, true, ShowcaseToolsProperties.BoundaryColor),
+                new WinFormPlus.ItemSet<ShowToolsProps>(new string[] { "Boundary Color", "边框颜色"  }, new string[] { "Adjust boundary color.", "调整边框颜色。" },
+                    null, true, ShowToolsProps.BoundaryColor),
             };
 
             return WinFormPlus.CreateColorBoxItems(Settings, new string[] { "Colors", "颜色" }, new string[] { "Adjust color.", "调整颜色。" }, 
@@ -446,9 +425,12 @@ namespace InfoGlasses.WinformMenu
         public ToolStripMenuItem DonateMenuItem { get; }
         private ToolStripMenuItem GetDonateItem()
         {
-            ToolStripMenuItem donateItem = WinFormPlus.CreateOneItem("", "", ArchiTed_Grasshopper. Properties.Resources.DonateIcon);
-            WinFormPlus.AddMessageBoxItem(donateItem, "", "", ArchiTed_Grasshopper.Properties.Resources.AlipayLogo, ArchiTed_Grasshopper.Properties.Resources.DonateAlipayQRcode);
-            WinFormPlus.AddMessageBoxItem(donateItem, "", "", ArchiTed_Grasshopper.Properties.Resources.WechatLogo, ArchiTed_Grasshopper.Properties.Resources.DonateWechatQRcode);
+            ToolStripMenuItem donateItem = WinFormPlus.CreateOneItem(new string[] { "Donate To Us!", "向我们赞赏吧！" },
+                new string[] { "Select one way to donate to us!", "选择一个渠道赞赏我们！" }, ArchiTed_Grasshopper. Properties.Resources.DonateIcon);
+            donateItem.DropDownItems.Add( WinFormPlus.CreateMessageBoxItem(new string[] { "Alipay", "支付宝" }, 
+                new string[] { "Click to donate to us with Alipay!", "点击以使用支付宝赞赏我们！" }, ArchiTed_Grasshopper.Properties.Resources.AlipayLogo, ArchiTed_Grasshopper.Properties.Resources.DonateAlipayQRcode));
+            donateItem.DropDownItems.Add(WinFormPlus.CreateMessageBoxItem(new string[] { "WechatPay", "微信" }, 
+                new string[] { "Click to donate to us with WechatPay!", "点击以使用微信赞赏我们！" }, ArchiTed_Grasshopper.Properties.Resources.WechatLogo, ArchiTed_Grasshopper.Properties.Resources.DonateWechatQRcode));
             return donateItem;
         }
         #endregion
@@ -458,17 +440,21 @@ namespace InfoGlasses.WinformMenu
 
         private ToolStripMenuItem GetContactItem()
         {
-            ToolStripMenuItem contactItem = WinFormPlus.CreateOneItem("", "", ArchiTed_Grasshopper.Properties.Resources.ContactIcon);
-            WinFormPlus.AddMessageBoxItem(contactItem, "", "", ArchiTed_Grasshopper.Properties.Resources.QQLogo, ArchiTed_Grasshopper.Properties.Resources.InfoGlasses_QQGroup_QRcode);
-            WinFormPlus.AddMessageBoxItem(contactItem, "", "", ArchiTed_Grasshopper.Properties.Resources.QQLogo, ArchiTed_Grasshopper.Properties.Resources.BrightZoneOfRhino_QQGroup_QRcode);
+            ToolStripMenuItem contactItem = WinFormPlus.CreateOneItem(new string[] { "Contact us!", "联系我们！" },
+                new string[] { "Select one contact way to contact us!", "选择一种联系方式联系我们！" }, ArchiTed_Grasshopper.Properties.Resources.ContactIcon);
+            contactItem.DropDownItems.Add( WinFormPlus.CreateMessageBoxItem(new string[] { "InfoGlasses QQ Group", "InfoGlasses QQ交流群" }, 
+                new string[] { "Click to contact us in InfoGlasses QQ Group!", "点击以加入InfoGlasses QQ交流群。" }, ArchiTed_Grasshopper.Properties.Resources.QQLogo, ArchiTed_Grasshopper.Properties.Resources.InfoGlasses_QQGroup_QRcode));
+            contactItem.DropDownItems.Add(WinFormPlus.CreateMessageBoxItem(new string[] { "Bright Zone of Rhino QQ Group", "犀牛之光 QQ交流群" },
+                new string[] { "Click to contact us in Bright Zone of Rhino QQ Group!", "点击以加入犀牛之光 QQ交流群。" }, ArchiTed_Grasshopper.Properties.Resources.QQLogo, ArchiTed_Grasshopper.Properties.Resources.BrightZoneOfRhino_QQGroup_QRcode));
             GH_DocumentObject.Menu_AppendSeparator(contactItem.DropDown);
-            WinFormPlus.AddMessageBoxItem(contactItem, "", "", ArchiTed_Grasshopper.Properties.Resources.QQLogo, ArchiTed_Grasshopper.Properties.Resources.Parameterization_QQGroup_QRcode);
+            contactItem.DropDownItems.Add(WinFormPlus.CreateMessageBoxItem(new string[] { "Parameterization QQ Group", "参数化交流 QQ群" }, 
+                new string[] { "Click to contact us in Parameterization QQ Group!", "点击以加入参数化交流 QQ群。" }, ArchiTed_Grasshopper.Properties.Resources.QQLogo, ArchiTed_Grasshopper.Properties.Resources.Parameterization_QQGroup_QRcode));
 
             return contactItem;
         }
         #endregion
 
-        private void MakeRespondItem(ToolStripMenuItem item, ShowcaseToolsProperties name, Action checkAction, Action uncheckAction)
+        private void MakeRespondItem(ToolStripMenuItem item, ShowToolsProps name, Action checkAction, Action uncheckAction)
         {
             #region Define event.
             void Item_Click(object sender, EventArgs e)
