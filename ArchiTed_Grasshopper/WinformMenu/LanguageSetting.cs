@@ -15,12 +15,14 @@ using System.Windows.Forms;
 
 namespace ArchiTed_Grasshopper
 {
-    public class LanguageSetting
+    public delegate void LanguageChangedHandler(Func<string[], string> getTrans);
+
+    public static class LanguageSetting
     {
         #region LanguageSettings
         public static List<string> Languages { get; } = new List<string> { "English", "中文" };
 
-        public static event Action LanguageChange;
+        private static event LanguageChangedHandler LanguageChange;
 
         public static string Language => Languages[LanguageIndex];
 
@@ -33,7 +35,7 @@ namespace ArchiTed_Grasshopper
                 if (LanguageIndex == value) return;
                 if (value >= Languages.Count) throw new ArgumentOutOfRangeException(nameof(LanguageIndex));
                 Grasshopper.Instances.Settings.SetValue(nameof(LanguageIndex), value);
-                LanguageChange.Invoke();
+                LanguageChange.Invoke(GetTransLation);
 
                 //Change self
                 LanguageMenuItem.ToolTipText = LanguageSetting.GetTransLation(new string[] { "Select one Language.Note: It will Recompute the component with language options!", "请选择一个语言。注意：这将让有语言选项的电池重新计算！" });
@@ -55,6 +57,33 @@ namespace ArchiTed_Grasshopper
             {
                 return strs[0];
             }
+        }
+
+        /// <summary>
+        /// Add the function to language change event.
+        /// </summary>
+        /// <param name="languageFunc"></param>
+        public static LanguageChangedHandler AddToLangChangeEvt(this LanguageChangedHandler languageFunc)
+        {
+            //Change it first.
+            languageFunc.Invoke(GetTransLation);
+
+            //Define RealLanguageChange Event.
+            void realLangFunc(Func<string[], string> getTrans)
+            {
+                try
+                {
+                    languageFunc.Invoke(getTrans);
+                }
+                catch (NullReferenceException)
+                {
+                    LanguageChange -= realLangFunc;
+                }
+            };
+            LanguageChange += realLangFunc;
+
+            //Return the realLangFunc
+            return realLangFunc;
         }
 
         #endregion

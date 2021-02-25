@@ -231,8 +231,8 @@ namespace InfoGlasses.WinformControls
                         {
                             CreateNewObject(paramcontrol, isInputSide,index, leftMove, init);
                         }
-                        WinFormPlus.AddClickItem(menu, paramcontrol.MyProxies[i].Name  + $" [{paramcontrol.MyProxies[i].Index}]", null, 
-                            paramcontrol.MyProxies[i].Icon.GetIcon(true, true), i, Item_Click, false);
+                        menu.Items.Add( WinFormPlus.CreateClickItem(new string[] { paramcontrol.MyProxies[i].Name + $" [{paramcontrol.MyProxies[i].Index}]" }, null, 
+                            paramcontrol.MyProxies[i].Icon.GetIcon(true, true), i, Item_Click, false));
                     }
                     menu.Show(Grasshopper.Instances.ActiveCanvas, e.Location);
                 }

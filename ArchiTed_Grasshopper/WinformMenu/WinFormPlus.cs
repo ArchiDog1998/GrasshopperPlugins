@@ -149,7 +149,8 @@ namespace ArchiTed_Grasshopper
                 this.ValueName = valueName;
             }
         }
-
+        #region Rubbish
+        [Obsolete]
         public struct ItemSet_Obsolete<T>
         {
             public string itemText { get; set; }
@@ -169,7 +170,7 @@ namespace ArchiTed_Grasshopper
                 this.valueName = valueName;
             }
         }
-
+        [Obsolete]
         public static void AddColorBoxItems_Obsolete(ToolStripDropDown menu, LanguagableComponent component, string itemName, string itemTip, Bitmap itemIcon, bool enable,ItemSet_Obsolete<Color>[] sets)
         {
             ToolStripMenuItem item = CreateOneItem(itemName, itemTip, itemIcon, enable);
@@ -191,13 +192,12 @@ namespace ArchiTed_Grasshopper
             }
             menu.Items.Add(item);
         }
-
+        [Obsolete]
         public static void AddColorBoxItem_Obsolete(ToolStripDropDown menu, LanguagableComponent component, ItemSet_Obsolete<Color> set)
         {
             AddColorBoxItem_Obsolete(menu, component, set.itemText, set.itemTip, set.itemIcon, set.enable, set.Default, set.valueName);
         }
-
-
+        [Obsolete]
         public static void AddColorBoxItem_Obsolete(ToolStripDropDown menu, LanguagableComponent component, string itemName, string itemTip, Bitmap itemIcon, bool enable,
             Color @default, string valueName)
         {
@@ -219,7 +219,7 @@ namespace ArchiTed_Grasshopper
             }
             menu.Items.Add(item);
         }
-
+        #endregion
         public static ToolStripMenuItem CreateColorBoxItems<T>(SaveableSettings<T> setting, string[] itemName, string[] itemTip, Bitmap itemIcon, bool enable, ItemSet<T>[] sets) where T : Enum
         {
             ToolStripMenuItem item = CreateOneItem("", "", itemIcon, enable);
@@ -242,16 +242,14 @@ namespace ArchiTed_Grasshopper
             }
 
             //Change Language Actions.
-            Action languageChange = () =>
+            LanguageSetting.AddToLangChangeEvt((getTran) =>
             {
-                item.Text = LanguageSetting.GetTransLation(itemName);
-                item.ToolTipText = LanguageSetting.GetTransLation(itemTip);
+                    item.Text = getTran(itemName);
+                    item.ToolTipText = getTran(itemTip);
 
-                item.DropDownItems[item.DropDownItems.Count - 1].Text = LanguageSetting.GetTransLation("Reset Color", "重置颜色");
-                item.DropDownItems[item.DropDownItems.Count - 1].ToolTipText = LanguageSetting.GetTransLation("Click to reset colors.", "点击以重置颜色。");
-            };
-            languageChange.Invoke();
-            LanguageSetting.LanguageChange += languageChange;
+                    item.DropDownItems[item.DropDownItems.Count - 1].Text = getTran(new string[] { "Reset Color", "重置颜色" });
+                    item.DropDownItems[item.DropDownItems.Count - 1].ToolTipText = getTran(new string[] { "Click to reset colors.", "点击以重置颜色。" });
+            });
 
             return item;
         }
@@ -273,76 +271,76 @@ namespace ArchiTed_Grasshopper
 
             //Reset Item.
             GH_DocumentObject.Menu_AppendItem(item.DropDown, "", (x, y) => { setting.SetProperty(valueName, @default); },
-                Properties.Resources.ResetLogo, true, false); 
+                Properties.Resources.ResetLogo, true, false);
 
-            Action languageChange = () =>
+            LanguageSetting.AddToLangChangeEvt((getTran) =>
             {
-                item.Text = LanguageSetting.GetTransLation(itemName);
-                item.ToolTipText = LanguageSetting.GetTransLation(itemTip);
-                item.DropDown.Items[item.DropDown.Items.Count - 1].Text = LanguageSetting.GetTransLation("Reset Color", "重置颜色");
-                item.DropDown.Items[item.DropDown.Items.Count - 1].ToolTipText = LanguageSetting.GetTransLation("Click to reset colors.", "点击以重置颜色。");
-            };
+                item.Text = getTran(itemName);
+                item.ToolTipText = getTran(itemTip);
+                item.DropDown.Items[item.DropDown.Items.Count - 1].Text = getTran(new string[] { "Reset Color", "重置颜色" });
+                item.DropDown.Items[item.DropDown.Items.Count - 1].ToolTipText = getTran(new string[] { "Click to reset colors.", "点击以重置颜色。" });
 
-            languageChange.Invoke();
-            LanguageSetting.LanguageChange += languageChange;
+            });
 
             return item;
         }
         #endregion
 
-        #region ComboBox
+        //#region ComboBox
+        //[Obsolete]
+        //public static void AddComboBoxItemsSingle(ToolStripDropDown menu, LanguagableComponent component, string itemName, string itemTip,string valueName, Bitmap itemIcon, bool enable, ItemSet_Obsolete<bool>[] sets)
+        //{
+        //    ToolStripMenuItem item = CreateOneItem(itemName, itemTip, itemIcon, enable);
 
-        public static void AddComboBoxItemsSingle(ToolStripDropDown menu, LanguagableComponent component, string itemName, string itemTip,string valueName, Bitmap itemIcon, bool enable, ItemSet_Obsolete<bool>[] sets)
-        {
-            ToolStripMenuItem item = CreateOneItem(itemName, itemTip, itemIcon, enable);
+        //    for (int i = 0; i < sets.Length; i++)
+        //    {
+        //        AddComboBoxItemSingle(item.DropDown, component, sets[i], valueName, i);
+        //    }
 
-            for (int i = 0; i < sets.Length; i++)
-            {
-                AddComboBoxItemSingle(item.DropDown, component, sets[i], valueName, i);
-            }
+        //    menu.Items.Add(item);
+        //}
+        //[Obsolete]
+        //public static void AddComboBoxItemSingle(ToolStripDropDown menu, LanguagableComponent component, ItemSet_Obsolete<bool> set, string valueName, int index)
+        //{
 
-            menu.Items.Add(item);
-        }
+        //    GH_DocumentObject.Menu_AppendItem(menu, set.itemText, click, set.itemIcon, set.enable, component.GetValuePub(valueName, 0) == index).ToolTipText = set.itemTip;
 
-        public static void AddComboBoxItemSingle(ToolStripDropDown menu, LanguagableComponent component, ItemSet_Obsolete<bool> set, string valueName, int index)
-        {
-
-            GH_DocumentObject.Menu_AppendItem(menu, set.itemText, click, set.itemIcon, set.enable, component.GetValuePub(valueName, 0) == index).ToolTipText = set.itemTip;
-
-            void click(object sender, EventArgs e)
-            {
-                component.SetValuePub(valueName, index);
-            }
-        }
-
-
-
-        public static void AddComboBoxItemsMulty(ToolStripDropDown menu, LanguagableComponent component, string itemName, string itemTip, Bitmap itemIcon, bool enable,ItemSet_Obsolete<bool>[] sets)
-        {
-            ToolStripMenuItem item = CreateOneItem(itemName, itemTip, itemIcon, enable);
-
-            foreach (var set in sets)
-            {
-                AddComboBoxItemMulty(item.DropDown, component, set);
-            }
-
-            menu.Items.Add(item);
-        }
-
-        public static void AddComboBoxItemMulty(ToolStripDropDown menu, LanguagableComponent component, ItemSet_Obsolete<bool> set)
-        {
-
-            GH_DocumentObject.Menu_AppendItem(menu, set.itemText, click, set.itemIcon, set.enable, component.GetValuePub(set.valueName, set.Default)).ToolTipText = set.itemTip;
-
-            void click(object sender, EventArgs e)
-            {
-                component.SetValuePub(set.valueName, true);
-            }
-        }
+        //    void click(object sender, EventArgs e)
+        //    {
+        //        component.SetValuePub(valueName, index);
+        //    }
+        //}
 
 
-        #endregion
+        //[Obsolete]
+        //public static void AddComboBoxItemsMulty(ToolStripDropDown menu, LanguagableComponent component, string itemName, string itemTip, Bitmap itemIcon, bool enable,ItemSet_Obsolete<bool>[] sets)
+        //{
+        //    ToolStripMenuItem item = CreateOneItem(itemName, itemTip, itemIcon, enable);
 
+        //    foreach (var set in sets)
+        //    {
+        //        AddComboBoxItemMulty(item.DropDown, component, set);
+        //    }
+
+        //    menu.Items.Add(item);
+        //}
+
+        //[Obsolete]
+        //public static void AddComboBoxItemMulty(ToolStripDropDown menu, LanguagableComponent component, ItemSet_Obsolete<bool> set)
+        //{
+
+        //    GH_DocumentObject.Menu_AppendItem(menu, set.itemText, click, set.itemIcon, set.enable, component.GetValuePub(set.valueName, set.Default)).ToolTipText = set.itemTip;
+
+        //    void click(object sender, EventArgs e)
+        //    {
+        //        component.SetValuePub(set.valueName, true);
+        //    }
+        //}
+
+
+        //#endregion
+
+        #region ClickBox
         /// <summary>
         /// Set a Loop Box item in Winform Menu
         /// </summary>
@@ -354,6 +352,7 @@ namespace ArchiTed_Grasshopper
         /// <param name="IconList"></param>
         /// <param name="defaultIndex"></param>
         /// <param name="valueName"></param>
+        [Obsolete]
         public static void AddLoopBoxItem(ToolStripDropDown menu, LanguagableComponent component, string itemName, bool enable,
             string[] NameList, int defaultIndex, string valueName, Bitmap[] IconList = null)
         {
@@ -379,7 +378,72 @@ namespace ArchiTed_Grasshopper
             }
             menu.Items.Add(item);
         }
+        public static ToolStripMenuItem CreateLoopBoxItem<T>(string[] itemName, string[] itemTip,
+            SaveableSettings<T> server, T valueName, string[][] nameList,
+            Bitmap[] IconList = null, bool enable = true) where T:Enum
+        {
+            //int index = (int)server.GetProperty(valueName);
+            if ((int)server.GetProperty(valueName) > nameList.Length - 1)
+                throw new ArgumentOutOfRangeException(valueName.ToString());
+            if (IconList != null && IconList.Length != nameList.Length)
+                throw new ArgumentOutOfRangeException(nameof(IconList));
 
+            ToolStripMenuItem item = new ToolStripMenuItem() { Enabled = enable , Checked = false};
+
+            //Change icon and language.
+            LanguageChangedHandler IndexAndlanguageChange = LanguageSetting.AddToLangChangeEvt((getTrans) =>
+            {
+                int index = (int)server.GetProperty(valueName);
+                if (IconList != null)
+                    item.Image = IconList[index];
+                item.Text = getTrans(itemName) + getTrans(new string[] { ": ", "：" }) + getTrans(nameList[index]);
+                item.ToolTipText = getTrans(new string[] { "Click to switch to ", "单击以切换到" }) + getTrans(nameList[(index + 1) % nameList.Length]);
+            });
+
+            //Add click event.
+            item.Click += (sender, e) =>
+            {
+                //Change value
+                server.SetProperty(valueName, ((int)server.GetProperty(valueName) + 1) % nameList.Length);
+
+                //Change icon and language.
+                IndexAndlanguageChange.Invoke(LanguageSetting.GetTransLation);
+            };
+
+            return item;
+        }
+
+        public static ToolStripMenuItem CreateCheckItem<T>(string[] itemName, string[] itemTip, Image itemIcon, 
+            SaveableSettings<T> server, T valueName, Action checkAction, Action uncheckAction,
+            bool @default = false, bool enable = true) where T : Enum
+        {
+
+            ToolStripMenuItem item = CreateOneItem(itemName, itemTip, itemIcon, @default, enable);
+
+            void Item_Click(object sender, EventArgs e)
+            {
+                //Invert checked.
+                server.SetProperty(valueName, !(bool)server.GetProperty(valueName));
+                item.Checked = (bool)server.GetProperty(valueName);
+
+                //respond to check changed.
+                switch (item.Checked)
+                {
+                    case true:
+                        checkAction.Invoke();
+                        break;
+                    case false:
+                        uncheckAction.Invoke();
+                        break;
+                }
+            }
+            item.Click += Item_Click;
+
+            return item;
+
+        }
+
+        [Obsolete]
         public static void AddCheckBoxItem(ToolStripDropDown menu, string itemName, string itemTip, Image itemIcon,ControllableComponent owner, string valueName, bool @default, bool enable = true)
         {
             void Item_Click(object sender, EventArgs e)
@@ -390,7 +454,7 @@ namespace ArchiTed_Grasshopper
             AddClickItem(menu, itemName, itemTip, itemIcon, Item_Click, owner.GetValuePub(valueName, @default), enable);
         }
 
-
+        [Obsolete]
         public static void AddMessageBoxItem(ToolStripMenuItem menu, string itemName, string itemTip, Bitmap itemIcon, Bitmap boxMap)
         {
             void Item_Click(object sender, EventArgs e)
@@ -400,7 +464,15 @@ namespace ArchiTed_Grasshopper
 
             AddClickItem(menu.DropDown, itemName, itemTip, itemIcon, Item_Click, false);
         }
-
+        public static ToolStripMenuItem CreateMessageBoxItem(string[] itemName, string[] itemTip, Bitmap itemIcon, Bitmap boxMap)
+        {
+            void Item_Click(object sender, EventArgs e)
+            {
+                ImageMessageBox(boxMap, itemName, itemIcon);
+            }
+            return CreateClickItem(itemName, itemTip, itemIcon, Item_Click);
+        }
+        [Obsolete]
         public static void AddURLItem(ToolStripMenuItem menu, string itemName, string itemTip, ItemIconType type, string url)
         {
             Image itemIcon;
@@ -424,7 +496,38 @@ namespace ArchiTed_Grasshopper
             }
             AddURLItem(menu, itemName, itemTip, itemIcon, url);
         }
-
+        public static ToolStripMenuItem CreateURLItem(string[] itemName, string[] itemTip, ItemIconType type, string url)
+        {
+            Image itemIcon;
+            switch (type)
+            {
+                case ItemIconType.Youtube:
+                    itemIcon = Properties.Resources.YotubeLogo;
+                    break;
+                case ItemIconType.Bilibili:
+                    itemIcon = Properties.Resources.BilibiliLogo;
+                    break;
+                case ItemIconType.Wechat:
+                    itemIcon = Properties.Resources.WechatLogo;
+                    break;
+                case ItemIconType.GitHub:
+                    itemIcon = Properties.Resources.GithubLogo;
+                    break;
+                default:
+                    itemIcon = Properties.Resources.BilibiliLogo;
+                    break;
+            }
+            return CreateURLItem(itemName, itemTip, itemIcon, url);
+        }
+        public static ToolStripMenuItem CreateURLItem(string[] itemName, string[] itemTip, Image itemIcon, string url)
+        {
+            void Item_Click(object sender, EventArgs e)
+            {
+                System.Diagnostics.Process.Start(url);
+            }
+            return CreateClickItem(itemName, itemTip, itemIcon, Item_Click);
+        }
+        [Obsolete]
         public static void AddURLItem(ToolStripMenuItem menu, string itemName, string itemTip, Image itemIcon, string url)
         {
             void Item_Click(object sender, EventArgs e)
@@ -434,7 +537,7 @@ namespace ArchiTed_Grasshopper
 
             AddClickItem(menu.DropDown, itemName, itemTip, itemIcon, Item_Click, false);
         }
-
+        [Obsolete]
         public static ToolStripMenuItem CreateOneItem(string itemName, string itemTip, Image itemIcon)
         {
             ToolStripMenuItem item = new ToolStripMenuItem(itemName);
@@ -443,6 +546,8 @@ namespace ArchiTed_Grasshopper
                 item.Image = itemIcon;
             return item;
         }
+
+        [Obsolete]
         public static ToolStripMenuItem CreateOneItem(string itemName, string itemTip, Image itemIcon, bool enable)
         {
             ToolStripMenuItem item = new ToolStripMenuItem(itemName);
@@ -453,11 +558,30 @@ namespace ArchiTed_Grasshopper
             return item;
         }
 
+
+        public static ToolStripMenuItem CreateClickItem<T>(string[] itemName, string[] itemTip, Image itemIcon, T tag, Action<object, EventArgs, T> click, bool @default = false, bool enable = true)
+        {
+            void Item_Click(object sender, EventArgs e)
+            {
+                click.Invoke(sender, e, tag);
+            }
+            return CreateClickItem(itemName, itemTip, itemIcon, Item_Click, @default, enable);
+        }
+
+        public static ToolStripMenuItem CreateClickItem(string[] itemName, string[] itemTip, Image itemIcon, EventHandler click, bool @checked = false, bool enable = true)
+        {
+            ToolStripMenuItem item = CreateOneItem(itemName, itemTip, itemIcon, @checked, enable);
+            item.Click += click;
+            return item;
+        }
+        #endregion
+
+        [Obsolete]
         public static void AddLabelItem(ToolStripDropDown menu, string labelText, string labelTip = null, Color? color = null, int divisor = 6, int margin = 5, float? fontSize = null)
         {
             Color realColor = color.HasValue ? color.Value : ColorExtension.OnColor;
             ToolStripLabel item = new ToolStripLabel(labelText);
-            if(fontSize == null)
+            if (fontSize == null)
             {
                 item.Font = GH_FontServer.StandardBold;
             }
@@ -465,7 +589,7 @@ namespace ArchiTed_Grasshopper
             {
                 item.Font = new Font(GH_FontServer.StandardBold.FontFamily, fontSize.Value, FontStyle.Bold);
             }
-            
+
             item.ForeColor = realColor;
             if (!string.IsNullOrEmpty(labelTip))
                 item.ToolTipText = labelTip;
@@ -473,18 +597,62 @@ namespace ArchiTed_Grasshopper
             menu.Items.Add(item);
         }
 
-        public static void AddClickItem<T>(ToolStripDropDown menu, string itemName, string itemTip, Image itemIcon,T tag, Action<object, EventArgs, T> click, bool @default = false, bool enable = true)
+        public static ToolStripLabel AddLabelItem(string[] labelText, string[] labelTip = null, Color? color = null, float? fontSize = null)
         {
-            void Item_Click(object sender, EventArgs e)
+            ToolStripLabel item = new ToolStripLabel();
+
+            //Set font.
+            if (fontSize == null)
             {
-                click.Invoke(sender, e, tag);
+                item.Font = GH_FontServer.StandardBold;
             }
-            AddClickItem(menu, itemName, itemTip, itemIcon, Item_Click, @default, enable);
+            else
+            {
+                item.Font = new Font(GH_FontServer.StandardBold.FontFamily, fontSize.Value, FontStyle.Bold);
+            }
+
+            //Change color.
+            Color onColor = color.HasValue ? color.Value : ColorExtension.OnColor;
+            item.EnabledChanged += Item_EnabledChanged;
+            void Item_EnabledChanged(object sender, EventArgs e)
+            {
+                item.ForeColor = item.Enabled ? onColor : ColorExtension.OffColor;
+            }
+            Item_EnabledChanged(item, new EventArgs());
+
+            //Set language.
+            LanguageSetting.AddToLangChangeEvt((getTrans) =>
+            {
+                item.Text = getTrans(labelText);
+                if (labelTip != null && labelTip.Length != 0)
+                    item.ToolTipText = getTrans(labelTip);
+            });
+
+            return item;
         }
 
-        public static void AddClickItem(ToolStripDropDown menu, string itemName, string itemTip, Image itemIcon, EventHandler click, bool @default = false, bool enable = true)
+        public static ToolStripMenuItem CreateOneItem(string[] itemName, string[] itemTip, Image itemIcon, bool @checked = false, bool enable = true)
         {
-            ToolStripMenuItem item = new ToolStripMenuItem(itemName);
+            ToolStripMenuItem item = new ToolStripMenuItem();
+            if (itemIcon != null)
+                item.Image = itemIcon;
+            item.Checked = @checked;
+            item.Enabled = enable;
+
+            //LanguageChange.
+            LanguageSetting.AddToLangChangeEvt((getTrans) =>
+            {
+                item.Text = getTrans(itemName);
+                item.ToolTipText = getTrans(itemTip);
+            });
+
+            return item;
+        }
+
+        [Obsolete]
+        public static void AddClickItem(ToolStripDropDown menu, string itemText, string itemTip, Image itemIcon, EventHandler click, bool @default = false, bool enable = true)
+        {
+            ToolStripMenuItem item = new ToolStripMenuItem(itemText);
             item.ToolTipText = itemTip;
             if (itemIcon != null)
                 item.Image = itemIcon;
@@ -494,11 +662,31 @@ namespace ArchiTed_Grasshopper
             menu.Items.Add(item);
         }
 
+        public static void ImageMessageBox(Bitmap map, string[] textName, Bitmap icon)
+        {
+            Form form = new Form();
+            IntPtr Hicon = icon.GetHicon();
+            form.Icon = Icon.FromHandle(Hicon);
+            Size size = new Size(map.Size.Width + 12, map.Size.Height + 15);
+            form.Size = size;
+            form.StartPosition = FormStartPosition.CenterScreen;
+            form.FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            form.BackgroundImage = map;
+            form.TopMost = true;
+            form.Show();
+
+            LanguageSetting.AddToLangChangeEvt((getTrans) =>
+            {
+                form.Text = getTrans(textName);
+            });
+        }
+
+        [Obsolete]
         private static void ImageMessageBox(Bitmap map, string str, Bitmap icon)
         {
             Form form = new Form();
             IntPtr Hicon = icon.GetHicon();
-            form.Icon = System.Drawing.Icon.FromHandle(Hicon);
+            form.Icon = Icon.FromHandle(Hicon);
             form.Text = str;
             Size size = new Size(map.Size.Width + 12, map.Size.Height + 15);
             form.Size = size;

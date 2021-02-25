@@ -15,7 +15,7 @@ using Grasshopper.Kernel;
 
 namespace ArchiTed_Grasshopper
 {
-    public class SaveableSettings<T>: LanguageSetting where T : Enum
+    public class SaveableSettings<T> where T : Enum
     {
         public Dictionary<T, object> DefaultDictionary { get; }
         public GH_SettingsServer SettingsServer { get;}
