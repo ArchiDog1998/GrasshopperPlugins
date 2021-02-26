@@ -440,8 +440,18 @@ namespace ArchiTed_Grasshopper
                 server.SetProperty(valueName, !(bool)server.GetProperty(valueName));
                 item.Checked = (bool)server.GetProperty(valueName);
 
+                //Check the subItems' Enable.
+                foreach (var subItem in item.DropDownItems)
+                {
+                    if(subItem is ToolStripItem)
+                    {
+                        ((ToolStripItem)subItem).Enabled = item.Checked;
+                    }
+                }
+
+                //Invoke the input actions.
                 if (clickedAction != null)
-                    clickedAction.Invoke((ToolStripMenuItem)sender);
+                    clickedAction.Invoke(item);
             }
             item.Click += Item_Click;
 

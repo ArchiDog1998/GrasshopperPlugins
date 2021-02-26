@@ -75,7 +75,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CheckCategoryIcon.cs" />
     <Compile Include="WinformMenu\ShowcaseToolsMenu.cs">
       <SubType>Component</SubType>
     </Compile>

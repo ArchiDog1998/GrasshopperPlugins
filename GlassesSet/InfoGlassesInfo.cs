@@ -6,11 +6,13 @@
 */
 
 using System;
+using System.Windows.Forms;
 using System.Drawing;
 using Grasshopper.GUI;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using InfoGlasses.WinformMenu;
+using ArchiTed_Grasshopper;
 
 namespace InfoGlasses
 {
@@ -75,6 +77,7 @@ namespace InfoGlasses
 
     public class ShowcaseToolsPrior : GH_AssemblyPriority
     {
+
         public override GH_LoadingInstruction PriorityLoad()
         {
             Grasshopper.Instances.CanvasCreated += Instances_CanvasCreated;

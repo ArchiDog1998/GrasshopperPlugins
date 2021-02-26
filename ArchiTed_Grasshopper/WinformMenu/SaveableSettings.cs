@@ -21,9 +21,9 @@ namespace ArchiTed_Grasshopper
     {
         public T Name { get; }
         public object Default { get; }
-        public Action ValueChanged { get; }
+        public Action<object> ValueChanged { get; }
         public Type Type { get; }
-        public SettingsPreset(T name, object @default, Action valugChanged = null)
+        public SettingsPreset(T name, object @default, Action<object> valugChanged = null)
         {
             this.Name = name;
             this.Default = @default;

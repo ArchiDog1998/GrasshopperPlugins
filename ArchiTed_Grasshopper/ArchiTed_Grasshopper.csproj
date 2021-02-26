@@ -110,7 +110,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="WinformMenu\GH_SettingsServerExtention.cs" />
-    <Compile Include="WinformMenu\ISettings.cs" />
     <Compile Include="WinformMenu\LanguageSetting.cs" />
     <Compile Include="WinformMenu\SaveableSettings.cs" />
     <Compile Include="WinformMenu\WinFormPlus.cs" />

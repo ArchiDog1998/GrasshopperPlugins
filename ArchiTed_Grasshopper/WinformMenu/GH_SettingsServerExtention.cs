@@ -62,7 +62,7 @@ namespace ArchiTed_Grasshopper
 
             //ValueChanged.
             if (preset.ValueChanged != null)
-                preset.ValueChanged.Invoke();
+                preset.ValueChanged.Invoke(value);
         }
 
         internal static object PropGetValue<T>(this GH_SettingsServer server, SettingsPreset<T> preset) where T : Enum

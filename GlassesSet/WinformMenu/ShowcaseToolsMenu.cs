@@ -32,13 +32,31 @@ namespace InfoGlasses.WinformMenu
         BackgroundColor,
         BoundaryColor,
     }
-    public class ShowcaseToolsMenu: ISettings<ShowToolsProps>
+    public class ShowcaseToolsMenu
     {
-        public SaveableSettings<ShowToolsProps> Settings { get; } = new SaveableSettings<ShowToolsProps>(new SettingsPreset<ShowToolsProps>[]
+        public static SaveableSettings<ShowToolsProps> Settings { get; } = new SaveableSettings<ShowToolsProps>(new SettingsPreset<ShowToolsProps>[]
         {
-            new SettingsPreset<ShowToolsProps>(ShowToolsProps.IsFixCategoryIcon, true, GH_ComponentServer.UpdateRibbonUI),
+            new SettingsPreset<ShowToolsProps>(ShowToolsProps.IsFixCategoryIcon, true, (value)=>
+            {
+                switch (value)
+                    {
+                        case true:
+                            foreach (string cateName in CanChangeCategoryIcon.Keys)
+                            {
+                                Grasshopper.Instances.ComponentServer.AddCategoryIcon(cateName, CanChangeCategoryIcon[cateName]);
+                            }
+                            break;
+                        case false:
+                            foreach (string cateName in CanChangeCategoryIcon.Keys)
+                            {
+                                AlreadyHave.Remove(cateName);
+                            }
+                            break;
+                    }
+                GH_ComponentServer.UpdateRibbonUI();
+            }),
             new SettingsPreset<ShowToolsProps>(ShowToolsProps.FixCategoryFolder, Grasshopper.Folders.UserObjectFolders[0]),
-            new SettingsPreset<ShowToolsProps>(ShowToolsProps.IsUseInfoGlass, true, () =>
+            new SettingsPreset<ShowToolsProps>(ShowToolsProps.IsUseInfoGlass, true, (value) =>
             {
 
             }),
@@ -49,20 +67,10 @@ namespace InfoGlasses.WinformMenu
             new SettingsPreset<ShowToolsProps>(ShowToolsProps.BoundaryColor, Color.FromArgb(30, 30, 30)),
 
         }, Grasshopper.Instances.Settings);
-        //public void ResponseToLanguageChanged()
-        //{
-        //    this.Text = LanguageSetting.GetTransLation("ShowcaseTools", "展示工具");
-
-        //    FixCategoryMenuItem.Text = LanguageSetting.GetTransLation("Fix Catogory Icon", "修复类别图标");
-        //    FixCategoryMenuItem.ToolTipText = LanguageSetting.GetTransLation("Fix as most category icon as possible.", "修复尽可能多的类别图标。");
-            
-        //    CateIconFoderNameChange();
-
-        //}
 
         public ToolStripMenuItem CreateMajor()
         {
-            ToolStripMenuItem item = new ToolStripMenuItem(Properties.Resources.ShowcaseTools);
+            ToolStripMenuItem item = WinFormPlus.CreateOneItem(new string[] { "ShowcaseTools", "展示工具" }, null, Properties.Resources.ShowcaseTools);
             //Add items.
             item.DropDown.Items.AddRange(GetFixCategoryIcons());
 
@@ -118,32 +126,18 @@ namespace InfoGlasses.WinformMenu
 
             ToolStripMenuItem fixMajor = WinFormPlus.CreateCheckItem(new string[] { "Fix Catogory Icon", "修复类别图标" },
                 new string[] { "Fix as most category icon as possible.", "修复尽可能多的类别图标。" }, Grasshopper.Instances.ComponentServer.GetCategoryIcon("Params"),
-                Settings, ShowToolsProps.IsFixCategoryIcon, (x)=>
-                {
-                    switch (x.Checked)
-                    {
-                        case true:
-                            foreach (string cateName in CanChangeCategoryIcon.Keys)
-                            {
-                                Grasshopper.Instances.ComponentServer.AddCategoryIcon(cateName, CanChangeCategoryIcon[cateName]);
-                            }
-                            break;
-                        case false:
-                            foreach (string cateName in CanChangeCategoryIcon.Keys)
-                            {
-                                AlreadyHave.Remove(cateName);
-                            }
-                            break;
-                    }
-                });
+                Settings, ShowToolsProps.IsFixCategoryIcon);
 
-            return fixMajor.AddSubItems(folderItem);
+            //return fixMajor.AddSubItems(folderItem);
+
+            fixMajor.DropDownItems.Add(folderItem);
+            return new ToolStripMenuItem[] { fixMajor };
         }
         #region FixCategoryIcon
 
-        private SortedList<string, Bitmap> _alreadyhave = null;
+        private static SortedList<string, Bitmap> _alreadyhave = null;
 
-        private SortedList<string, Bitmap> AlreadyHave
+        private static SortedList<string, Bitmap> AlreadyHave
         {
             get
             {
@@ -163,12 +157,12 @@ namespace InfoGlasses.WinformMenu
         }
 
 
-        private Dictionary<string, Bitmap> _canChangeCategoryIcon = null;
+        private static Dictionary<string, Bitmap> _canChangeCategoryIcon = null;
 
         /// <summary>
         /// hold the categoryicon that can be changed!
         /// </summary>
-        private Dictionary<string, Bitmap> CanChangeCategoryIcon
+        private static Dictionary<string, Bitmap> CanChangeCategoryIcon
         {
             get
             {

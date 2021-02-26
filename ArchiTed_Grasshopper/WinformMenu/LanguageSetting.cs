@@ -5,10 +5,10 @@
     See file LICENSE for detail or copy at http://opensource.org/licenses/MIT
 */
 
-using Grasshopper.Kernel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -17,7 +17,6 @@ namespace ArchiTed_Grasshopper
 {
 
     public delegate void LanguageChangedHandler(Func<string[], string> getTrans);
-
     public static class LanguageSetting
     {
 
@@ -27,20 +26,24 @@ namespace ArchiTed_Grasshopper
             new SettingsPreset<LanguageProperties>[] 
             { 
                 new SettingsPreset<LanguageProperties>(LanguageProperties.LanguageIndex,
-                    System.Threading.Thread.CurrentThread.CurrentUICulture.Name == "zh-CN" ? 1 : 0, LanguageChange),
+                    System.Threading.Thread.CurrentThread.CurrentUICulture.Name == "zh-CN" ? 1 : 0, 
+                    (value) =>{LanguageChange.Invoke(); }),
             }, Grasshopper.Instances.Settings);
 
         #region LanguageSettings
         public static List<string> Languages { get; } = new List<string> { "English", "中文" };
 
-        private static event Action LanguageChange;
 
         public static string Language => Languages[LanguageIndex];
-        private static int LanguageIndex 
-        { 
+
+        private static int LanguageIndex
+        {
             get => (int)Settings.GetProperty(LanguageProperties.LanguageIndex);
-            set => Settings.SetProperty(LanguageProperties.LanguageIndex, value); 
+            set => Settings.SetProperty(LanguageProperties.LanguageIndex, value);
         }
+
+
+        private static event Action LanguageChange;
 
         /// <summary>
         /// Translation from differenc culture to one.
@@ -59,7 +62,7 @@ namespace ArchiTed_Grasshopper
                 else
                     return result;
             }
-            catch (ArgumentOutOfRangeException)
+            catch (IndexOutOfRangeException)
             {
                 return strs[0];
             }
@@ -94,7 +97,19 @@ namespace ArchiTed_Grasshopper
         #endregion
 
         #region LanguageItem
-        public static ToolStripMenuItem LanguageMenuItem { get; } = GetLanguageIcon();
+
+        private static ToolStripMenuItem _languageMenuItem;
+        public static ToolStripMenuItem LanguageMenuItem 
+        {
+            get
+            {
+                if(_languageMenuItem == null)
+                {
+                    _languageMenuItem = GetLanguageIcon();
+                }
+                return _languageMenuItem;
+            }
+        } 
         private static ToolStripMenuItem GetLanguageIcon()
         {
             List<string[]> languages = new List<string[]>();
@@ -103,7 +118,6 @@ namespace ArchiTed_Grasshopper
             return WinFormPlus.CreateComboBoxItemSingle(new string[] { "Language", "语言(Language)" },
                 new string[] { "Select one Language.Note: It will Recompute the component with language options!", "请选择一个语言。注意：这将让有语言选项的电池重新计算！" },
                 Properties.Resources.LanguageIcon, Settings, LanguageProperties.LanguageIndex, languages.ToArray());
-           
         }
 
         #endregion
