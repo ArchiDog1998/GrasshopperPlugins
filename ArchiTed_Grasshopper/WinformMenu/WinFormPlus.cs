@@ -286,7 +286,14 @@ namespace ArchiTed_Grasshopper
                 ToolStripMenuItem temp = CreateClickItem(nameList[i], tipList[i], IconList[i], (x, y)=>
                 {
                     //Uncheck previous checked item.
-                    ((ToolStripMenuItem)item.DropDownItems[(int)server.GetProperty(valueName)]).Checked = false;
+                    try
+                    {
+                        ((ToolStripMenuItem)item.DropDownItems[(int)server.GetProperty(valueName)]).Checked = false;
+                    }
+                    catch(IndexOutOfRangeException)
+                    {
+                        throw new Exception(valueName.ToString() + " Must be a index integer!");
+                    }
 
                     //Set Value.
                     server.SetProperty(valueName, ((ToolStripMenuItem)x).Tag);
@@ -652,10 +659,19 @@ namespace ArchiTed_Grasshopper
             ToolStripMenuItem item = new ToolStripMenuItem();
             if (itemIcon != null)
                 item.Image = itemIcon;
-            if (itemTip == null)
-                itemTip = new string[] { "" };
             item.Checked = @checked;
             item.Enabled = enable;
+
+            //Set LanguageChanged.
+            item.SetItemLangChange(itemName, itemTip);
+
+            return item;
+        }
+
+        public static void SetItemLangChange(this ToolStripMenuItem item, string[] itemName, string[] itemTip)
+        {
+            if (itemTip == null)
+                itemTip = new string[] { "" };
 
             //LanguageChange.
             LanguageSetting.AddToLangChangeEvt((getTrans) =>
@@ -663,9 +679,8 @@ namespace ArchiTed_Grasshopper
                 item.Text = getTrans(itemName);
                 item.ToolTipText = getTrans(itemTip);
             });
-
-            return item;
         }
+
 
         [Obsolete]
         public static void AddClickItem(ToolStripDropDown menu, string itemText, string itemTip, Image itemIcon, EventHandler click, bool @default = false, bool enable = true)
@@ -717,17 +732,5 @@ namespace ArchiTed_Grasshopper
 
         public enum ItemIconType {Youtube, Bilibili, Wechat, GitHub }
 
-        public static ToolStripMenuItem[] AddSubItems(this ToolStripMenuItem item, params ToolStripMenuItem[] subItems)
-        {
-            item.Click += (x, y) =>
-            {
-                subItems.ToList().ForEach((subItem) => subItem.Enabled = item.Checked);
-            };
-
-            //Add result.
-            List<ToolStripMenuItem> result = new List<ToolStripMenuItem>() { item };
-            result.AddRange(subItems);
-            return result.ToArray();
-        }
     }
 }

@@ -81,9 +81,7 @@ namespace InfoGlasses.WinformMenu
 
             GH_DocumentObject.Menu_AppendSeparator(item.DropDown);
 
-            item.DropDown.Items.Add(DonateMenuItem);
-            item.DropDown.Items.Add(ContactMenuItem);
-            item.DropDown.Items.Add(LanguageSetting.LanguageMenuItem);
+            item.DropDown.Items.AddRange(LanguageSetting.ExtraItems);
 
             return item;
         }
@@ -99,8 +97,6 @@ namespace InfoGlasses.WinformMenu
             //this.DropDown.MaximumSize = new Size(150, int.MaxValue);
 
             //Create items.
-            this.DonateMenuItem = GetDonateItem();
-            this.ContactMenuItem = GetContactItem();
             this.InfoGlassesMajorMenuItem = GetInfoGlassesMajorItem();
             this.InfoGlassesColourMenuItem = GetInfoGlassesColourItem();
 
@@ -413,39 +409,6 @@ namespace InfoGlasses.WinformMenu
         }
         #endregion
 
-        #endregion
-
-        #region Donate
-        public ToolStripMenuItem DonateMenuItem { get; }
-        private ToolStripMenuItem GetDonateItem()
-        {
-            ToolStripMenuItem donateItem = WinFormPlus.CreateOneItem(new string[] { "Donate To Us!", "向我们赞赏吧！" },
-                new string[] { "Select one way to donate to us!", "选择一个渠道赞赏我们！" }, ArchiTed_Grasshopper. Properties.Resources.DonateIcon);
-            donateItem.DropDownItems.Add( WinFormPlus.CreateMessageBoxItem(new string[] { "Alipay", "支付宝" }, 
-                new string[] { "Click to donate to us with Alipay!", "点击以使用支付宝赞赏我们！" }, ArchiTed_Grasshopper.Properties.Resources.AlipayLogo, ArchiTed_Grasshopper.Properties.Resources.DonateAlipayQRcode));
-            donateItem.DropDownItems.Add(WinFormPlus.CreateMessageBoxItem(new string[] { "WechatPay", "微信" }, 
-                new string[] { "Click to donate to us with WechatPay!", "点击以使用微信赞赏我们！" }, ArchiTed_Grasshopper.Properties.Resources.WechatLogo, ArchiTed_Grasshopper.Properties.Resources.DonateWechatQRcode));
-            return donateItem;
-        }
-        #endregion
-
-        #region Contact
-        public ToolStripMenuItem ContactMenuItem { get; }
-
-        private ToolStripMenuItem GetContactItem()
-        {
-            ToolStripMenuItem contactItem = WinFormPlus.CreateOneItem(new string[] { "Contact us!", "联系我们！" },
-                new string[] { "Select one contact way to contact us!", "选择一种联系方式联系我们！" }, ArchiTed_Grasshopper.Properties.Resources.ContactIcon);
-            contactItem.DropDownItems.Add( WinFormPlus.CreateMessageBoxItem(new string[] { "InfoGlasses QQ Group", "InfoGlasses QQ交流群" }, 
-                new string[] { "Click to contact us in InfoGlasses QQ Group!", "点击以加入InfoGlasses QQ交流群。" }, ArchiTed_Grasshopper.Properties.Resources.QQLogo, ArchiTed_Grasshopper.Properties.Resources.InfoGlasses_QQGroup_QRcode));
-            contactItem.DropDownItems.Add(WinFormPlus.CreateMessageBoxItem(new string[] { "Bright Zone of Rhino QQ Group", "犀牛之光 QQ交流群" },
-                new string[] { "Click to contact us in Bright Zone of Rhino QQ Group!", "点击以加入犀牛之光 QQ交流群。" }, ArchiTed_Grasshopper.Properties.Resources.QQLogo, ArchiTed_Grasshopper.Properties.Resources.BrightZoneOfRhino_QQGroup_QRcode));
-            GH_DocumentObject.Menu_AppendSeparator(contactItem.DropDown);
-            contactItem.DropDownItems.Add(WinFormPlus.CreateMessageBoxItem(new string[] { "Parameterization QQ Group", "参数化交流 QQ群" }, 
-                new string[] { "Click to contact us in Parameterization QQ Group!", "点击以加入参数化交流 QQ群。" }, ArchiTed_Grasshopper.Properties.Resources.QQLogo, ArchiTed_Grasshopper.Properties.Resources.Parameterization_QQGroup_QRcode));
-
-            return contactItem;
-        }
         #endregion
 
         private void MakeRespondItem(ToolStripMenuItem item, ShowToolsProps name, Action checkAction, Action uncheckAction)
