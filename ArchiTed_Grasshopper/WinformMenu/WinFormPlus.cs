@@ -528,7 +528,7 @@ namespace ArchiTed_Grasshopper
             item.Click += Item_Click;
         }
 
-            [Obsolete]
+        [Obsolete]
         public static void AddCheckBoxItem(ToolStripDropDown menu, string itemName, string itemTip, Image itemIcon,ControllableComponent owner, string valueName, bool @default, bool enable = true)
         {
             void Item_Click(object sender, EventArgs e)
@@ -581,6 +581,82 @@ namespace ArchiTed_Grasshopper
             }
             AddURLItem(menu, itemName, itemTip, itemIcon, url);
         }
+
+        public static ToolStripMenuItem CreateFontSelector()
+        {
+            void SelectFontHandler(object sender, EventArgs e)
+            {
+                var form = GH_FontPicker.CreateFontPickerWindow(Settings.Font);
+                form.CreateControl();
+                var picker = form.Controls.OfType<GH_FontPicker>().FirstOrDefault();
+                if (picker == null)
+                    return;
+                var panel = form.Controls.OfType<Panel>().FirstOrDefault();
+                if (panel == null)
+                    return;
+
+                var pickerType = typeof(GH_FontPicker);
+                var sizeScroller = pickerType.GetField("_SizeScroller", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(picker) as GH_DigitScroller;
+                var boldChecker = pickerType.GetField("_BoldCheck", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(picker) as CheckBox;
+                var italicChecker = pickerType.GetField("_ItalicCheck", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(picker) as CheckBox;
+                var fontScroller = pickerType.GetField("_FontList", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(picker) as GH_FontList;
+                sizeScroller.ValueChanged += PreviewFontChangedHandler;
+                boldChecker.CheckedChanged += PreviewFontChangedHandler;
+                italicChecker.CheckedChanged += PreviewFontChangedHandler;
+                fontScroller.MouseClick += PreviewFontChangedHandler;
+
+                var defaultButton = new Button()
+                {
+                    Text = "Default",
+                    Width = Grasshopper.Global_Proc.UiAdjust(80),
+                    Dock = DockStyle.Right,
+                    DialogResult = DialogResult.Yes
+                };
+                defaultButton.Click += DefaultFontHandler;
+                panel.Controls.Add(defaultButton);
+
+                var editor = Grasshopper.Instances.DocumentEditor;
+                GH_WindowsFormUtil.CenterFormOnWindow(form, editor, true);
+                var result = form.ShowDialog(editor);
+                if (result == DialogResult.OK)
+                {
+                    var font = form.Tag as Font;
+                    if (font != null)
+                    {
+                        Settings.ResetFonts();
+                        Settings.Font = font;
+                    }
+                }
+                else if (result == DialogResult.Yes)
+                {
+                    Settings.ResetFonts();
+                    Settings.Font = GH_FontServer.StandardItalic;
+                }
+                Grasshopper.Instances.ActiveCanvas?.Refresh();
+                sizeScroller.ValueChanged -= PreviewFontChangedHandler;
+                boldChecker.CheckedChanged -= PreviewFontChangedHandler;
+                italicChecker.CheckedChanged -= PreviewFontChangedHandler;
+                fontScroller.MouseClick -= PreviewFontChangedHandler;
+                defaultButton.Click -= DefaultFontHandler;
+
+                void PreviewFontChangedHandler(object s, EventArgs args)
+                {
+                    var font = picker.SelectedFont;
+                    if (font != null)
+                    {
+                        var currentFont = Settings.Font;
+                        Settings.Font = font;
+                        Grasshopper.Instances.ActiveCanvas?.Refresh();
+                        Settings.Font = currentFont;
+                    }
+                }
+                void DefaultFontHandler(object s, EventArgs args)
+                {
+
+                }
+            }
+        }
+
         public static ToolStripMenuItem CreateURLItem(string[] itemName, string[] itemTip, ItemIconType type, string url)
         {
             Image itemIcon;

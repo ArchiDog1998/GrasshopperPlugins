@@ -58,6 +58,8 @@ namespace ArchiTed_Grasshopper
                 server.SetValue(preset.Name.ToString(), (Size)value);
             else if (@default is Guid)
                 server.SetValue(preset.Name.ToString(), (Guid)value);
+            else if (@default is Font)
+                server.SetValue(preset.Name.ToString(), (Font)value);
             else if (@default is IEnumerable<Guid>)
                 server.SetValue(preset.Name.ToString(), (IEnumerable<Guid>)value);
             else
@@ -96,10 +98,31 @@ namespace ArchiTed_Grasshopper
                 return server.GetValue(preset.Name.ToString(), (Size)@default);
             else if (@default is Guid)
                 return server.GetValue(preset.Name.ToString(), (Guid)@default);
+            else if (@default is Font)
+                return server.GetValue(preset.Name.ToString(), (Font)@default);
             else if (@default is IEnumerable<Guid>)
                 return server.GetValue(preset.Name.ToString(), (IEnumerable<Guid>)@default);
 
             throw new Exception(preset.Name.ToString() + " is a invalid type!");
+        }
+        #endregion
+
+        #region Font
+        public static Font GetValue(this GH_SettingsServer server, string key, Font @default)
+        {
+            string fontStr = server.GetValue(key, string.Empty);
+            if(fontStr == string.Empty)
+            {
+                return @default;
+            }
+            else
+            {
+                return GH_FontServer.StringToFont(fontStr);
+            }
+        }
+        public static void SetValue(this GH_SettingsServer server, string key, Font value)
+        {
+            server.SetValue(key, GH_FontServer.FontToString(value));
         }
         #endregion
 
