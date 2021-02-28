@@ -79,41 +79,48 @@ namespace ArchiTed_Grasshopper
             menu.Items.Add(item);
         }
 
-        public static ToolStripMenuItem CreateNumberBox<T>(string[] itemName, string[] itemTip, Bitmap itemIcon, bool enable,
-            SaveableSettings<T> server, T valueName, decimal Max, decimal Min)where T : Enum
+        public static ToolStripMenuItem CreateNumberBox<T>(string[] itemName, string[] itemTip, Bitmap itemIcon,
+            SaveableSettings<T> server, T valueName, double Max, double Min)where T : Enum
         {
             ToolStripMenuItem item = CreateOneItem(itemName, itemTip, itemIcon);
 
-            object @default = server.GetProperty(valueName);
+            dynamic @default = server.GetProperty(valueName);
+            bool isInt = @default is int;
             int decimalPlace = 3;
-            if (@default is int)
+            if (isInt)
                 decimalPlace = 0;
 
-            var slider = new GH_DigitScroller
+            decimal forDefault = (decimal)@default;
+
+            GH_DigitScroller slider = new GH_DigitScroller
             {
-                MinimumValue = Min,
-                MaximumValue = Max,
+                MinimumValue = (decimal)Min,
+                MaximumValue = (decimal)Max,
                 DecimalPlaces = decimalPlace,
-                Value = (decimal)@default,
+                Value = forDefault,
+                Size = new Size(150, 24),
             };
             slider.ValueChanged += Slider_ValueChanged;
 
             void Slider_ValueChanged(object sender, GH_DigitScrollerEventArgs e)
             {
-                decimal result = (decimal)e.Value;
+                double result = (double)e.Value;
                 result = result >= Min ? result : Min;
                 result = result <= Max ? result : Max;
-                server.SetProperty(valueName, result);
+                if (isInt)
+                    server.SetProperty(valueName, (int)result);
+                else
+                    server.SetProperty(valueName, result);
             }
 
-            WinFormPlus.CreateLabelItem(itemName, itemTip);
             GH_DocumentObject.Menu_AppendCustomItem(item.DropDown, slider);
 
             //Add a Reset Item.
             item.DropDownItems.Add(CreateClickItem(new string[] { "Reset Value", "重置数值" }, new string[] { "Click to reset value.", "点击以重置数值。" },
                  Properties.Resources.ResetLogo, (x, y) =>
                  {
-                     slider.Value = (decimal)server.ResetProperty(valueName);
+                     dynamic value = server.ResetProperty(valueName);
+                     slider.Value = (decimal)value;
                  }));
 
             server.DefaultValueChanged(valueName);
@@ -466,8 +473,11 @@ namespace ArchiTed_Grasshopper
                 int index = (int)server.GetProperty(valueName);
                 if (IconList != null)
                     item.Image = IconList[index];
-                item.Text = getTrans(itemName) + getTrans(new string[] { ": ", "：" }) + getTrans(nameList[index]);
-                item.ToolTipText = getTrans(itemTip) + getTrans(new string[] { "Click to switch to ", "单击以切换到" }) + getTrans(nameList[(index + 1) % nameList.Length]);
+
+                string text = (itemName == null || itemName.Length == 0) ? "" : getTrans(itemName) + getTrans(new string[] { ": ", "：" });
+                item.Text = text + getTrans(nameList[index]);
+                string tip = (itemTip == null || itemTip.Length == 0) ? "" : getTrans(itemTip) + "\n";
+                item.ToolTipText = tip + getTrans(new string[] { "Click to switch to ", "单击以切换到" }) + getTrans(nameList[(index + 1) % nameList.Length]);
             });
 
             //Reset Default
@@ -494,16 +504,20 @@ namespace ArchiTed_Grasshopper
 
             ToolStripMenuItem item = CreateOneItem(itemName, itemTip, itemIcon, @default, enable);
 
-            item.AddCheckProperty(server, valueName, clickedAction);
+            item.BoundAndCheckProperty(server, valueName, clickedAction);
 
             server.DefaultValueChanged(valueName);
             return item;
         }
 
-        public static void AddCheckProperty<T>(this ToolStripMenuItem item, SaveableSettings<T> server, T valueName, Action<ToolStripMenuItem> clickedAction = null) where T : Enum
+        public static void BoundAndCheckProperty<T>(this ToolStripMenuItem item, SaveableSettings<T> server, T valueName, Action<ToolStripMenuItem> clickedAction = null) where T : Enum
         {
             //ResetValue.
             item.Checked = (bool)server.GetProperty(valueName);
+
+            //Active Actions.
+            if (clickedAction != null)
+                clickedAction.Invoke(item);
 
             //Add Click Event.
             void Item_Click(object sender, EventArgs e)

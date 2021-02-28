@@ -26,10 +26,6 @@ namespace ArchiTed_Grasshopper
 
         internal static void PropSetValue<T>(this GH_SettingsServer server, SettingsPreset<T> preset, object value) where T : Enum
         {
-            //Check if the value type is right.
-            if (!value.GetType().IsAssignableFrom(preset.Default.GetType()))
-                throw new Exception(nameof(value) + " is not the right type!");
-
             //Check if Value is not changed.
             if (PropGetValue(server, preset).Equals(value)) return;
 
