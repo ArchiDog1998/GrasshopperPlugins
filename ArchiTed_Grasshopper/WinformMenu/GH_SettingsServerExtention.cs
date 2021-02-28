@@ -18,9 +18,10 @@ namespace ArchiTed_Grasshopper
     public static class GH_SettingsServerExtention
     {
         #region Major
-        internal static void PropResetValue<T>(this GH_SettingsServer server, SettingsPreset<T> preset) where T : Enum
+        internal static object PropResetValue<T>(this GH_SettingsServer server, SettingsPreset<T> preset) where T : Enum
         {
-            PropSetValue<T>(server, preset, preset.Default);
+            PropSetValue(server, preset, preset.Default);
+            return preset.Default;
         }
 
         internal static void PropSetValue<T>(this GH_SettingsServer server, SettingsPreset<T> preset, object value) where T : Enum
@@ -32,30 +33,32 @@ namespace ArchiTed_Grasshopper
             //Check if Value is not changed.
             if (PropGetValue(server, preset).Equals(value)) return;
 
+
             //Set value.
-            if (value is bool)
+            object @default = PropGetValue(server, preset);
+            if (@default is bool)
                 server.SetValue(preset.Name.ToString(), (bool)value);
-            else if (value is byte)
+            else if (@default is byte)
                 server.SetValue(preset.Name.ToString(), (byte)value);
-            else if (value is DateTime)
+            else if (@default is DateTime)
                 server.SetValue(preset.Name.ToString(), (DateTime)value);
-            else if (value is double)
+            else if (@default is double)
                 server.SetValue(preset.Name.ToString(), (double)value);
-            else if (value is int)
+            else if (@default is int)
                 server.SetValue(preset.Name.ToString(), (int)value);
-            else if (value is string)
+            else if (@default is string)
                 server.SetValue(preset.Name.ToString(), (string)value);
-            else if (value is Point)
+            else if (@default is Point)
                 server.SetValue(preset.Name.ToString(), (Point)value);
-            else if (value is Color)
+            else if (@default is Color)
                 server.SetValue(preset.Name.ToString(), (Color)value);
-            else if (value is Rectangle)
+            else if (@default is Rectangle)
                 server.SetValue(preset.Name.ToString(), (Rectangle)value);
-            else if (value is Size)
+            else if (@default is Size)
                 server.SetValue(preset.Name.ToString(), (Size)value);
-            else if (value is Guid)
+            else if (@default is Guid)
                 server.SetValue(preset.Name.ToString(), (Guid)value);
-            else if (value is IEnumerable<Guid>)
+            else if (@default is IEnumerable<Guid>)
                 server.SetValue(preset.Name.ToString(), (IEnumerable<Guid>)value);
             else
                 throw new Exception(nameof(value) + " is not the right type!");

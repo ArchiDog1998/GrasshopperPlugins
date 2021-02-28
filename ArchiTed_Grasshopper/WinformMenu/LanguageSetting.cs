@@ -167,8 +167,10 @@ namespace ArchiTed_Grasshopper
             contactItem.DropDownItems.Add(WinFormPlus.CreateMessageBoxItem(new string[] { "Parameterization QQ Group", "参数化交流 QQ群" },
                 new string[] { "Click to contact us in Parameterization QQ Group!", "点击以加入参数化交流 QQ群。" }, ArchiTed_Grasshopper.Properties.Resources.QQLogo, ArchiTed_Grasshopper.Properties.Resources.Parameterization_QQGroup_QRcode));
 
+            //MessageBox.Show(new Class1().GoogleTranslate("Hello"));
             return contactItem;
         }
         #endregion
     }
+
 }

@@ -19,6 +19,7 @@ namespace ArchiTed_Grasshopper
     public static class WinFormPlus
     {
         #region ValueBox
+        [Obsolete]
         public static void AddTextItem(ToolStripDropDown menu, LanguagableComponent component, string itemName, string itemTip, Bitmap itemIcon, bool enable,
             string Default, string valueName, int width = 100)
         {
@@ -31,7 +32,7 @@ namespace ArchiTed_Grasshopper
                 component.ExpireSolution(true);
             }
         }
-
+        [Obsolete]
         public static void AddNumberBoxItem(ToolStripDropDown menu,LanguagableComponent component,  string itemName, string itemTip, Bitmap itemIcon, bool enable, 
             int Default, int Min, int Max, string valueName, int width = 150)
         {
@@ -78,8 +79,48 @@ namespace ArchiTed_Grasshopper
             menu.Items.Add(item);
         }
 
+        public static ToolStripMenuItem CreateNumberBox<T>(string[] itemName, string[] itemTip, Bitmap itemIcon, bool enable,
+            SaveableSettings<T> server, T valueName, decimal Max, decimal Min)where T : Enum
+        {
+            ToolStripMenuItem item = CreateOneItem(itemName, itemTip, itemIcon);
 
+            object @default = server.GetProperty(valueName);
+            int decimalPlace = 3;
+            if (@default is int)
+                decimalPlace = 0;
 
+            var slider = new GH_DigitScroller
+            {
+                MinimumValue = Min,
+                MaximumValue = Max,
+                DecimalPlaces = decimalPlace,
+                Value = (decimal)@default,
+            };
+            slider.ValueChanged += Slider_ValueChanged;
+
+            void Slider_ValueChanged(object sender, GH_DigitScrollerEventArgs e)
+            {
+                decimal result = (decimal)e.Value;
+                result = result >= Min ? result : Min;
+                result = result <= Max ? result : Max;
+                server.SetProperty(valueName, result);
+            }
+
+            WinFormPlus.CreateLabelItem(itemName, itemTip);
+            GH_DocumentObject.Menu_AppendCustomItem(item.DropDown, slider);
+
+            //Add a Reset Item.
+            item.DropDownItems.Add(CreateClickItem(new string[] { "Reset Value", "重置数值" }, new string[] { "Click to reset value.", "点击以重置数值。" },
+                 Properties.Resources.ResetLogo, (x, y) =>
+                 {
+                     slider.Value = (decimal)server.ResetProperty(valueName);
+                 }));
+
+            server.DefaultValueChanged(valueName);
+            return item;
+        }
+
+        [Obsolete]
         public static void AddNumberBoxItem(ToolStripDropDown menu, LanguagableComponent component, string itemName, string itemTip, Bitmap itemIcon, bool enable,
             double Default, double Min, double Max, string valueName, int width = 150)
         {
@@ -252,13 +293,18 @@ namespace ArchiTed_Grasshopper
             ToolStripMenuItem item = CreateOneItem(itemName, itemTip, itemIcon, @checked: false, enable: enable);
 
             //Add a ColourPicker
-            GH_DocumentObject.Menu_AppendColourPicker(item.DropDown, (Color)setting.GetProperty(valueName), 
+            GH_ColourPicker colourPicker = GH_DocumentObject.Menu_AppendColourPicker(item.DropDown, (Color)setting.GetProperty(valueName), 
                 (x, e) => { setting.SetProperty(valueName, e.Colour); });
 
             //Add a Reset Item.
             item.DropDownItems.Add(CreateClickItem(new string[] { "Reset Color", "重置颜色" }, new string[] { "Click to reset colors.", "点击以重置颜色。" },
-                 Properties.Resources.ResetLogo, (x, y) => { setting.ResetProperty(valueName); }));
+                 Properties.Resources.ResetLogo, (x, y) => 
+                 { 
+                     colourPicker.Colour =(Color)setting.ResetProperty(valueName);
+                 }));
 
+            //Return and do valueChanged.
+            setting.DefaultValueChanged(valueName);
             return item;
         }
         #endregion
@@ -300,11 +346,14 @@ namespace ArchiTed_Grasshopper
 
                     //set this one to checked.
                     ((ToolStripMenuItem)x).Checked = true;
+
+                    //Set default value.
                 }, (int)server.GetProperty(valueName) == i);
                 temp.Tag = i;
                 item.DropDown.Items.Add(temp);
             }
 
+            server.DefaultValueChanged(valueName);
             return item;
         }
         //[Obsolete]
@@ -360,7 +409,7 @@ namespace ArchiTed_Grasshopper
 
         //#endregion
 
-            #region ClickBox
+        #region ClickBox
         /// <summary>
         /// Set a Loop Box item in Winform Menu
         /// </summary>
@@ -403,7 +452,7 @@ namespace ArchiTed_Grasshopper
             SaveableSettings<T> server, T valueName, string[][] nameList,
             Image[] IconList = null, bool enable = true) where T:Enum
         {
-            //int index = (int)server.GetProperty(valueName);
+            //Check input.
             if ((int)server.GetProperty(valueName) > nameList.Length - 1)
                 throw new ArgumentOutOfRangeException(valueName.ToString());
             if (IconList != null && IconList.Length != nameList.Length)
@@ -421,6 +470,9 @@ namespace ArchiTed_Grasshopper
                 item.ToolTipText = getTrans(itemTip) + getTrans(new string[] { "Click to switch to ", "单击以切换到" }) + getTrans(nameList[(index + 1) % nameList.Length]);
             });
 
+            //Reset Default
+            IndexAndlanguageChange.Invoke();
+
             //Add click event.
             item.Click += (sender, e) =>
             {
@@ -431,6 +483,7 @@ namespace ArchiTed_Grasshopper
                 IndexAndlanguageChange.Invoke();
             };
 
+            server.DefaultValueChanged(valueName);
             return item;
         }
 
@@ -441,6 +494,18 @@ namespace ArchiTed_Grasshopper
 
             ToolStripMenuItem item = CreateOneItem(itemName, itemTip, itemIcon, @default, enable);
 
+            item.AddCheckProperty(server, valueName, clickedAction);
+
+            server.DefaultValueChanged(valueName);
+            return item;
+        }
+
+        public static void AddCheckProperty<T>(this ToolStripMenuItem item, SaveableSettings<T> server, T valueName, Action<ToolStripMenuItem> clickedAction = null) where T : Enum
+        {
+            //ResetValue.
+            item.Checked = (bool)server.GetProperty(valueName);
+
+            //Add Click Event.
             void Item_Click(object sender, EventArgs e)
             {
                 //Invert checked.
@@ -450,7 +515,7 @@ namespace ArchiTed_Grasshopper
                 //Check the subItems' Enable.
                 foreach (var subItem in item.DropDownItems)
                 {
-                    if(subItem is ToolStripItem)
+                    if (subItem is ToolStripItem)
                     {
                         ((ToolStripItem)subItem).Enabled = item.Checked;
                     }
@@ -461,12 +526,9 @@ namespace ArchiTed_Grasshopper
                     clickedAction.Invoke(item);
             }
             item.Click += Item_Click;
-
-            return item;
-
         }
 
-        [Obsolete]
+            [Obsolete]
         public static void AddCheckBoxItem(ToolStripDropDown menu, string itemName, string itemTip, Image itemIcon,ControllableComponent owner, string valueName, bool @default, bool enable = true)
         {
             void Item_Click(object sender, EventArgs e)
@@ -620,7 +682,7 @@ namespace ArchiTed_Grasshopper
             menu.Items.Add(item);
         }
 
-        public static ToolStripLabel AddLabelItem(string[] labelText, string[] labelTip = null, Color? color = null, float? fontSize = null)
+        public static ToolStripLabel CreateLabelItem(string[] labelText, string[] labelTip = null, Color? color = null, float? fontSize = null)
         {
             ToolStripLabel item = new ToolStripLabel();
 
@@ -644,12 +706,7 @@ namespace ArchiTed_Grasshopper
             Item_EnabledChanged(item, new EventArgs());
 
             //Set language.
-            LanguageSetting.AddToLangChangeEvt((getTrans) =>
-            {
-                item.Text = getTrans(labelText);
-                if (labelTip != null && labelTip.Length != 0)
-                    item.ToolTipText = getTrans(labelTip);
-            });
+            item.SetItemLangChange(labelText, labelTip);
 
             return item;
         }
@@ -668,9 +725,9 @@ namespace ArchiTed_Grasshopper
             return item;
         }
 
-        public static void SetItemLangChange(this ToolStripMenuItem item, string[] itemName, string[] itemTip)
+        public static void SetItemLangChange(this ToolStripItem item, string[] itemName, string[] itemTip)
         {
-            if (itemTip == null)
+            if (itemTip == null || itemTip.Length == 0)
                 itemTip = new string[] { "" };
 
             //LanguageChange.

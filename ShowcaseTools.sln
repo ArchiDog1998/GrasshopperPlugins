@@ -3,20 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30330.147
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Whale", "Whale.csproj", "{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiTed_Grasshopper", "ArchiTed_Grasshopper\ArchiTed_Grasshopper.csproj", "{5B04E8DF-20D2-479A-B8CE-9B650440DB03}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiTed_Grasshopper", "..\ArchiTed_Grasshopper\ArchiTed_Grasshopper.csproj", "{5B04E8DF-20D2-479A-B8CE-9B650440DB03}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShowcaseTools", "GlassesSet\ShowcaseTools.csproj", "{96763B6E-9041-4CF4-8A84-BE48F07F8EF7}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F1F99AD5-853F-465C-9126-7851F6A52A6B}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShowcaseTools.Tests", "ShowcaseTools.Tests\ShowcaseTools.Tests.csproj", "{76FA2043-12A3-4334-B716-B9F6D413E49D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShowcaseTools", "..\GlassesSet\ShowcaseTools.csproj", "{96763B6E-9041-4CF4-8A84-BE48F07F8EF7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\TestProject.csproj", "{07678736-78B9-49BF-B591-E69B23212CC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShowcaseTools.Tests", "..\ShowcaseTools.Tests\ShowcaseTools.Tests.csproj", "{76FA2043-12A3-4334-B716-B9F6D413E49D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "..\TestProject\TestProject.csproj", "{07678736-78B9-49BF-B591-E69B23212CC6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Whale", "Whale\Whale.csproj", "{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,26 +27,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Debug|ARM.Build.0 = Debug|Any CPU
-		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Debug|ARM64.ActiveCfg = Debug|Any CPU
-		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Debug|ARM64.Build.0 = Debug|Any CPU
-		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Debug|x64.Build.0 = Debug|Any CPU
-		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Debug|x86.Build.0 = Debug|Any CPU
-		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Release|ARM.ActiveCfg = Release|Any CPU
-		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Release|ARM.Build.0 = Release|Any CPU
-		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Release|ARM64.ActiveCfg = Release|Any CPU
-		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Release|ARM64.Build.0 = Release|Any CPU
-		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Release|x64.ActiveCfg = Release|Any CPU
-		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Release|x64.Build.0 = Release|Any CPU
-		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Release|x86.ActiveCfg = Release|Any CPU
-		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Release|x86.Build.0 = Release|Any CPU
 		{5B04E8DF-20D2-479A-B8CE-9B650440DB03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5B04E8DF-20D2-479A-B8CE-9B650440DB03}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B04E8DF-20D2-479A-B8CE-9B650440DB03}.Debug|ARM.ActiveCfg = Debug|Any CPU
@@ -132,6 +107,26 @@ Global
 		{07678736-78B9-49BF-B591-E69B23212CC6}.Release|x64.Build.0 = Release|Any CPU
 		{07678736-78B9-49BF-B591-E69B23212CC6}.Release|x86.ActiveCfg = Release|Any CPU
 		{07678736-78B9-49BF-B591-E69B23212CC6}.Release|x86.Build.0 = Release|Any CPU
+		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Debug|ARM.Build.0 = Debug|Any CPU
+		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Debug|x64.Build.0 = Debug|Any CPU
+		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Debug|x86.Build.0 = Debug|Any CPU
+		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Release|ARM.ActiveCfg = Release|Any CPU
+		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Release|ARM.Build.0 = Release|Any CPU
+		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Release|ARM64.Build.0 = Release|Any CPU
+		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Release|x64.ActiveCfg = Release|Any CPU
+		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Release|x64.Build.0 = Release|Any CPU
+		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Release|x86.ActiveCfg = Release|Any CPU
+		{60F6A1A5-CC4C-46E4-AE20-355C2AE92EFB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

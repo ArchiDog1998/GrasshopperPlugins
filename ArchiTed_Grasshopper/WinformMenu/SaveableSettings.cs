@@ -41,6 +41,7 @@ namespace ArchiTed_Grasshopper
             PropertiesSet = defaults;
             SettingsServer = server;
         }
+
         private SettingsPreset<T> FindProperty(T property)
         {
             IEnumerable<SettingsPreset<T>> result = PropertiesSet.Where((item) => item.Name.ToString() == property.ToString());
@@ -50,14 +51,23 @@ namespace ArchiTed_Grasshopper
             return result.ElementAt(0);
         }
 
+        public void DefaultValueChanged(T property)
+        {
+            SettingsPreset<T> preset = FindProperty(property);
+            Action<object> act = preset.ValueChanged;
+            if (act != null)
+                act.Invoke(SettingsServer.PropGetValue(preset));
+        }
+
+
         public object GetProperty(T property)
         {
             return SettingsServer.PropGetValue(FindProperty(property));
         }
 
-        public void ResetProperty(T property)
+        public object ResetProperty(T property)
         {
-            SettingsServer.PropResetValue(FindProperty(property));
+            return SettingsServer.PropResetValue(FindProperty(property));
         }
 
         public void SetProperty(T property, object value)

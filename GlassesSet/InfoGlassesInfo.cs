@@ -91,7 +91,7 @@ namespace InfoGlasses
             GH_DocumentEditor editor = Grasshopper.Instances.DocumentEditor;
             if (editor == null) return;
 
-            editor.MainMenuStrip.Items.Add(new ShowcaseToolsMenu().CreateMajor());
+            editor.MainMenuStrip.Items.Add(new ShowcaseToolsMenu());
         }
     }
 }
