@@ -24,11 +24,12 @@ namespace InfoGlasses.WinformMenu
         internal enum InfoGlassesProps
         {
             IsUseInfoGlass,
-            NormalExceptionGuid,
-            PluginExceptionGuid,
+            ShowFont,
             TextColor,
             BackgroundColor,
             BoundaryColor,
+            NormalExceptionGuid,
+            PluginExceptionGuid,
         }
 
         public static SaveableSettings<InfoGlassesProps> Settings { get; } = new SaveableSettings<InfoGlassesProps>(new SettingsPreset<InfoGlassesProps>[]
@@ -37,11 +38,14 @@ namespace InfoGlasses.WinformMenu
             {
 
             }),
-            new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.NormalExceptionGuid, new List<Guid>()),
-            new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.PluginExceptionGuid, new List<Guid>()),
+            new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.ShowFont, GH_FontServer.Standard),
+
             new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.TextColor, Color.Black),
             new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.BackgroundColor, Color.WhiteSmoke),
             new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.BoundaryColor, Color.FromArgb(30, 30, 30)),
+
+            new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.NormalExceptionGuid, new List<Guid>()),
+            new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.PluginExceptionGuid, new List<Guid>()),
 
         }, Grasshopper.Instances.Settings);
 
@@ -50,13 +54,12 @@ namespace InfoGlasses.WinformMenu
             this.SetItemLangChange(new string[] { "InfoGlasses", "信息眼镜" }, null);
             this.AddCheckProperty(Settings, InfoGlassesProps.IsUseInfoGlass);
 
+            this.DropDown.Items.Add(WinFormPlus.CreateFontSelector(new string[] { "Display Font", "展示字体" },
+                new string[] { "Click to change the display font.", "单击以修改展示字体。" }, Settings, InfoGlassesProps.ShowFont));
             this.DropDown.Items.Add(GetInfoGlassesColourItem());
 
             //Add all Events.
-            Grasshopper.Instances.ActiveCanvas.CanvasPostPaintGroups += ActiveCanvas_CanvasPostPaintGroups;
-            Grasshopper.Instances.ActiveCanvas.CanvasPostPaintWires += ActiveCanvas_CanvasPostPaintWires;
-            Grasshopper.Instances.ActiveCanvas.CanvasPostPaintObjects += ActiveCanvas_CanvasPostPaintObjects;
-            Grasshopper.Instances.ActiveCanvas.CanvasPrePaintOverlay += ActiveCanvas_CanvasPrePaintOverlay;
+            AddPaintActions();
         }
 
         #region Colour
@@ -79,7 +82,7 @@ namespace InfoGlasses.WinformMenu
         }
         #endregion
 
-        public List<IRenderable> Renderables { get; set; } = new List<IRenderable>();
+        public List<IRenderable> Renderables { get; private set; } = new List<IRenderable>();
 
         #region InfoGlasses
 
@@ -109,6 +112,22 @@ namespace InfoGlasses.WinformMenu
 
 
         #endregion
+        #region PaintActions
+        private void AddPaintActions()
+        {
+            Grasshopper.Instances.ActiveCanvas.CanvasPostPaintGroups += ActiveCanvas_CanvasPostPaintGroups;
+            Grasshopper.Instances.ActiveCanvas.CanvasPostPaintWires += ActiveCanvas_CanvasPostPaintWires;
+            Grasshopper.Instances.ActiveCanvas.CanvasPostPaintObjects += ActiveCanvas_CanvasPostPaintObjects;
+            Grasshopper.Instances.ActiveCanvas.CanvasPrePaintOverlay += ActiveCanvas_CanvasPrePaintOverlay;
+        }
+
+        private void RemovePaintActions()
+        {
+            Grasshopper.Instances.ActiveCanvas.CanvasPostPaintGroups -= ActiveCanvas_CanvasPostPaintGroups;
+            Grasshopper.Instances.ActiveCanvas.CanvasPostPaintWires -= ActiveCanvas_CanvasPostPaintWires;
+            Grasshopper.Instances.ActiveCanvas.CanvasPostPaintObjects -= ActiveCanvas_CanvasPostPaintObjects;
+            Grasshopper.Instances.ActiveCanvas.CanvasPrePaintOverlay -= ActiveCanvas_CanvasPrePaintOverlay;
+        }
 
         private void ActiveCanvas_CanvasPostPaintGroups(GH_Canvas sender)
         {
@@ -135,5 +154,6 @@ namespace InfoGlasses.WinformMenu
                 rendarable.RenderToCanvas(canvas, canvas.Graphics, channel);
             }
         }
+        #endregion
     }
 }

@@ -33,35 +33,37 @@ namespace ArchiTed_Grasshopper
             //Check if Value is not changed.
             if (PropGetValue(server, preset).Equals(value)) return;
 
+            //Find Key.
+            string key = preset.Name.GetType().Name + "." + preset.Name.ToString();
 
             //Set value.
             object @default = PropGetValue(server, preset);
             if (@default is bool)
-                server.SetValue(preset.Name.ToString(), (bool)value);
+                server.SetValue(key, (bool)value);
             else if (@default is byte)
-                server.SetValue(preset.Name.ToString(), (byte)value);
+                server.SetValue(key, (byte)value);
             else if (@default is DateTime)
-                server.SetValue(preset.Name.ToString(), (DateTime)value);
+                server.SetValue(key, (DateTime)value);
             else if (@default is double)
-                server.SetValue(preset.Name.ToString(), (double)value);
+                server.SetValue(key, (double)value);
             else if (@default is int)
-                server.SetValue(preset.Name.ToString(), (int)value);
+                server.SetValue(key, (int)value);
             else if (@default is string)
-                server.SetValue(preset.Name.ToString(), (string)value);
+                server.SetValue(key, (string)value);
             else if (@default is Point)
-                server.SetValue(preset.Name.ToString(), (Point)value);
+                server.SetValue(key, (Point)value);
             else if (@default is Color)
-                server.SetValue(preset.Name.ToString(), (Color)value);
+                server.SetValue(key, (Color)value);
             else if (@default is Rectangle)
-                server.SetValue(preset.Name.ToString(), (Rectangle)value);
+                server.SetValue(key, (Rectangle)value);
             else if (@default is Size)
-                server.SetValue(preset.Name.ToString(), (Size)value);
+                server.SetValue(key, (Size)value);
             else if (@default is Guid)
-                server.SetValue(preset.Name.ToString(), (Guid)value);
+                server.SetValue(key, (Guid)value);
             else if (@default is Font)
-                server.SetValue(preset.Name.ToString(), (Font)value);
+                server.SetValue(key, (Font)value);
             else if (@default is IEnumerable<Guid>)
-                server.SetValue(preset.Name.ToString(), (IEnumerable<Guid>)value);
+                server.SetValue(key, (IEnumerable<Guid>)value);
             else
                 throw new Exception(nameof(value) + " is not the right type!");
 
@@ -75,33 +77,36 @@ namespace ArchiTed_Grasshopper
             //Get the default
             object @default = preset.Default;
 
+            //Find Key.
+            string key = preset.Name.GetType().Name + "." + preset.Name.ToString();
+
             //Get value
             if (@default is bool)
-                return server.GetValue(preset.Name.ToString(), (bool)@default);
+                return server.GetValue(key, (bool)@default);
             else if (@default is byte)
-                return server.GetValue(preset.Name.ToString(), (byte)@default);
+                return server.GetValue(key, (byte)@default);
             else if (@default is DateTime)
-                return server.GetValue(preset.Name.ToString(), (DateTime)@default);
+                return server.GetValue(key, (DateTime)@default);
             else if (@default is double)
-                return server.GetValue(preset.Name.ToString(), (double)@default);
+                return server.GetValue(key, (double)@default);
             else if (@default is int)
-                return server.GetValue(preset.Name.ToString(), (int)@default);
+                return server.GetValue(key, (int)@default);
             else if (@default is string)
-                return server.GetValue(preset.Name.ToString(), (string)@default);
+                return server.GetValue(key, (string)@default);
             else if (@default is Point)
-                return server.GetValue(preset.Name.ToString(), (Point)@default);
+                return server.GetValue(key, (Point)@default);
             else if (@default is Color)
-                return server.GetValue(preset.Name.ToString(), (Color)@default);
+                return server.GetValue(key, (Color)@default);
             else if (@default is Rectangle)
-                return server.GetValue(preset.Name.ToString(), (Rectangle)@default);
+                return server.GetValue(key, (Rectangle)@default);
             else if (@default is Size)
-                return server.GetValue(preset.Name.ToString(), (Size)@default);
+                return server.GetValue(key, (Size)@default);
             else if (@default is Guid)
-                return server.GetValue(preset.Name.ToString(), (Guid)@default);
+                return server.GetValue(key, (Guid)@default);
             else if (@default is Font)
-                return server.GetValue(preset.Name.ToString(), (Font)@default);
+                return server.GetValue(key, (Font)@default);
             else if (@default is IEnumerable<Guid>)
-                return server.GetValue(preset.Name.ToString(), (IEnumerable<Guid>)@default);
+                return server.GetValue(key, (IEnumerable<Guid>)@default);
 
             throw new Exception(preset.Name.ToString() + " is a invalid type!");
         }
