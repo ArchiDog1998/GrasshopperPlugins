@@ -186,6 +186,14 @@ namespace ArchiTed_Grasshopper
 
         public static void SetValue(this GH_SettingsServer server, string key, IEnumerable<Guid> value)
         {
+            //Remove Value
+            int beforeCount = server.GetValue(key + "Count", 0);
+            for (int j = 0; j < beforeCount; j++)
+            {
+                server.DeleteValue(key + j.ToString("D10"));
+            }
+
+            //Set Value
             int count = value.Count();
             server.SetValue(key + "Count", count);
             for (int i = 0; i < count; i++)

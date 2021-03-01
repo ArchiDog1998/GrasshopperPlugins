@@ -15,30 +15,32 @@ using System.Windows.Shapes;
 using ArchiTed_Grasshopper;
 using InfoGlasses;
 using MaterialDesignThemes.Wpf;
+using InfoGlasses.WinformMenu;
+using static InfoGlasses.WinformMenu.InfoGlassesMenuItem;
 
 namespace InfoGlasses.WPF
 {
     /// <summary>
     /// Interaction logic for ExceptionWindow.xaml
     /// </summary>
-    public partial class ExceptionWindow : LangWindow
+    public partial class ExceptionWindowPlus : LangWindow
     {
 
         private List<Guid> _normalExceptions = new List<Guid>();
         private List<Guid> _pluginExceptions = new List<Guid>();
-        private new InfoGlassesComponent Owner { get; }
-        public ExceptionWindow(InfoGlassesComponent owner)
+        private new InfoGlassesMenuItem Owner { get; }
+        public ExceptionWindowPlus(InfoGlassesMenuItem owner)
             : base()
         {
             this.DataContext = this;
 
             _normalExceptions = new List<Guid>();
-            foreach (Guid item in owner.normalExceptionGuid)
+            foreach (Guid item in ((IEnumerable<Guid>)Settings.GetProperty(InfoGlassesProps.NormalExceptionGuid)))
             {
                 _normalExceptions.Add(item);
             }
             _pluginExceptions = new List<Guid>();
-            foreach (Guid item1 in owner.pluginExceptionGuid)
+            foreach (Guid item1 in ((IEnumerable<Guid>)Settings.GetProperty(InfoGlassesProps.PluginExceptionGuid)))
             {
                 _pluginExceptions.Add(item1);
             }
@@ -96,7 +98,7 @@ namespace InfoGlasses.WPF
 
             #region B0ttom Four Translate
             FileOption.ToolTip = LanguagableComponent.GetTransLation(new string[] { "File Option", "文件选项" });
-            AsDefaultButton.ToolTip = LanguagableComponent.GetTransLation(new string[] { "Click to save as template.", "点击以保存一个模板。" });
+            //AsDefaultButton.ToolTip = LanguagableComponent.GetTransLation(new string[] { "Click to save as template.", "点击以保存一个模板。" });
             ImportButton.ToolTip = LanguagableComponent.GetTransLation(new string[] { "Click to import a file.", "点击以导入一个文件。" });
             ExportButton.ToolTip = LanguagableComponent.GetTransLation(new string[] { "Click to export a file.", "点击以导出一个文件。" });
 
@@ -136,10 +138,10 @@ namespace InfoGlasses.WPF
             var q = Search(SearchBox.Text, Owner.AllProxy.ToArray());
             if (q.Count > 0)
             {
-                List<ExceptionProxy> proxies = new List<ExceptionProxy>();
+                List<ExceptionProxyPlus> proxies = new List<ExceptionProxyPlus>();
                 foreach (var item in q)
                 {
-                    proxies.Add(item as ExceptionProxy);
+                    proxies.Add(item as ExceptionProxyPlus);
                 }
                 SetShowProxy(proxies);
             }
@@ -155,7 +157,7 @@ namespace InfoGlasses.WPF
 
         private void FilterButton_Click(object sender, RoutedEventArgs e)
         {
-            List<ExceptionProxy> showProxies = new List<ExceptionProxy>();
+            List<ExceptionProxyPlus> showProxies = new List<ExceptionProxyPlus>();
             foreach (var docObj in Grasshopper.Instances.ActiveCanvas.Document.SelectedObjects())
             {
                 foreach (var proxy in Owner.AllProxy)
@@ -179,26 +181,26 @@ namespace InfoGlasses.WPF
         #endregion
 
         #region Middle Respond
-        private void SetShowProxy(List<ExceptionProxy> proxies, string Category = null, string Subcategory = null)
+        private void SetShowProxy(List<ExceptionProxyPlus> proxies, string Category = null, string Subcategory = null)
         {
             if (Category != null)
-                proxies = (List<ExceptionProxy>)(proxies.Where((x) => x.Category == Category).ToList());
+                proxies = (List<ExceptionProxyPlus>)(proxies.Where((x) => x.Category == Category).ToList());
             if (Subcategory != null)
-                proxies = (List<ExceptionProxy>)(proxies.Where((x) => x.Subcategory == Subcategory).ToList());
+                proxies = (List<ExceptionProxyPlus>)(proxies.Where((x) => x.Subcategory == Subcategory).ToList());
 
             this.Datas.ItemsSource = GetRightStateProxy(proxies);
         }
 
-        private List<ExceptionProxy> GetRightStateProxy(List<ExceptionProxy> proxies)
+        private List<ExceptionProxyPlus> GetRightStateProxy(List<ExceptionProxyPlus> proxies)
         {
             if (WindowSwitchControl.SelectedIndex != 0)
-                return (List<ExceptionProxy>)(proxies.Where((x) => x.IsPlugin).ToList());
+                return (List<ExceptionProxyPlus>)(proxies.Where((x) => x.IsPlugin).ToList());
             else
                 return proxies;
 
         }
 
-        private void DrawDataTree(List<ExceptionProxy> proxies)
+        private void DrawDataTree(List<ExceptionProxyPlus> proxies)
         {
             if (LeftCateTree == null)
                 return;
@@ -336,11 +338,11 @@ namespace InfoGlasses.WPF
         #endregion
 
         #region Bottom four respond
-        private void AsDefaultButton_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Content = Owner.Writetxt();
-            MessageSnackBar.IsActive = true;
-        }
+        //private void AsDefaultButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    MessageBox.Content = Owner.Writetxt();
+        //    MessageSnackBar.IsActive = true;
+        //}
 
         private void ImportButton_Click(object sender, RoutedEventArgs e)
         {
@@ -394,20 +396,20 @@ namespace InfoGlasses.WPF
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            Owner.normalExceptionGuid = this._normalExceptions;
-            Owner.pluginExceptionGuid = this._pluginExceptions;
-            Owner.ExpireSolution(true);
+            Settings.SetProperty(InfoGlassesProps.NormalExceptionGuid, this._normalExceptions);
+            Settings.SetProperty(InfoGlassesProps.PluginExceptionGuid, this._pluginExceptions);
+            Owner.ResetRenderables();
             this.Close();
         }
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            Owner.ExpireSolution(true);
+            Owner.ResetRenderables();
         }
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
-            Owner.ExpireSolution(true);
+            Owner.ResetRenderables();
             this.Close();
         }
 

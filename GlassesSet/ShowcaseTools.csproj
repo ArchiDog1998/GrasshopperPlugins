@@ -75,8 +75,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="WinformControls\AssemblyRenderSet.cs" />
     <Compile Include="WinformControls\NameBoxRenderSet.cs" />
     <Compile Include="WinformControls\NickNameOrNameTextBox.cs" />
+    <Compile Include="WinformControls\PluginHiRect.cs" />
     <Compile Include="WinformMenu\FixCategoryMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -102,8 +104,9 @@
     <Compile Include="WinformControls\ParamControlHelper.cs" />
     <Compile Include="WinformControls\ParamLegend.cs" />
     <Compile Include="WinformControls\WireConnectRenderItem.cs" />
-    <Compile Include="WPF\ExceptionWindow.xaml.cs">
-      <DependentUpon>ExceptionWindow.xaml</DependentUpon>
+    <Compile Include="WPF\ExceptionProxyPlus.cs" />
+    <Compile Include="WPF\ExceptionWindowPlus.xaml.cs">
+      <DependentUpon>ExceptionWindowPlus.xaml</DependentUpon>
     </Compile>
     <Compile Include="InfoGlassesComponent.cs" />
     <Compile Include="NamedViewPPTComponent.cs" />
@@ -192,9 +195,9 @@
     <None Include="Resources\PlugInIcon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="WPF\ExceptionWindow.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="WPF\ExceptionWindowPlus.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="WPF\GooProxyWindow.xaml">
       <SubType>Designer</SubType>

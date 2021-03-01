@@ -25,12 +25,12 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// <summary>
         /// HighLight color.
         /// </summary>
-        public Color Color { get; }
+        public virtual Color Color { get; }
 
         /// <summary>
         /// cornerRadius.
         /// </summary>
-        public int Radius { get; }
+        public virtual int Radius { get; }
 
         /// <summary>
         /// disable when the object first add to the document.

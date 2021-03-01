@@ -32,7 +32,7 @@ namespace InfoGlasses.WinformControls
         /// <param name="meansureString"> get the string's bounds. </param>
         /// <param name="showFunc"> whether to show. </param>
         /// <param name="renderLittleZoom"> whether render when zoom is less than 0.5. </param>
-        public NickNameOrNameTextBox(IGH_DocumentObject target, Func<SizeF, RectangleF, RectangleF> layout,
+        public NickNameOrNameTextBox(IGH_DocumentObject target, Func<SizeF, RectangleF, RectangleF> layout, 
             Func<Graphics, string, Font, SizeF> meansureString = null, Func<bool> showFunc = null, bool renderLittleZoom = false)
             : base(null, target, layout, new NameBoxRenderSet(), meansureString, showFunc, renderLittleZoom)
         {

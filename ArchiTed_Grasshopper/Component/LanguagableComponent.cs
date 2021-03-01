@@ -18,7 +18,7 @@ using System.Windows.Forms;
 
 namespace ArchiTed_Grasshopper
 {
-
+    [Obsolete]
     public abstract class LanguagableComponent : ControllableComponent
     {
         private bool _showOption;

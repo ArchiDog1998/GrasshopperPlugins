@@ -1,4 +1,4 @@
-﻿<arwpf:LangWindow x:Class="InfoGlasses.WPF.ExceptionWindow"
+﻿<arwpf:LangWindow x:Class="InfoGlasses.WPF.ExceptionWindowPlus"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:arwpf="clr-namespace:ArchiTed_Grasshopper.WPF;assembly=ArchiTed_Grasshopper"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -306,9 +306,6 @@
                             <materialDesign:PackIcon Kind="File" Height="24" Width="24" Foreground="DimGray"/>
                         </materialDesign:PopupBox.ToggleContent>
                         <StackPanel Orientation="Horizontal">
-                            <Button x:Name="AsDefaultButton" Click="AsDefaultButton_Click">
-                                <materialDesign:PackIcon Kind="FileStar" Height="24" Width="24"/>
-                            </Button>
                             <Button x:Name="ImportButton" Click="ImportButton_Click"  Background="WhiteSmoke" BorderBrush="WhiteSmoke">
                                 <materialDesign:PackIcon Kind="FileImport" Height="24" Width="24"  Foreground="DimGray"/>
                             </Button>
