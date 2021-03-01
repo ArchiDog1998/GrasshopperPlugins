@@ -9,6 +9,7 @@ using ArchiTed_Grasshopper;
 using ArchiTed_Grasshopper.WinformControls;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
+using InfoGlasses.WinformControls;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -29,13 +30,19 @@ namespace InfoGlasses.WinformMenu
             PluginExceptionGuid,
 
             ShowFont,
+            BoundaryWidth,
+            BoundaryRadius,
             TextColor,
             BackgroundColor,
             BoundaryColor,
 
             ShowName,
-            ShowNameType,
+            IsShowNickName,
             ShowNameDistance,
+
+            ShowCategory,
+            IsFullCategory,
+            IsMergeCateBox,
         }
 
         public static SaveableSettings<InfoGlassesProps> Settings { get; } = new SaveableSettings<InfoGlassesProps>(new SettingsPreset<InfoGlassesProps>[]
@@ -50,14 +57,20 @@ namespace InfoGlasses.WinformMenu
 
             new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.ShowFont, GH_FontServer.Standard),
 
-            new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.TextColor, Color.Black),
-            new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.BackgroundColor, Color.WhiteSmoke),
-            new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.BoundaryColor, Color.FromArgb(30, 30, 30)),
+            new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.BoundaryWidth, 1.0, (value)=>Grasshopper.Instances.ActiveCanvas.Refresh()),
+            new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.BoundaryRadius, 3.0, (value)=>Grasshopper.Instances.ActiveCanvas.Refresh()),
 
-            new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.ShowName, true, (value)=>Grasshopper.Instances.ActiveCanvas.Refresh()),
-            new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.ShowNameType, 0, (value)=>Grasshopper.Instances.ActiveCanvas.Refresh()),
+            new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.TextColor, Color.Black, (value)=>Grasshopper.Instances.ActiveCanvas.Refresh()),
+            new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.BackgroundColor, Color.WhiteSmoke, (value)=>Grasshopper.Instances.ActiveCanvas.Refresh()),
+            new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.BoundaryColor, Color.FromArgb(30, 30, 30), (value)=>Grasshopper.Instances.ActiveCanvas.Refresh()),
+
+            new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.ShowName, true),
+            new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.IsShowNickName, false, (value)=>Grasshopper.Instances.ActiveCanvas.Refresh()),
             new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.ShowNameDistance, 3, (value)=>Grasshopper.Instances.ActiveCanvas.Refresh()),
 
+            new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.ShowCategory, false),
+            new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.IsFullCategory, true),
+            new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.IsMergeCateBox, true),
         }, Grasshopper.Instances.Settings);
 
         public InfoGlassesMenuItem(): base(Properties.Resources.InfoGlasses)
@@ -73,20 +86,38 @@ namespace InfoGlasses.WinformMenu
 
             this.DropDown.Items.Add(WinFormPlus.CreateOneItem(new string[] { "Exceptions", "除去项" },
                 new string[] { "Click to open the exceptions window.", "单击以打开除去项窗口。" }, Properties.Resources.ExceptionIcon));
+
+            GH_DocumentObject.Menu_AppendSeparator(this.DropDown);
+
             this.DropDown.Items.Add(WinFormPlus.CreateFontSelector(new string[] { "Display Font", "展示字体" },
                 new string[] { "Click to change the display font.", "单击以修改展示字体。" }, Settings, InfoGlassesProps.ShowFont));
+            this.DropDown.Items.Add(GetBoundarySize());
             this.DropDown.Items.Add(GetInfoGlassesColourItem());
 
             GH_DocumentObject.Menu_AppendSeparator(this.DropDown);
 
             this.DropDown.Items.Add(GetNameItem());
+            this.DropDown.Items.Add(GetCategoryItem());
 
             Grasshopper.Instances.ActiveCanvas.Document_ObjectsAdded += ActiveCanvas_Document_ObjectsAdded;
             Grasshopper.Instances.DocumentServer.DocumentAdded += (x, y) => ResetRenderables();
             Grasshopper.Instances.ActiveCanvas.DocumentChanged += (x, y) => ResetRenderables();
         }
 
+        #region RenderSet
+        public ToolStripMenuItem GetBoundarySize()
+        {
+            ToolStripMenuItem item = WinFormPlus.CreateOneItem(new string[] { "BoundarySize", "边线尺寸" },
+                new string[] { "Set the boundary size.", "修改边缘尺寸" },
+                Properties.Resources.SizeIcon);
 
+            item.DropDownItems.Add(WinFormPlus.CreateNumberBox(new string[] { "Thickness", "厚度" }, new string[] { "Click to set the boundary's thickness.", "单击以修改边线厚度。" },
+                null, Settings, InfoGlassesProps.BoundaryWidth, 10.0, 0.1));
+            item.DropDownItems.Add(WinFormPlus.CreateNumberBox(new string[] { "Radius", "半径" }, new string[] { "Click to set the boundary's radius.", "单击以修改边线半径。" },
+                null, Settings, InfoGlassesProps.BoundaryRadius, 20, 0));
+
+            return item;
+        }
 
         public ToolStripMenuItem GetInfoGlassesColourItem()
         {
@@ -105,26 +136,47 @@ namespace InfoGlasses.WinformMenu
             return WinFormPlus.CreateColorBoxItems(Settings, new string[] { "Colors", "颜色" }, new string[] { "Adjust color.", "调整颜色。" },
                 ArchiTed_Grasshopper.Properties.Resources.ColorIcon, true, sets);
         }
+        #endregion
 
+
+        #region Departments
         public ToolStripMenuItem GetNameItem()
         {
             ToolStripMenuItem item = WinFormPlus.CreateCheckItem(new string[] { "Show Name", "展示名称"},
                 new string[] { "Click to show component's name.", "单击以显示运算器的名称"}, 
                 Properties.Resources.ShowName, Settings, InfoGlassesProps.ShowName);
 
-            item.DropDownItems.Add(WinFormPlus.CreateLoopBoxItem(null, null, Settings, InfoGlassesProps.ShowNameType, new string[][]
-            {
-                new string[]{ "Use Name", "使用名称"}, 
-                new string[]{ "Use Nickname", "使用昵称"},
-            }));
+            item.DropDownItems.Add(WinFormPlus.CreateCheckItem(new string[] { "Use Nickname", "使用昵称" }, 
+                new string[] { "Check to choose whether show nickname instead of name.", "点击以选择是否显示昵称而不是全称。"}, null, Settings, InfoGlassesProps.IsShowNickName));
 
             item.DropDownItems.Add(WinFormPlus.CreateNumberBox(new string[] { "Name Distance", "名称距离" },
                 new string[] { "Click to set Name Distance.", "点击以设置名称方框距离" }, Properties.Resources.DistanceIcon, Settings,
                 InfoGlassesProps.ShowNameDistance, 500, 0));
 
+            item.CheckedChanged += (x, y) => ResetRenderables();
             return item;
         }
 
+        public ToolStripMenuItem GetCategoryItem()
+        {
+            ToolStripMenuItem item = WinFormPlus.CreateCheckItem(new string[] { "Show Category", "展示类别" },
+                new string[] { "Click to show component's category & subcategory.", "单击以显示运算器的类别和子类别。" },
+                Properties.Resources.Category, Settings, InfoGlassesProps.ShowCategory);
+            item.CheckedChanged += (x, y) => ResetRenderables();
+
+            ToolStripMenuItem fullItem = WinFormPlus.CreateCheckItem(new string[] { "Full Category", "类别全称" },
+                new string[] { "Click to choose whether show full category name.", "点击以选择是否显示类别的全称。" }, null, Settings, InfoGlassesProps.IsFullCategory);
+            fullItem.CheckedChanged += (x, y) => ResetRenderables();
+            item.DropDownItems.Add(fullItem);
+
+            ToolStripMenuItem mergeItem = WinFormPlus.CreateCheckItem(new string[] { "Merge Box", "合并气泡" },
+                new string[] { "Click to choose whether merge the category's box.", "点击以选择是否合成类别气泡。" }, null, Settings, InfoGlassesProps.IsMergeCateBox);
+            mergeItem.CheckedChanged += (x, y) => ResetRenderables();
+            item.DropDownItems.Add(mergeItem);
+
+            return item;
+        }
+        #endregion
         public List<IRenderable> Renderables { get; private set; } = new List<IRenderable>();
 
 
@@ -142,7 +194,7 @@ namespace InfoGlasses.WinformMenu
                 }
             }
             catch { }
-
+            Grasshopper.Instances.ActiveCanvas.Refresh();
         }
 
         private void ActiveCanvas_Document_ObjectsAdded(GH_Document sender, GH_DocObjectEventArgs e)
@@ -159,51 +211,49 @@ namespace InfoGlasses.WinformMenu
             bool showPlugin = !((IEnumerable<Guid>)Settings.GetProperty(InfoGlassesProps.PluginExceptionGuid)).Contains(obj.ComponentGuid);
             if (showNormal)
             {
-                TextBoxRenderSet nameSet = new TextBoxRenderSet((Color)Settings.GetProperty(InfoGlassesProps.BackgroundColor),
-                    (Color)Settings.GetProperty(InfoGlassesProps.BoundaryColor),
-                    (Font)Settings.GetProperty(InfoGlassesProps.ShowFont),
-                    (Color)Settings.GetProperty(InfoGlassesProps.TextColor));
                 if ((bool)Settings.GetProperty(InfoGlassesProps.ShowName))
                 {
                     Func<SizeF, RectangleF, RectangleF> layout = (x, y) =>
                     {
-                        //((decimal)Settings.GetProperty(InfoGlassesProps.ShowNameDistance))
                         PointF pivot = new PointF(y.Left + y.Width / 2, y.Top - (int)Settings.GetProperty(InfoGlassesProps.ShowNameDistance));
                         return CanvasRenderEngine.MiddleDownRect(pivot, x);
                     };
-                    this.Renderables.Add(new NickNameOrNameTextBox((int)Settings.GetProperty(InfoGlassesProps.ShowNameType)==1, obj, layout, nameSet));
+                    this.Renderables.Add(new NickNameOrNameTextBox(obj, layout));
                 }
 
-                //string cate = IsShowFullCate ? obj.Category : Grasshopper.Instances.ComponentServer.GetCategoryShortName(obj.Category);
-                //string subcate = obj.SubCategory;
+                string cate = (bool)Settings.GetProperty(InfoGlassesProps.IsFullCategory) ? obj.Category : Grasshopper.Instances.ComponentServer.GetCategoryShortName(obj.Category);
+                string subcate = obj.SubCategory;
 
-                //if (this.IsShowCategory)
-                //{
+                if ((bool)Settings.GetProperty(InfoGlassesProps.ShowCategory))
+                {
 
-                //    if (IsMergeCateBox)
-                //    {
-                //        string cateName = cate + " - " + subcate;
-                //        this.RenderObjs.Add(new TextBox(cateName, obj, (x, y) =>
-                //        {
-                //            PointF pivot = new PointF(y.Left + y.Width / 2, y.Top - NameBoxDistance - ((this.IsShowName ? x.Height : 0) + 3));
-                //            return CanvasRenderEngine.MiddleDownRect(pivot, x);
-                //        }, nameSet));
-                //    }
-                //    else
-                //    {
-                //        this.RenderObjs.Add(new TextBox(subcate, obj, (x, y) =>
-                //        {
-                //            PointF pivot = new PointF(y.Left + y.Width / 2, y.Top - NameBoxDistance - ((this.IsShowName ? x.Height : 0) + 3));
-                //            return CanvasRenderEngine.MiddleDownRect(pivot, x);
-                //        }, nameSet));
+                    if ((bool)Settings.GetProperty(InfoGlassesProps.IsMergeCateBox))
+                    {
+                        string cateName = cate + " - " + subcate;
+                        this.Renderables.Add(new TedTextBox(cateName, obj, (x, y) =>
+                        {
+                            PointF pivot = new PointF(y.Left + y.Width / 2, y.Top - (int)Settings.GetProperty(InfoGlassesProps.ShowNameDistance) - 
+                                (((bool)Settings.GetProperty(InfoGlassesProps.ShowName) ? x.Height : 0) + 3));
+                            return CanvasRenderEngine.MiddleDownRect(pivot, x);
+                        }, new NameBoxRenderSet()));
+                    }
+                    else
+                    {
+                        this.Renderables.Add(new TedTextBox(subcate, obj, (x, y) =>
+                        {
+                            PointF pivot = new PointF(y.Left + y.Width / 2, y.Top - (int)Settings.GetProperty(InfoGlassesProps.ShowNameDistance) - 
+                                (((bool)Settings.GetProperty(InfoGlassesProps.ShowName) ? x.Height : 0) + 3));
+                            return CanvasRenderEngine.MiddleDownRect(pivot, x);
+                        }, new NameBoxRenderSet()));
 
-                //        this.RenderObjs.Add(new TextBox(cate, obj, (x, y) =>
-                //        {
-                //            PointF pivot = new PointF(y.Left + y.Width / 2, y.Top - NameBoxDistance - ((this.IsShowName ? x.Height : 0) + 3) * 2);
-                //            return CanvasRenderEngine.MiddleDownRect(pivot, x);
-                //        }, nameSet));
-                //    }
-                //}
+                        this.Renderables.Add(new TedTextBox(cate, obj, (x, y) =>
+                        {
+                            PointF pivot = new PointF(y.Left + y.Width / 2, y.Top - (int)Settings.GetProperty(InfoGlassesProps.ShowNameDistance) - 
+                                (((bool)Settings.GetProperty(InfoGlassesProps.ShowName) ? x.Height : 0) + 3) * 2);
+                            return CanvasRenderEngine.MiddleDownRect(pivot, x);
+                        }, new NameBoxRenderSet()));
+                    }
+                }
             }
 
 

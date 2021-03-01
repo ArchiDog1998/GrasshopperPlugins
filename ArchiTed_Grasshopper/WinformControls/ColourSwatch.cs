@@ -59,7 +59,7 @@ namespace ArchiTed_Grasshopper.WinformControls
                 //float width = this.Bounds.Height / 10;
                 float width = 1;
 
-                GraphicsPath path = TextBox.GetRoundRectangle(this.Bounds, this.Bounds.Height / 6);
+                GraphicsPath path = TedTextBox.GetRoundRectangle(this.Bounds, this.Bounds.Height / 6);
 
                 bool isNull;
                 Color brushColor = GetValue(out isNull);

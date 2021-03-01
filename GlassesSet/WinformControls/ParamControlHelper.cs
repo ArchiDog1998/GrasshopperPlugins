@@ -19,7 +19,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using TextBox = ArchiTed_Grasshopper.WinformControls.TextBox;
+using TedTextBox = ArchiTed_Grasshopper.WinformControls.TedTextBox;
 
 namespace InfoGlasses.WinformControls
 {
@@ -121,7 +121,7 @@ namespace InfoGlasses.WinformControls
 
             RectangleF background = bound;
             background.Inflate(size, size);
-            GraphicsPath path = TextBox.GetRoundRectangle(background, size);
+            GraphicsPath path = TedTextBox.GetRoundRectangle(background, size);
 
             graphics.FillPath(new SolidBrush(Color.FromArgb(150, Color.WhiteSmoke)), path);
             graphics.DrawPath(new Pen(Color.DimGray, 1), path);

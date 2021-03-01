@@ -20,16 +20,13 @@ namespace ArchiTed_Grasshopper.WinformControls
     /// <summary>
     /// Set the text box like balloon.
     /// </summary>
-    public class TextBox : RenderItem
+    public class TedTextBox : RenderItem
     {
         /// <summary>
         /// the string that should be shown.
         /// </summary>
         public virtual string ShowName { get; }
 
-        /// <summary>
-        /// render settings.
-        /// </summary>
         public TextBoxRenderSet RenderSet { get; }
 
         /// <summary>
@@ -42,6 +39,9 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// </summary>
         private Func<Graphics, string, Font, SizeF> MeansureString { get; }
 
+        private static float _startMovementMult = 1f / 3f;
+        private static float _controlMovementMult = 2f / 3f;
+
         /// <summary>
         /// Set the text box like balloon.
         /// </summary>
@@ -52,13 +52,22 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// <param name="meansureString"> get the string's bounds. </param>
         /// <param name="showFunc"> whether to show. </param>
         /// <param name="renderLittleZoom"> whether render when zoom is less than 0.5. </param>
-        public TextBox(string name, IGH_DocumentObject target, Func<SizeF, RectangleF, RectangleF> layout,
+        public TedTextBox(string name, IGH_DocumentObject target, Func<SizeF, RectangleF, RectangleF> layout,
             TextBoxRenderSet renderSet, Func<Graphics, string, Font, SizeF> meansureString = null, Func<bool> showFunc = null, bool renderLittleZoom = false)
             : base(target, showFunc, renderLittleZoom)
         {
             this.ShowName = name;
-            this.RenderSet = renderSet;
             this.Func = layout;
+            this.RenderSet = renderSet;
+
+            //this.TextColor = renderSet.TextColor;
+            //this.BackGroundColor = renderSet.BackGroundColor;
+            //this.BoundaryColor = renderSet.BoundaryColor;
+            //this.Font = renderSet.Font;
+            //this.BoundaryWidth = renderSet.BoundaryWidth;
+            //this.ColorChange = renderSet.ColorChange;
+            //this.CornerRadius = renderSet.CornerRadius;
+            //this.InflateMode = renderSet.InflateMode;
 
             this.MeansureString = meansureString ?? ((x, y, z) => { return x.MeasureString(y, z); });
 
@@ -77,8 +86,6 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// <returns> round Rectangle. </returns>
         public static GraphicsPath GetRoundRectangle(RectangleF rect, float cornerRadius)
         {
-            float _startMovementMult = 1f / 3f;
-            float _controlMovementMult = 2f / 3f;
 
             if (cornerRadius <= 0)
                 throw new ArgumentOutOfRangeException("cornerRadius", "cornerRadius must be larger than 0!");
@@ -172,9 +179,17 @@ namespace ArchiTed_Grasshopper.WinformControls
         protected override void Render(GH_Canvas canvas, Graphics graphics, GH_CanvasChannel channel)
         {
             if (channel == GH_CanvasChannel.Objects)
+            {
+                float cornerRadius = this.RenderSet.CornerRadius;
+                if (Math.Min(Bounds.Width, Bounds.Height) < cornerRadius * (1 + _startMovementMult) * 2)
+                {
+                    cornerRadius = Math.Min(Bounds.Width, Bounds.Height) / (1 + _startMovementMult) / 2;
+                }
                 DrawTextBox(graphics, this.Bounds,
                     this.RenderSet.BackGroundColor, this.RenderSet.BoundaryColor, this.ShowName, this.RenderSet.Font,
-                    this.RenderSet.TextColor, this.RenderSet.BoundaryWidth, this.RenderSet.ColorChange, this.RenderSet.CornerRadius, this.RenderSet.InflateMode);
+                    this.RenderSet.TextColor, this.RenderSet.BoundaryWidth, this.RenderSet.ColorChange, cornerRadius, this.RenderSet.InflateMode);
+            }
+
         }
     }
 

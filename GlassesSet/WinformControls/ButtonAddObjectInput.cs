@@ -23,7 +23,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using TextBox = ArchiTed_Grasshopper.WinformControls.TextBox;
+using TextBox = ArchiTed_Grasshopper.WinformControls.TedTextBox;
 
 namespace InfoGlasses.WinformControls
 {

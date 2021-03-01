@@ -166,7 +166,7 @@ namespace InfoGlasses.WinformControls
                     return;
                 SizeF size = graphics.MeasureString(str, font);
                 PointF loc = new PointF(pivot.X, pivot.Y + size.Height / 2);
-                TextBox.DrawTextBox(graphics, CanvasRenderEngine.MiddleDownRect(loc, size), Owner.LabelBackGroundColor, Owner.LabelBoundaryColor, str, font, Owner.LabelTextColor, isCenter:true);
+                TedTextBox.DrawTextBox(graphics, CanvasRenderEngine.MiddleDownRect(loc, size), Owner.LabelBackGroundColor, Owner.LabelBoundaryColor, str, font, Owner.LabelTextColor, isCenter:true);
             }
         }
 

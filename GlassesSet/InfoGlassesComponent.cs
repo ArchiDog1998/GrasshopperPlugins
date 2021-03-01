@@ -15,11 +15,12 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using TextBox = ArchiTed_Grasshopper.WinformControls.TextBox;
+using TedTextBox = ArchiTed_Grasshopper.WinformControls.TedTextBox;
 using InfoGlasses.WPF;
 using System.IO;
 using System.Text;
 using System.Linq;
+using InfoGlasses.WinformControls;
 
 namespace InfoGlasses
 {
@@ -362,7 +363,7 @@ namespace InfoGlasses
                         PointF pivot = new PointF(y.Left + y.Width / 2, y.Top - NameBoxDistance);
                         return CanvasRenderEngine.MiddleDownRect(pivot, x);
                     };
-                    this.RenderObjs.Add(new NickNameOrNameTextBox(this.IsShowNickName, obj, layout, nameSet));
+                    this.RenderObjs.Add(new NickNameOrNameTextBox(obj, layout));
                 }
 
                 string cate = IsShowFullCate ? obj.Category : Grasshopper.Instances.ComponentServer.GetCategoryShortName(obj.Category);
@@ -374,7 +375,7 @@ namespace InfoGlasses
                     if (IsMergeCateBox)
                     {
                         string cateName = cate + " - " + subcate;
-                        this.RenderObjs.Add(new TextBox(cateName, obj, (x, y) =>
+                        this.RenderObjs.Add(new TedTextBox(cateName, obj, (x, y) =>
                         {
                             PointF pivot = new PointF(y.Left + y.Width / 2, y.Top - NameBoxDistance - ((this.IsShowName ? x.Height : 0) + 3));
                             return CanvasRenderEngine.MiddleDownRect(pivot, x);
@@ -382,13 +383,13 @@ namespace InfoGlasses
                     }
                     else
                     {
-                        this.RenderObjs.Add(new TextBox(subcate, obj, (x, y) =>
+                        this.RenderObjs.Add(new TedTextBox(subcate, obj, (x, y) =>
                         {
                             PointF pivot = new PointF(y.Left + y.Width / 2, y.Top - NameBoxDistance - ((this.IsShowName ? x.Height : 0) + 3));
                             return CanvasRenderEngine.MiddleDownRect(pivot, x);
                         }, nameSet));
 
-                        this.RenderObjs.Add(new TextBox(cate, obj, (x, y) =>
+                        this.RenderObjs.Add(new TedTextBox(cate, obj, (x, y) =>
                         {
                             PointF pivot = new PointF(y.Left + y.Width / 2, y.Top - NameBoxDistance - ((this.IsShowName ? x.Height : 0) + 3) * 2);
                             return CanvasRenderEngine.MiddleDownRect(pivot, x);
@@ -463,7 +464,7 @@ namespace InfoGlasses
                     if (location != null)
                         fullStr += "\n \n" + location;
 
-                    this.RenderObjs.Add(new TextBox(fullStr, obj, (x, y) =>
+                    this.RenderObjs.Add(new TedTextBox(fullStr, obj, (x, y) =>
                     {
                         PointF pivot = new PointF(y.Left + y.Width / 2, y.Bottom + height);
                         return CanvasRenderEngine.MiddleUpRect(pivot, x);

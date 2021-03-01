@@ -207,7 +207,7 @@ namespace ArchiTed_Grasshopper
                     dataParam = param;
                     canvas.CanvasPostPaintObjects += (cvs) =>
                     {
-                        canvas.Graphics.DrawPath(new Pen(new SolidBrush(ColorExtension.OnColor), 2), TextBox.GetRoundRectangle(renderRect, 3));
+                        canvas.Graphics.DrawPath(new Pen(new SolidBrush(ColorExtension.OnColor), 2), TedTextBox.GetRoundRectangle(renderRect, 3));
                     };
                 }
             }

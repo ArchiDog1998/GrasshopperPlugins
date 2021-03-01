@@ -66,7 +66,6 @@
     <Compile Include="IO_Helper.cs" />
     <Compile Include="Unsafe\UnsafeHelper.cs" />
     <Compile Include="WinformControls\HighLightRect.cs" />
-    <Compile Include="WinformControls\NickNameOrNameTextBox.cs" />
     <Compile Include="WinformControls\RenderItem.cs" />
     <Compile Include="WinformControls\SwicthButtonIcon.cs" />
     <Compile Include="WinformControls\ControlItem.cs" />
@@ -92,7 +91,7 @@
     <Compile Include="WinformControls\TextBoxRenderSet.cs" />
     <Compile Include="WinformControls\ClickButtonBase.cs" />
     <Compile Include="WinformControls\ButtonRenderSet.cs" />
-    <Compile Include="WinformControls\TextBox.cs" />
+    <Compile Include="WinformControls\TedTextBox.cs" />
     <Compile Include="WinformControls\TipsSet.cs" />
     <Compile Include="WinformControls\Renderable.cs" />
     <Compile Include="WinformControls\ClickButtonIcon.cs" />
