@@ -498,26 +498,39 @@ namespace ArchiTed_Grasshopper
         }
 
         public static ToolStripMenuItem CreateCheckItem<T>(string[] itemName, string[] itemTip, Image itemIcon, 
-            SaveableSettings<T> server, T valueName, Action<ToolStripMenuItem> clickedAction = null,
-            bool @default = false, bool enable = true) where T : Enum
+            SaveableSettings<T> server, T valueName,  bool @default = false, bool enable = true) where T : Enum
         {
 
             ToolStripMenuItem item = CreateOneItem(itemName, itemTip, itemIcon, @default, enable);
 
-            item.BoundAndCheckProperty(server, valueName, clickedAction);
+            item.BindingAndCheckProperty(server, valueName);
 
             server.DefaultValueChanged(valueName);
             return item;
         }
 
-        public static void BoundAndCheckProperty<T>(this ToolStripMenuItem item, SaveableSettings<T> server, T valueName, Action<ToolStripMenuItem> clickedAction = null) where T : Enum
+        /// <summary>
+        /// Check Property for bool value container.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="item"></param>
+        /// <param name="server"></param>
+        /// <param name="valueName"></param>
+        /// <param name="clickedAction"></param>
+        public static void BindingAndCheckProperty<T>(this ToolStripMenuItem item, SaveableSettings<T> server, T valueName, Action<bool> clickedAction = null) where T : Enum
         {
             //ResetValue.
             item.Checked = (bool)server.GetProperty(valueName);
 
-            //Active Actions.
-            if (clickedAction != null)
-                clickedAction.Invoke(item);
+            //Check whether action should do.
+            void _clickedAction()
+            {
+                if (clickedAction != null)
+                    clickedAction.Invoke((bool)server.GetProperty(valueName));
+                else
+                    server.DefaultValueChanged(valueName);
+            }
+            _clickedAction();
 
             //Add Click Event.
             void Item_Click(object sender, EventArgs e)
@@ -535,9 +548,7 @@ namespace ArchiTed_Grasshopper
                     }
                 }
 
-                //Invoke the input actions.
-                if (clickedAction != null)
-                    clickedAction.Invoke(item);
+                _clickedAction();
             }
             item.Click += Item_Click;
         }

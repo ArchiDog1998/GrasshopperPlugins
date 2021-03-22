@@ -92,7 +92,7 @@ namespace InfoGlasses.WinformMenu
             new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.PluginRadius, 8, (value)=>Grasshopper.Instances.ActiveCanvas.Refresh()),
         }, Grasshopper.Instances.Settings);
 
-        #region ForWPF
+        #region For WPF
         private List<ExceptionProxyPlus> _allProxy;
         public List<ExceptionProxyPlus> AllProxy
         {
@@ -224,10 +224,10 @@ namespace InfoGlasses.WinformMenu
         public InfoGlassesMenuItem(): base(Properties.Resources.InfoGlasses)
         {
             this.SetItemLangChange(new string[] { "InfoGlasses", "信息眼镜" }, null);
-            this.BoundAndCheckProperty(Settings, InfoGlassesProps.IsUseInfoGlass, (item)=> 
+            this.BindingAndCheckProperty(Settings, InfoGlassesProps.IsUseInfoGlass, (value)=> 
             {
                 RemovePaintActions();
-                if (item.Checked)
+                if (value)
                     AddPaintActions();
                 Grasshopper.Instances.ActiveCanvas.Refresh();
             });

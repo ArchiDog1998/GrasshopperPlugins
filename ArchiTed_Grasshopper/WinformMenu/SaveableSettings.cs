@@ -34,7 +34,7 @@ namespace ArchiTed_Grasshopper
 
     public class SaveableSettings<T> where T : Enum
     {
-        public SettingsPreset<T>[] PropertiesSet { get; }
+        private SettingsPreset<T>[] PropertiesSet { get; }
         public GH_SettingsServer SettingsServer { get;}
         public SaveableSettings(SettingsPreset<T>[] defaults, GH_SettingsServer server)
         {
@@ -42,7 +42,7 @@ namespace ArchiTed_Grasshopper
             SettingsServer = server;
         }
 
-        private SettingsPreset<T> FindProperty(T property)
+        private SettingsPreset<T> FindPropertySet(T property)
         {
             IEnumerable<SettingsPreset<T>> result = PropertiesSet.Where((item) => item.Name.ToString() == property.ToString());
 
@@ -53,7 +53,7 @@ namespace ArchiTed_Grasshopper
 
         public void DefaultValueChanged(T property)
         {
-            SettingsPreset<T> preset = FindProperty(property);
+            SettingsPreset<T> preset = FindPropertySet(property);
             Action<object> act = preset.ValueChanged;
             if (act != null)
                 act.Invoke(SettingsServer.PropGetValue(preset));
@@ -62,17 +62,17 @@ namespace ArchiTed_Grasshopper
 
         public object GetProperty(T property)
         {
-            return SettingsServer.PropGetValue(FindProperty(property));
+            return SettingsServer.PropGetValue(FindPropertySet(property));
         }
 
         public object ResetProperty(T property)
         {
-            return SettingsServer.PropResetValue(FindProperty(property));
+            return SettingsServer.PropResetValue(FindPropertySet(property));
         }
 
         public void SetProperty(T property, object value)
         {
-            SettingsServer.PropSetValue(FindProperty(property), value);
+            SettingsServer.PropSetValue(FindPropertySet(property), value);
         }
     }
 }

@@ -53,7 +53,7 @@ namespace InfoGlasses.WinformMenu
         internal FixCategoryMenuItem():base(Grasshopper.Instances.ComponentServer.GetCategoryIcon("Params"))
         {
             this.SetItemLangChange(new string[] { "Fix Catogory Icon", "修复类别图标" }, new string[] { "Fix as most category icon as possible.", "修复尽可能多的类别图标。" });
-            this.BoundAndCheckProperty(Settings, FixCategoryProps.IsFixCategoryIcon);
+            this.BindingAndCheckProperty(Settings, FixCategoryProps.IsFixCategoryIcon);
 
             ToolStripMenuItem folderItem = WinFormPlus.CreateClickItem(new string[] { "Change Icons' Folder", "修改图标所在文件" },
                 new string[] { "Click to change the folder.\n", "单击以修改路径。\n" }, null, (x, y) =>
