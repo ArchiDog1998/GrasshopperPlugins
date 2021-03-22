@@ -314,9 +314,10 @@ namespace ArchiTed_Grasshopper
             setting.DefaultValueChanged(valueName);
             return item;
         }
+
         #endregion
 
-        //#region ComboBox
+            //#region ComboBox
 
         public static ToolStripMenuItem CreateComboBoxItemSingle<T>(string[] itemName, string[] itemTip, Image icon,
             SaveableSettings<T> server, T valueName, string[][] nameList, string[][] tipList = null,

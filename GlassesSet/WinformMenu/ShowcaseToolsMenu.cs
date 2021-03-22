@@ -32,6 +32,7 @@ namespace InfoGlasses.WinformMenu
             GH_DocumentObject.Menu_AppendSeparator(this.DropDown);
 
             this.DropDown.Items.Add(new InfoGlassesMenuItem());
+            this.DropDown.Items.Add(new ParamGlassesMenuItem());
 
             GH_DocumentObject.Menu_AppendSeparator(this.DropDown);
 

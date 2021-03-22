@@ -57,10 +57,7 @@ namespace InfoGlasses.WinformMenu
 
         public static SaveableSettings<InfoGlassesProps> Settings { get; } = new SaveableSettings<InfoGlassesProps>(new SettingsPreset<InfoGlassesProps>[]
         {
-            new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.IsUseInfoGlass, true, (value) =>
-            {
-
-            }),
+            new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.IsUseInfoGlass, true),
 
             new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.NormalExceptionGuid, new List<Guid>()),
             new SettingsPreset<InfoGlassesProps>(InfoGlassesProps.PluginExceptionGuid, new List<Guid>()),
@@ -223,7 +220,7 @@ namespace InfoGlasses.WinformMenu
         #endregion
         public InfoGlassesMenuItem(): base(Properties.Resources.InfoGlasses)
         {
-            this.SetItemLangChange(new string[] { "InfoGlasses", "信息眼镜" }, null);
+            this.SetItemLangChange(new string[] { "InfoGlasses", "信息眼镜" }, new string[] { "You can use it to see extra component's infomation.", "你可以使用这个功能查看更多的运算器信息。"});
             this.BindingAndCheckProperty(Settings, InfoGlassesProps.IsUseInfoGlass, (value)=> 
             {
                 RemovePaintActions();

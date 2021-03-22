@@ -36,10 +36,11 @@ namespace ArchiTed_Grasshopper
     {
         private SettingsPreset<T>[] PropertiesSet { get; }
         public GH_SettingsServer SettingsServer { get;}
-        public SaveableSettings(SettingsPreset<T>[] defaults, GH_SettingsServer server)
+
+        public SaveableSettings(SettingsPreset<T>[] defaults, GH_SettingsServer server = null)
         {
             PropertiesSet = defaults;
-            SettingsServer = server;
+            SettingsServer = server ?? Grasshopper.Instances.Settings;
         }
 
         private SettingsPreset<T> FindPropertySet(T property)
