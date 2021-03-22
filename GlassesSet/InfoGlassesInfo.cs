@@ -89,7 +89,26 @@ namespace InfoGlasses
             Grasshopper.Instances.CanvasCreated -= Instances_CanvasCreated;
 
             GH_DocumentEditor editor = Grasshopper.Instances.DocumentEditor;
-            if (editor == null) return;
+            if (editor == null)
+            {
+                MessageBox.Show(LanguageSetting.GetTransLation("ShocaseTools can't find the menu!", "展示工具没法找到菜单！"));
+                Grasshopper.Instances.ActiveCanvas.DocumentChanged += ActiveCanvas_DocumentChanged;
+                return;
+            }
+
+            editor.MainMenuStrip.Items.Add(new ShowcaseToolsMenu());
+        }
+
+        private void ActiveCanvas_DocumentChanged(GH_Canvas sender, GH_CanvasDocumentChangedEventArgs e)
+        {
+            Grasshopper.Instances.ActiveCanvas.DocumentChanged -= ActiveCanvas_DocumentChanged;
+
+            GH_DocumentEditor editor = Grasshopper.Instances.DocumentEditor;
+            if (editor == null)
+            {
+                MessageBox.Show(LanguageSetting.GetTransLation("ShocaseTools can't find the menu again!", "展示工具又一次没找到菜单！"));
+                return;
+            }
 
             editor.MainMenuStrip.Items.Add(new ShowcaseToolsMenu());
         }

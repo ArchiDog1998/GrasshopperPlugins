@@ -85,6 +85,7 @@
     <Compile Include="WinformMenu\InfoGlassesMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="WinformMenu\ParamGlassesMenuItem.cs" />
     <Compile Include="WinformMenu\ShowcaseToolsMenu.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -43,11 +43,11 @@ namespace ArchiTed_Grasshopper
         private static event Action LanguageChange;
 
         /// <summary>
-        /// Translation from differenc culture to one.
+        /// Translation from differenc culture to one. This is used in one time language changing!
         /// </summary>
         /// <param name="strs">different language.</param>
         /// <returns></returns>
-        private static string GetTransLation(params string[] strs)
+        public static string GetTransLation(params string[] strs)
         {
             if (strs.Length == 0) 
                 throw new ArgumentOutOfRangeException(nameof(strs), nameof(strs) + "must more than 1!");
