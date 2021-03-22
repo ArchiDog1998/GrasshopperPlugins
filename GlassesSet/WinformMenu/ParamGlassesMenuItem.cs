@@ -1,9 +1,11 @@
 ﻿using ArchiTed_Grasshopper;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
+using GH_Util;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -107,6 +109,50 @@ namespace InfoGlasses.WinformMenu
                 }));
 
             return item;
+        }
+        #endregion
+
+
+        #region Function to overwrite
+        /// <summary>
+        /// For GH_Painter.ConnectionPath
+        /// </summary>
+        /// <param name="pointA"></param>
+        /// <param name="pointB"></param>
+        /// <param name="directionA"></param>
+        /// <param name="directionB"></param>
+        /// <returns></returns>
+        public static GraphicsPath MyConnectionPath(PointF pointA, PointF pointB, GH_WireDirection directionA, GH_WireDirection directionB)
+        {
+            GraphicsPath graphicsPath = new GraphicsPath();
+
+            switch ((int)Settings.GetProperty(ParamGlassesProps.WireType))
+            {
+                case 0:
+                    BezierF bezierF = ((directionA != 0) ? GH_Painter.ConnectionPathBezier(pointA, pointB).Reverse() : GH_Painter.ConnectionPathBezier(pointB, pointA));
+                    graphicsPath.AddBezier(bezierF.P3, bezierF.P2, bezierF.P1, bezierF.P0);
+
+                    break;
+                case 1:
+                    float moveMent = (pointA.X - pointB.X) * (float)Owner.PolywireParam;
+                    moveMent = Math.Max(moveMent, 20);
+                    PointF C = new PointF(pointA.X - moveMent, pointA.Y);
+                    PointF D = new PointF(pointB.X + moveMent, pointB.Y);
+                    graphicsPath.AddLine(pointA, C);
+                    graphicsPath.AddLine(C, D);
+                    graphicsPath.AddLine(D, pointB);
+                    graphicsPath.Reverse();
+                    break;
+                case 2:
+                    graphicsPath.AddLine(pointA, pointB);
+                    graphicsPath.Reverse();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(ParamGlassesProps.WireType.ToString() + "is out of range!");
+
+            }
+
+            return graphicsPath;
         }
         #endregion
     }
