@@ -476,34 +476,10 @@ namespace InfoGlasses.WinformMenu
                         }
                     }
 
-
                 }
 
                 if (!string.IsNullOrEmpty(fullName) && (bool)Settings.GetProperty(InfoGlassesProps.ShowAssembly))
                 {
-
-                    //if (IsAutoAssem)
-                    //{
-                    //    if (obj is IGH_Component)
-                    //    {
-                    //        IGH_Component com = obj as IGH_Component;
-                    //        height = CanvasRenderEngine.MessageBoxHeight(com.Message, (int)obj.Attributes.Bounds.Width);
-                    //    }
-                    //    else
-                    //    {
-                    //        height = 0;
-                    //    }
-
-                    //    if (IsAvoidProfiler)
-                    //    {
-                    //        if (height == 0)
-                    //            height = Math.Max(height, 16);
-                    //        else
-                    //            height = Math.Max(height, 32);
-                    //    }
-                    //}
-                    //height += 5;
-
                     string fullStr = fullName;
                     if (location != null)
                         fullStr += "\n \n" + location;

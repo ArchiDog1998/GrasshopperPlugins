@@ -41,6 +41,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\GH_IO.dll</HintPath>
     </Reference>
+    <Reference Include="GH_Util">
+      <HintPath>..\GH_Util.dll</HintPath>
+    </Reference>
     <Reference Include="Grasshopper, Version=6.12.19029.6380, Culture=neutral, PublicKeyToken=dda4f5ec2cd80803, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Grasshopper.dll</HintPath>
@@ -85,7 +88,9 @@
     <Compile Include="WinformMenu\InfoGlassesMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="WinformMenu\ParamGlassesMenuItem.cs" />
+    <Compile Include="WinformMenu\ParamGlassesMenuItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="WinformMenu\ShowcaseToolsMenu.cs">
       <SubType>Component</SubType>
     </Compile>

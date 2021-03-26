@@ -1,10 +1,12 @@
 ﻿using ArchiTed_Grasshopper;
+using ArchiTed_Grasshopper.Unsafe;
 using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using GH_Util;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Reflection;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
@@ -26,10 +28,11 @@ namespace InfoGlasses.WinformMenu
             WireSelectedColor,
             WireEmptyColor,
             WireType,
+            WirePolylineParam,
         }
         public static SaveableSettings<ParamGlassesProps> Settings { get; } = new SaveableSettings<ParamGlassesProps>(new SettingsPreset<ParamGlassesProps>[]
         {
-            new SettingsPreset<ParamGlassesProps>(ParamGlassesProps.IsUseParamGlasses, true),
+            new SettingsPreset<ParamGlassesProps>(ParamGlassesProps.IsUseParamGlasses, true, (value)=>UseParamFunctionExchange()),
 
             new SettingsPreset<ParamGlassesProps>(ParamGlassesProps.IsUseWireColor, true, (value)=>
             {
@@ -38,7 +41,7 @@ namespace InfoGlasses.WinformMenu
             new SettingsPreset<ParamGlassesProps>(ParamGlassesProps.WireCheckStrongth, 0.0, (value)=> Grasshopper.Instances.ActiveCanvas.Refresh()),
             new SettingsPreset<ParamGlassesProps>(ParamGlassesProps.WireDefaultColor, Color.FromArgb(150, 0, 0, 0), (value)=>
             {
-                GH_Skin.wire_default = (Color)value;
+                //GH_Skin.wire_default = (Color)value;
                 Grasshopper.Instances.ActiveCanvas.Refresh();
             }),
             new SettingsPreset<ParamGlassesProps>(ParamGlassesProps.WireSelectedColor, Color.FromArgb(125, 210, 40), (value)=>                 
@@ -52,7 +55,7 @@ namespace InfoGlasses.WinformMenu
                 Grasshopper.Instances.ActiveCanvas.Refresh();
             }),
             new SettingsPreset<ParamGlassesProps>(ParamGlassesProps.WireType, 0, (value) => Grasshopper.Instances.ActiveCanvas.Refresh()),
-
+            new SettingsPreset<ParamGlassesProps>(ParamGlassesProps.WirePolylineParam, 0.5),
 
         }, Grasshopper.Instances.Settings);
 
@@ -81,13 +84,16 @@ namespace InfoGlasses.WinformMenu
             this.DropDown.Items.Add(WinFormPlus.CreateNumberBox(new string[] { "Wire Strongth", "选中加重" }, null, null,
                 Settings, ParamGlassesProps.WireCheckStrongth, 20, 0));
 
-            this.DropDown.Items.Add(WinFormPlus.CreateComboBoxItemSingle(new string[] { "Wire Type", "连线类型" }, null, null, 
+            ToolStripMenuItem wireTypeItem = WinFormPlus.CreateComboBoxItemSingle(new string[] { "Wire Type", "连线类型" }, null, null, 
                 Settings, ParamGlassesProps.WireType, new string[][]
             {
                 new string[]{ "Bezier Curve", "贝塞尔曲线" },
                 new string[] { "PolyLine", "多段线" },
                 new string[] { "Line", "直线" },
-            }));
+            });
+            ((ToolStripMenuItem)wireTypeItem.DropDown.Items[1]).DropDown.Items.Add(WinFormPlus.CreateNumberBox(new string[] { "Polyline Param", "多段线参数"},
+                null, null , Settings, ParamGlassesProps.WirePolylineParam, 1, 0));
+            this.DropDown.Items.Add(wireTypeItem);
 
             GH_DocumentObject.Menu_AppendSeparator(this.DropDown);
 
@@ -114,6 +120,19 @@ namespace InfoGlasses.WinformMenu
 
 
         #region Function to overwrite
+        private static void UseParamFunctionExchange()
+        {
+            MethodInfo oldFunc = typeof(GH_Painter).GetMethod(nameof(GH_Painter.ConnectionPath));
+            MethodInfo newFunc = typeof(ParamGlassesMenuItem).GetMethod(nameof(MyConnectionPath));
+            UnsafeHelper.ExchangeMethod(oldFunc, newFunc);
+        }
+
+
+        //直接改GH_Painter.DrawConnection！！
+        //用GH_Document.FindWireAt找到父对象。
+
+
+
         /// <summary>
         /// For GH_Painter.ConnectionPath
         /// </summary>
@@ -124,8 +143,20 @@ namespace InfoGlasses.WinformMenu
         /// <returns></returns>
         public static GraphicsPath MyConnectionPath(PointF pointA, PointF pointB, GH_WireDirection directionA, GH_WireDirection directionB)
         {
-            GraphicsPath graphicsPath = new GraphicsPath();
 
+            //Get the outputGrip
+            PointF outputGrip = pointA;
+            PointF inputGrip = pointB;
+            if (directionA == GH_WireDirection.left)
+            {
+                outputGrip = pointB;
+                inputGrip = pointA;
+            }
+            GH_Skin.wire_default = FindColor(FindParamByInOut(outputGrip, inputGrip));
+
+
+
+            GraphicsPath graphicsPath = new GraphicsPath();
             switch ((int)Settings.GetProperty(ParamGlassesProps.WireType))
             {
                 case 0:
@@ -134,7 +165,7 @@ namespace InfoGlasses.WinformMenu
 
                     break;
                 case 1:
-                    float moveMent = (pointA.X - pointB.X) * (float)Owner.PolywireParam;
+                    float moveMent = (pointA.X - pointB.X) * (float)0.5;
                     moveMent = Math.Max(moveMent, 20);
                     PointF C = new PointF(pointA.X - moveMent, pointA.Y);
                     PointF D = new PointF(pointB.X + moveMent, pointB.Y);
@@ -153,6 +184,109 @@ namespace InfoGlasses.WinformMenu
             }
 
             return graphicsPath;
+        }
+
+        private static IGH_Param FindParamByInOut(PointF outputGrip, PointF inputGrip)
+        {
+            IGH_Param inputParam = null;
+            IGH_Param[] leftParams = FindParamByInputorOutput(outputGrip, false);
+            switch (leftParams.Length)
+            {
+                case 0:
+                    //MessageBox.Show("Can't find!");
+                    break;
+                case 1:
+                    inputParam = leftParams[0];
+                    break;
+                default:
+                    IGH_Param[] rightParams = FindParamByInputorOutput(inputGrip, true);
+                    if (rightParams.Length > 0)
+                    {
+                        IEnumerable<IGH_Param> results = leftParams.Where((param) => param.Recipients.Intersect(rightParams).Count() > 0);
+                        if (results.Count() == 1) inputParam = results.ElementAt(0);
+                    }
+                    break;
+            }
+            return inputParam;
+        }
+
+        /// <summary>
+        /// Find the Param on the pivot.
+        /// </summary>
+        /// <param name="pivot"></param>
+        /// <param name="isInput"></param>
+        /// <returns></returns>
+        private static IGH_Param[] FindParamByInputorOutput(PointF pivot, bool isInput)
+        {
+            List<IGH_Param> _params = new List<IGH_Param>();
+
+            foreach (IGH_Attributes att in Grasshopper.Instances.ActiveCanvas.Document.Attributes)
+            {
+                //Check whether is Param.
+                
+                IGH_Param param = att.DocObject as IGH_Param;
+                if (param == null) continue;
+
+                //Check if point is zhe same.
+                if ((!isInput) && PointFIsTheSame(att.OutputGrip,pivot)) _params.Add(param);
+                else if(isInput && PointFIsTheSame(att.InputGrip, pivot)) _params.Add(param);
+            }
+            return _params.ToArray();
+        }
+
+        private static bool PointFIsTheSame(PointF pt1, PointF pt2)
+        {
+            return (pt1.X == pt2.X) && (pt1.Y == pt2.Y);
+        }
+
+        private static Color FindColor(IGH_Param inputParam)
+        {
+            if(inputParam == null) return (Color)Settings.GetProperty(ParamGlassesProps.WireDefaultColor);
+
+            //Find DataType.
+            Type findType = inputParam.Type;
+
+            //if (inputParam.VolatileData.AllData(true).Count() > 0)
+            //{
+            //    switch (Owner.Accuracy)
+            //    {
+            //        case 0:
+            //            findType = inputParam.Type;
+            //            break;
+            //        case 1:
+            //            findType = inputParam.VolatileData.AllData(true).ElementAt(0).GetType();
+            //            break;
+            //        case 2:
+            //            var relayList = inputParam.VolatileData.AllData(true).GroupBy((x) => { return x.GetType(); });
+            //            int count = 0;
+            //            Type relayName = null;
+            //            foreach (var item in relayList)
+            //            {
+            //                if (item.Count() >= count)
+            //                {
+            //                    relayName = item.Key;
+            //                    count = item.Count();
+            //                }
+
+            //            }
+            //            findType = relayName ?? inputParam.VolatileData.AllData(true).ElementAt(0).GetType();
+            //            break;
+            //        default:
+            //            findType = inputParam.VolatileData.AllData(true).ElementAt(0).GetType();
+            //            break;
+            //    }
+            //}
+
+
+            try
+            {
+                return ((Dictionary<string, Color>)Settings.GetProperty(ParamGlassesProps.WireColorsDict))[findType.FullName];
+
+            }
+            catch
+            {
+                return (Color)Settings.GetProperty(ParamGlassesProps.WireDefaultColor);
+            }
         }
         #endregion
     }

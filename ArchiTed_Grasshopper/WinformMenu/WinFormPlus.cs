@@ -528,8 +528,8 @@ namespace ArchiTed_Grasshopper
             {
                 if (clickedAction != null)
                     clickedAction.Invoke((bool)server.GetProperty(valueName));
-                else
-                    server.DefaultValueChanged(valueName);
+
+                server.DefaultValueChanged(valueName);
             }
             _clickedAction();
 
