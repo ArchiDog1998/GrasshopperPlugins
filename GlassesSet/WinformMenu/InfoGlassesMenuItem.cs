@@ -374,14 +374,11 @@ namespace InfoGlasses.WinformMenu
         public void ResetRenderables()
         {
             this.Renderables.Clear();
-            try
-            {
+            if(Grasshopper.Instances.ActiveCanvas.Document != null)
                 foreach (IGH_DocumentObject obj in Grasshopper.Instances.ActiveCanvas.Document.Objects)
                 {
                     this.AddOneObject(obj);
                 }
-            }
-            catch { }
             Grasshopper.Instances.ActiveCanvas.Refresh();
         }
 
@@ -480,7 +477,8 @@ namespace InfoGlasses.WinformMenu
 
                 if (!string.IsNullOrEmpty(fullName) && (bool)Settings.GetProperty(InfoGlassesProps.ShowAssembly))
                 {
-                    string fullStr = fullName;
+                    string fullStr = fullName + "\n \n" + string.Join(",\n", type.GetInterfaces().Select((t) => t.Name));
+                    fullStr += "\n \n" + FindFathers(type);
                     if (location != null)
                         fullStr += "\n \n" + location;
 
@@ -495,9 +493,43 @@ namespace InfoGlasses.WinformMenu
                     }, showFunc: () => { return obj.Attributes.Selected; }));
                 }
             }
-
-
         }
+
+        private string FindFathers(Type type)
+        {
+            List<string> typeFull = new List<string>();
+            Type rightType = type;
+            while(rightType != typeof(object))
+            {
+                typeFull.Add(GetTypeName(rightType));
+                rightType = rightType.BaseType;
+            }
+
+            typeFull.Reverse();
+            string full = typeFull[0];
+            for (int i = 1; i < typeFull.Count; i++)
+            {
+                string space = "";
+                for (int j = 0; j < i; j++)
+                {
+                    space += "--";
+                }
+                full += "\n" + space + typeFull[i];
+            }
+            return full;
+        }
+
+        private string GetTypeName(Type type)
+        {
+            string res = type.Name;
+            if (!type.IsGenericType) return res;
+
+            res = res.Split('`')[0];
+            res += "<" + string.Join(",", type.GetGenericArguments().Select((t) => GetTypeName(t)).ToArray()) + ">";
+
+            return res;
+        }
+
         #endregion
 
 

@@ -39,16 +39,20 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FFMpegSharp, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\FFMpegSharp.2.1.0\lib\net45\FFMpegSharp.dll</HintPath>
+    <Reference Include="GH_IO">
+      <HintPath>..\..\..\Software\Install\Mcneel\Rhino7\Plug-ins\Grasshopper\GH_IO.dll</HintPath>
     </Reference>
-    <Reference Include="GH_IO, Version=7.1.20343.9491, Culture=neutral, PublicKeyToken=6a29997d2e6b4f97, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\GH_IO.dll</HintPath>
+    <Reference Include="GH_Util">
+      <HintPath>..\..\..\Software\Install\Mcneel\Rhino7\Plug-ins\Grasshopper\GH_Util.dll</HintPath>
     </Reference>
-    <Reference Include="Grasshopper, Version=7.1.20343.9491, Culture=neutral, PublicKeyToken=dda4f5ec2cd80803, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Grasshopper.dll</HintPath>
+    <Reference Include="Grasshopper">
+      <HintPath>..\..\..\Software\Install\Mcneel\Rhino7\Plug-ins\Grasshopper\Grasshopper.dll</HintPath>
+    </Reference>
+    <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
+    </Reference>
+    <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="MaterialDesignColors">
       <HintPath>..\MaterialDesignColors.dll</HintPath>
@@ -58,9 +62,11 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="RhinoCommon, Version=7.1.20343.9491, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\RhinoCommon.dll</HintPath>
+    <Reference Include="RhinoCommon">
+      <HintPath>..\..\..\Software\Install\Mcneel\Rhino7\System\RhinoCommon.dll</HintPath>
+    </Reference>
+    <Reference Include="RhinoWindows">
+      <HintPath>..\..\..\Software\Install\Mcneel\Rhino7\System\RhinoWindows.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -71,6 +77,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Animation\GroupLocker.cs" />
@@ -84,7 +91,15 @@
     <Compile Include="Display\MeshSharpEdge.cs" />
     <Compile Include="Display\PointDisplay.cs" />
     <Compile Include="Display\Tag3D.cs" />
+    <Compile Include="Display\TestWindow.xaml.cs">
+      <DependentUpon>TestWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Display\TextCurve.cs" />
+    <Compile Include="Display\UIElementGoo.cs" />
+    <Compile Include="Display\UIElementParameter.cs" />
+    <Compile Include="Display\UI_RhinoView.cs" />
+    <Compile Include="Display\ViewComponent.cs" />
+    <Compile Include="Display\WindowComponent.cs" />
     <Compile Include="Light\SpotLight.cs" />
     <Compile Include="Light\SunLight.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -112,45 +127,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="FFMPEG\bin\presets\ffprobe.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="FFMPEG\bin\presets\libvpx-1080p.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libvpx-1080p50_60.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libvpx-360p.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libvpx-720p.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libvpx-720p50_60.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libvpx-ultrafast.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-baseline.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-fast.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-faster.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-faster_firstpass.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-fast_firstpass.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-ipod320.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-ipod640.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-lossless_fast.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-lossless_max.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-lossless_medium.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-lossless_slow.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-lossless_slower.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-lossless_ultrafast.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-main.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-medium.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-medium_firstpass.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-placebo.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-placebo_firstpass.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-slow.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-slower.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-slower_firstpass.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-slow_firstpass.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-superfast.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-superfast_firstpass.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-ultrafast.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-ultrafast_firstpass.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-veryfast.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-veryfast_firstpass.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-veryslow.ffpreset" />
-    <None Include="FFMPEG\bin\presets\libx264-veryslow_firstpass.ffpreset" />
     <None Include="packages.config" />
     <None Include="Resources\Whales.png" />
   </ItemGroup>
@@ -234,12 +210,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="FFMPEG\bin\x64\ffmpeg.exe" />
-    <Content Include="FFMPEG\bin\x64\ffprobe.exe" />
-    <Content Include="FFMPEG\bin\x86\ffmpeg.exe" />
-    <Content Include="FFMPEG\bin\x86\ffprobe.exe" />
+    <Page Include="Display\TestWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ArchiTed_Grasshopper\ArchiTed_Grasshopper.csproj">
@@ -256,8 +230,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>Copy "$(TargetPath)" "C:\Users\Administrator\AppData\Roaming\Grasshopper\Libraries\$(ProjectName).gha"
-Copy "$(TargetPath)" "C:\Users\教学专用\AppData\Roaming\Grasshopper\Libraries\$(ProjectName).gha"</PostBuildEvent>
+    <PostBuildEvent>Copy "$(TargetPath)" "C:\Users\ArchiTed\AppData\Roaming\Grasshopper\Libraries\$(ProjectName).gha"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <FallbackCulture>en-US</FallbackCulture>

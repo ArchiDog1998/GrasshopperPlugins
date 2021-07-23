@@ -78,6 +78,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MyComponent1.cs" />
     <Compile Include="WinformControls\AssemblyRenderSet.cs" />
     <Compile Include="WinformControls\NameBoxRenderSet.cs" />
     <Compile Include="WinformControls\NickNameOrNameTextBox.cs" />
@@ -114,7 +115,6 @@
     <Compile Include="WPF\ExceptionWindowPlus.xaml.cs">
       <DependentUpon>ExceptionWindowPlus.xaml</DependentUpon>
     </Compile>
-    <Compile Include="InfoGlassesComponent.cs" />
     <Compile Include="NamedViewPPTComponent.cs" />
     <Compile Include="InfoGlassesInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -305,8 +305,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>Copy "$(TargetPath)" "C:\Users\教学专用\AppData\Roaming\Grasshopper\Libraries\ShowcaseTools\$(ProjectName).gha"
-Copy "$(TargetPath)" "C:\Users\Administrator\AppData\Roaming\Grasshopper\Libraries\ShowcaseTools\$(ProjectName).gha"</PostBuildEvent>
+    <PostBuildEvent>Copy "$(TargetPath)" "C:\Users\ArchiTed\AppData\Roaming\Grasshopper\Libraries\ShowcaseTools\$(ProjectName).gha"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <FallbackCulture>en-US</FallbackCulture>

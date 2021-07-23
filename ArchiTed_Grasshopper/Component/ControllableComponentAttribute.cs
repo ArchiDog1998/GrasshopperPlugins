@@ -32,7 +32,7 @@ namespace ArchiTed_Grasshopper
         public static RectangleF LayoutBoundsControl(ControllableComponent owner, RectangleF bounds)
         {
             bounds.Inflate(-2f, -2f);
-            foreach (Renderable control in owner.Controls)
+            foreach (Renderable_Old control in owner.Controls)
             {
                 bounds = RectangleF.Union(bounds, control.Bounds);
             }

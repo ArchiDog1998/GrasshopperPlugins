@@ -19,7 +19,7 @@ namespace ArchiTed_Grasshopper.WinformControls
     /// <summary>
     /// Define a class that only need to render on GH_Canvas.
     /// </summary>
-    public abstract class RenderItem : Renderable
+    public abstract class RenderItem : Renderable_Old
     {
         /// <summary>
         /// Which documentObject that should rely on.

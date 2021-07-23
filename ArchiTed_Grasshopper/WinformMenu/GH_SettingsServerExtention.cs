@@ -8,6 +8,7 @@
 using Grasshopper.Kernel;
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -33,7 +34,31 @@ namespace ArchiTed_Grasshopper
             string key = preset.Name.GetType().Name + "." + preset.Name.ToString();
 
             //Set value.
-            object @default = PropGetValue(server, preset);
+            server.SetValue(key, value);
+
+            //ValueChanged.
+            if (preset.ValueChanged != null)
+                preset.ValueChanged.Invoke(value);
+        }
+
+        internal static object PropGetValue<T>(this GH_SettingsServer server, SettingsPreset<T> preset) where T : Enum
+        {
+            //Get the default
+            object @default = preset.Default;
+
+            //Find Key.
+            string key = preset.Name.GetType().Name + "." + preset.Name.ToString();
+
+            //Get Value.
+            return server.GetValue(key, @default);
+        }
+        #endregion
+
+        public static void SetValue(this GH_SettingsServer server, string key, object value)
+        {
+            //Set value.
+            object @default = GetValue(server, key, value);
+
             if (@default is bool)
                 server.SetValue(key, (bool)value);
             else if (@default is byte)
@@ -59,23 +84,15 @@ namespace ArchiTed_Grasshopper
             else if (@default is Font)
                 server.SetValue(key, (Font)value);
             else if (@default is IEnumerable<Guid>)
-                server.SetValue(key, (IEnumerable<Guid>)value);
+                server.SetValue(key, (IEnumerable)value);
+            else if (@default is IDictionary)
+                server.SetValue(key, (IDictionary)value);
             else
                 throw new Exception(nameof(value) + " is not the right type!");
-
-            //ValueChanged.
-            if (preset.ValueChanged != null)
-                preset.ValueChanged.Invoke(value);
         }
 
-        internal static object PropGetValue<T>(this GH_SettingsServer server, SettingsPreset<T> preset) where T : Enum
+        public static object GetValue(this GH_SettingsServer server, string key, object @default)
         {
-            //Get the default
-            object @default = preset.Default;
-
-            //Find Key.
-            string key = preset.Name.GetType().Name + "." + preset.Name.ToString();
-
             //Get value
             if (@default is bool)
                 return server.GetValue(key, (bool)@default);
@@ -102,17 +119,17 @@ namespace ArchiTed_Grasshopper
             else if (@default is Font)
                 return server.GetValue(key, (Font)@default);
             else if (@default is IEnumerable<Guid>)
-                return server.GetValue(key, (IEnumerable<Guid>)@default);
-
-            throw new Exception(preset.Name.ToString() + " is a invalid type!");
+                return server.GetValue(key, (IEnumerable)@default);
+            else if (@default is IDictionary)
+                return server.GetValue(key, (IDictionary)@default);
+            throw new Exception(key + " is a invalid type!");
         }
-        #endregion
 
         #region Font
         public static Font GetValue(this GH_SettingsServer server, string key, Font @default)
         {
             string fontStr = server.GetValue(key, string.Empty);
-            if(fontStr == string.Empty)
+            if (fontStr == string.Empty)
             {
                 return @default;
             }
@@ -168,23 +185,22 @@ namespace ArchiTed_Grasshopper
         #endregion
 
         #region IEnumerable<Guid>
-        public static IEnumerable<Guid> GetValue(this GH_SettingsServer server, string key, IEnumerable<Guid> @default)
+        public static IEnumerable GetValue(this GH_SettingsServer server, string key, IEnumerable @default)
         {
             //Get count;
             int count = server.GetValue(key + "Count", 0);
+            if (count == 0) return @default;
 
-            Guid[] result = new Guid[count];
+            object[] result = new object[count];
             for (int i = 0; i < count; i++)
             {
-                //Get every guid.
-                Guid temp = server.GetValue(key + i.ToString("D10"), Guid.Empty);
-                if (temp == Guid.Empty) throw new Exception(key + i.ToString("D10") + "is not found!");
+                object temp = server.GetValue(key + i.ToString("D10"), default(object));
                 result[i] = temp;
             }
             return result;
         }
 
-        public static void SetValue(this GH_SettingsServer server, string key, IEnumerable<Guid> value)
+        public static void SetValue(this GH_SettingsServer server, string key, IEnumerable value)
         {
             //Remove Value
             int beforeCount = server.GetValue(key + "Count", 0);
@@ -194,11 +210,59 @@ namespace ArchiTed_Grasshopper
             }
 
             //Set Value
-            int count = value.Count();
+            int count = value.Cast<object>().Count();
             server.SetValue(key + "Count", count);
             for (int i = 0; i < count; i++)
             {
-                server.SetValue(key + i.ToString("D10"), value.ElementAt(i));
+                server.SetValue(key + i.ToString("D10"), value.Cast<object>().ElementAt(i));
+            }
+        }
+        #endregion
+
+        #region Dictionary
+        public static IDictionary GetValue(this GH_SettingsServer server, string key, IDictionary @default)
+        {
+            //Get count;
+            int count = server.GetValue(key + "Count", 0);
+            if (count == 0) return @default;
+
+            Dictionary<object, object> result = new Dictionary<object, object>();
+            for (int i = 0; i < count; i++)
+            {
+                //Get every guid.
+                object valueKey = server.GetValue(key + "Key" + i.ToString("D10"), default(object));
+                object Value = server.GetValue(key + "Value" + i.ToString("D10"), default(object));
+                result[valueKey] = Value;
+            }
+            return result;
+        }
+
+        public static void SetValue(this GH_SettingsServer server, string key, IDictionary value)
+        {
+            //Remove Value
+            int beforeCount = server.GetValue(key + "Count", 0);
+            for (int k = 0; k < beforeCount; k++)
+            {
+                server.DeleteValue(key + "Key" + k.ToString("D10"));
+                server.DeleteValue(key + "Value" + k.ToString("D10"));
+            }
+
+            //Set Value
+            int count = value.Count;
+            server.SetValue(key + "Count", count);
+
+            int i = 0;
+            foreach (var item in value.Keys)
+            {
+                server.SetValue(key + "Key" + i.ToString("D10"), item);
+                i++;
+            }
+
+            int j = 0;
+            foreach (var item in value.Values)
+            {
+                server.SetValue(key + "Value" + j.ToString("D10"), item);
+                j++;
             }
         }
         #endregion

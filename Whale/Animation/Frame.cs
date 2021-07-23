@@ -563,7 +563,7 @@ namespace Whale.Animation
                 RhinoView = Rhino.RhinoDoc.ActiveDoc.Views.Add("Whale", DefinedViewportProjection.Perspective, new Rectangle(x, y, width, height), true);
                 RhinoView.Size = new Size(width, height);
                 RhinoView.ActiveViewport.DisplayMode = DisplayModeDescription.GetDisplayMode(DisplayModeDescription.RenderedId);
-                IntPtr parent = GetControl.GetParent(RhinoView.Handle);
+                IntPtr parent = GetControl.GetDC(RhinoView.Handle);
                 GetControl.SetWindowPos(parent, -1, 0, 0, 0, 0, 3);
             }
             else

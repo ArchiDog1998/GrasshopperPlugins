@@ -505,8 +505,6 @@ namespace ArchiTed_Grasshopper
             ToolStripMenuItem item = CreateOneItem(itemName, itemTip, itemIcon, @default, enable);
 
             item.BindingAndCheckProperty(server, valueName);
-
-            server.DefaultValueChanged(valueName);
             return item;
         }
 
@@ -549,7 +547,7 @@ namespace ArchiTed_Grasshopper
                     }
                 }
 
-                _clickedAction();
+                //_clickedAction();
             }
             item.Click += Item_Click;
         }

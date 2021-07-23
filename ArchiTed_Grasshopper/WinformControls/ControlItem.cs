@@ -23,7 +23,7 @@ namespace ArchiTed_Grasshopper.WinformControls
     /// Some Controllable Item.
     /// </summary>
     /// <typeparam name="T">Type to set or get in the ControllableComponent.</typeparam>
-    public abstract class ControlItem<T> : Renderable, IRespond, IControlState<T>
+    public abstract class ControlItem<T> : Renderable_Old, IRespond, IControlState<T>
     {
         /// <summary>
         /// The name of the value in type T.

@@ -79,7 +79,7 @@
 
 
     <Grid>
-        <Border CornerRadius="20" Margin="5" Background="{StaticResource ResourceKey=Brush_Background}" VerticalAlignment="Stretch"
+        <Border CornerRadius="20" Margin="5" Background="{StaticResource ResourceKey=   Brush_Background}" VerticalAlignment="Stretch"
             ClipToBounds="False" materialDesign:ShadowAssist.ShadowDepth="Depth2" BorderThickness="2" BorderBrush="Gray">
 
             <Grid>

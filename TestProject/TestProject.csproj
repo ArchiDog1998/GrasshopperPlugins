@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FunctionFinder.cs" />
+    <Compile Include="TestComponent.cs" />
     <Compile Include="TestProjectInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

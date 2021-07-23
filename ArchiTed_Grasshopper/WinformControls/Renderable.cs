@@ -1,12 +1,4 @@
-﻿/*  Copyright 2020 RadiRhino-秋水. All Rights Reserved.
-
-    Distributed under MIT license.
-
-    See file LICENSE for detail or copy at http://opensource.org/licenses/MIT
-*/
-
-using Grasshopper.GUI.Canvas;
-using Grasshopper.Kernel;
+﻿using Grasshopper.GUI.Canvas;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -16,10 +8,7 @@ using System.Threading.Tasks;
 
 namespace ArchiTed_Grasshopper.WinformControls
 {
-    /// <summary>
-    /// Define a class that can be rendered on the GH_Canvas.
-    /// </summary>
-    public abstract class Renderable: IRenderable
+    public abstract class Renderable: IDisposable
     {
         /// <summary>
         /// The scope of this renderable class that maybe rendered.
@@ -29,7 +18,7 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// <summary>
         /// whether to render when viewport's zoom is less than 0.5.
         /// </summary>
-        private bool RenderLittleZoom { get; }
+        private bool _renderLittleZoom { get; }
 
         /// <summary>
         /// Define a class that can be rendered on the GH_Canvas.
@@ -37,9 +26,9 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// <param name="renderLittleZoom">Whether to render when viewport's zoom is less than 0.5.</param>
         public Renderable(bool renderLittleZoom = false)
         {
-            this.RenderLittleZoom = renderLittleZoom;
+            this._renderLittleZoom = renderLittleZoom;
+            Grasshopper.Instances.ActiveCanvas.CanvasPaintBegin += IsRender;
         }
-
 
         #region Render
         /// <summary>
@@ -49,29 +38,17 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// <param name="graphics">graphics from render in component.</param>
         /// <param name="renderLittleZoom">whether to render when viewport's zoom is less than 0.5.</param>
         /// <returns></returns>
-        protected virtual bool IsRender(GH_Canvas canvas,  Graphics graphics,  bool renderLittleZoom = false)
+        protected virtual void IsRender(GH_Canvas canvas)
         {
-            if (this.Bounds == new RectangleF()) return false;
+            RemoveRenderEvent();
+            if (this.Bounds == new RectangleF()) return;
             RectangleF rec = this.Bounds;
             bool result = canvas.Viewport.IsVisible(ref rec, 10f);
-            this.Bounds = rec;
-            if (!renderLittleZoom)
+            if (!_renderLittleZoom)
             {
                 result = result && canvas.Viewport.Zoom >= 0.5f;
             }
-            return result;
-        }
-
-        /// <summary>
-        /// Render to canvas to raise up.
-        /// </summary>
-        /// <param name="canvas">canvas from render in component.</param>
-        /// <param name="graphics">graphics from render in component.</param>
-        /// <param name="channel">channel from render in component.</param>
-        public void RenderToCanvas(GH_Canvas canvas, Graphics graphics, GH_CanvasChannel channel)
-        {
-            if (IsRender(canvas,graphics, RenderLittleZoom))
-                Render(canvas, graphics, channel);
+            if (result) AddRenderEvent();
         }
 
         /// <summary>
@@ -81,6 +58,45 @@ namespace ArchiTed_Grasshopper.WinformControls
         /// <param name="graphics">graphics from render in component.</param>
         /// <param name="channel">channel from render in component.</param>
         protected abstract void Render(GH_Canvas canvas, Graphics graphics, GH_CanvasChannel channel);
+
+        private void AddRenderEvent()
+        {
+            Grasshopper.Instances.ActiveCanvas.CanvasPostPaintGroups += ActiveCanvas_CanvasPostPaintGroups;
+            Grasshopper.Instances.ActiveCanvas.CanvasPostPaintObjects += ActiveCanvas_CanvasPostPaintObjects;
+            Grasshopper.Instances.ActiveCanvas.CanvasPostPaintWires += ActiveCanvas_CanvasPostPaintWires;
+            Grasshopper.Instances.ActiveCanvas.CanvasPostPaintOverlay += ActiveCanvas_CanvasPostPaintOverlay;
+        }
+
+        private void ActiveCanvas_CanvasPostPaintOverlay(GH_Canvas sender)=>
+            Render(sender, sender.Graphics, GH_CanvasChannel.Overlay);
+
+        private void ActiveCanvas_CanvasPostPaintWires(GH_Canvas sender)=>
+            Render(sender, sender.Graphics, GH_CanvasChannel.Wires);
+
+        private void ActiveCanvas_CanvasPostPaintObjects(GH_Canvas sender)=>
+            Render(sender, sender.Graphics, GH_CanvasChannel.Objects);
+
+
+        private void ActiveCanvas_CanvasPostPaintGroups(GH_Canvas sender) =>
+            Render(sender, sender.Graphics, GH_CanvasChannel.Groups);
+
+        private void RemoveRenderEvent()
+        {
+            Grasshopper.Instances.ActiveCanvas.CanvasPostPaintGroups -= ActiveCanvas_CanvasPostPaintGroups;
+            Grasshopper.Instances.ActiveCanvas.CanvasPostPaintObjects -= ActiveCanvas_CanvasPostPaintObjects;
+            Grasshopper.Instances.ActiveCanvas.CanvasPostPaintWires -= ActiveCanvas_CanvasPostPaintWires;
+            Grasshopper.Instances.ActiveCanvas.CanvasPostPaintOverlay -= ActiveCanvas_CanvasPostPaintOverlay;
+        }
+
+        public void Dispose()
+        {
+            try
+            {
+                Grasshopper.Instances.ActiveCanvas.CanvasPaintBegin -= IsRender;
+
+            }
+            catch { }
+        }
         #endregion
     }
 }

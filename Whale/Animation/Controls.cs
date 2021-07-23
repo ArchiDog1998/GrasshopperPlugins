@@ -263,7 +263,8 @@ namespace Whale.Animation
     internal class GetControl
     {
         [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-        internal static extern IntPtr GetParent(IntPtr hWnd);
+        internal static extern IntPtr GetDC(IntPtr hWnd);
+
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         internal static extern int SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int y, int Width, int Height, int flags);
