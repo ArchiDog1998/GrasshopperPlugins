@@ -4,6 +4,7 @@ using System.Drawing;
 using ArchiTed_Grasshopper;
 using ArchiTed_Grasshopper.WinformControls;
 using ArchiTed_Grasshopper.WPF;
+using Grasshopper.GUI.Canvas;
 using Grasshopper.Kernel;
 using Rhino.Geometry;
 
@@ -55,6 +56,15 @@ namespace InfoGlasses
 
         public override void CreateWindow()
         {
+            GH_Canvas canvas = Grasshopper.Instances.ActiveCanvas;
+            canvas.MouseClick += Canvas_MouseClick;
+        }
+
+        private void Canvas_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            GH_Canvas canvas = (GH_Canvas)sender;
+
+            PointF pivot = canvas.Viewport.UnprojectPoint(e.Location);
         }
 
         /// <summary>
