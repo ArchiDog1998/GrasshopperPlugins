@@ -30,21 +30,24 @@ namespace InfoGlasses.WinformMenu
         {
             new SettingsPreset<FixCategoryProps>(FixCategoryProps.IsFixCategoryIcon, true, (value)=>
             {
-                switch (value)
+
+                if ((bool)value)
+                {
+                    foreach (string cateName in CanChangeCategoryIcon.Keys)
                     {
-                        case true:
-                            foreach (string cateName in CanChangeCategoryIcon.Keys)
-                            {
-                                Grasshopper.Instances.ComponentServer.AddCategoryIcon(cateName, CanChangeCategoryIcon[cateName]);
-                            }
-                            break;
-                        case false:
-                            foreach (string cateName in CanChangeCategoryIcon.Keys)
-                            {
-                                AlreadyHave.Remove(cateName);
-                            }
-                            break;
+                        Bitmap bitmap = CanChangeCategoryIcon[cateName];
+                        if(bitmap != null && !string.IsNullOrEmpty(cateName))
+                        Grasshopper.Instances.ComponentServer.AddCategoryIcon(cateName,bitmap );
                     }
+                }
+                else
+                {
+                    foreach (string cateName in CanChangeCategoryIcon.Keys)
+                    {
+                        AlreadyHave.Remove(cateName);
+                    }
+                }
+
                 GH_ComponentServer.UpdateRibbonUI();
             }),
             new SettingsPreset<FixCategoryProps>(FixCategoryProps.FixCategoryFolder, Grasshopper.Folders.UserObjectFolders[0]),

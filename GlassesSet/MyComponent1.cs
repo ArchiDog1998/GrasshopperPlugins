@@ -52,6 +52,12 @@ namespace InfoGlasses
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
+            Grasshopper.Instances.ActiveCanvas.CanvasPostPaintObjects += ActiveCanvas_CanvasPostPaintObjects;
+        }
+
+        private void ActiveCanvas_CanvasPostPaintObjects(GH_Canvas sender)
+        {
+            sender.Graphics.DrawString("Can I Do This?", GH_FontServer.Standard, new SolidBrush(Color.DarkRed), new PointF(0, 0));
         }
 
         public override void CreateWindow()
