@@ -58,6 +58,6 @@ namespace Test
         /// It is vital this Guid doesn't change otherwise old ghx files 
         /// that use the old ID will partially fail during loading.
         /// </summary>
-        public override Guid ComponentGuid => new Guid("07968A82-E2D5-4402-8E48-54FD4963C624");
+        public override Guid ComponentGuid => new Guid("8CF01C95-4788-43CE-9DEE-BF163DC1D3F5");
     }
 }

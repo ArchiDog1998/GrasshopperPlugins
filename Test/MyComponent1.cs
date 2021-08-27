@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using ArchiTed_Grasshopper;
-using ArchiTed_Grasshopper.WinformControls;
-using ArchiTed_Grasshopper.WPF;
-using Grasshopper.GUI.Canvas;
+
 using Grasshopper.Kernel;
 using Rhino.Geometry;
+using Orthoptera.Language;
 
 namespace InfoGlasses
 {
-    public class MyComponent1 : ControllableComponent
+    public class MyComponent1 : GH_Component
     {
-        public bool Checked => this.GetValue(nameof(Checked), true);
         /// <summary>
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
@@ -21,14 +17,6 @@ namespace InfoGlasses
               "Description",
               "Category", "Subcategory")
         {
-            PointF inputLayoutMove;
-            var funcs = WinformControlHelper.GetInnerRectLeftFunc(1, 2, new SizeF(20, 20), out inputLayoutMove);
-            this.InputLayoutMove = inputLayoutMove;
-
-            this.Controls = new IRespond[] {
-                new ClickButtonName<LangWindow>(nameof(Checked), this, funcs(0), true, new string[] { "N", "名字" }, true),
-                new ClickButtonName<LangWindow>(nameof(Checked), this, funcs(1), true, new string[] { "S", "第二个" }, true),
-            };
         }
 
         /// <summary>
@@ -36,7 +24,6 @@ namespace InfoGlasses
         /// </summary>
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddAngleParameter("T", "T", "T", GH_ParamAccess.item);
         }
 
         /// <summary>
@@ -52,25 +39,7 @@ namespace InfoGlasses
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            Grasshopper.Instances.ActiveCanvas.CanvasPostPaintObjects += ActiveCanvas_CanvasPostPaintObjects;
-        }
-
-        private void ActiveCanvas_CanvasPostPaintObjects(GH_Canvas sender)
-        {
-            sender.Graphics.DrawString("Can I Do This?", GH_FontServer.Standard, new SolidBrush(Color.DarkRed), new PointF(0, 0));
-        }
-
-        public override void CreateWindow()
-        {
-            GH_Canvas canvas = Grasshopper.Instances.ActiveCanvas;
-            canvas.MouseClick += Canvas_MouseClick;
-        }
-
-        private void Canvas_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
-        {
-            GH_Canvas canvas = (GH_Canvas)sender;
-
-            PointF pivot = canvas.Viewport.UnprojectPoint(e.Location);
+            LanguageHelper.CreateLanguageXml(Grasshopper.Instances.ComponentServer.ObjectProxies, new System.Globalization.CultureInfo(1033));
         }
 
         /// <summary>
@@ -91,7 +60,7 @@ namespace InfoGlasses
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("FDC62C6D-7C03-412D-8FF8-B76439197730"); }
+            get { return new Guid("12702A51-2750-431F-8688-5CA122AC0BB2"); }
         }
     }
 }

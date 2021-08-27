@@ -15,7 +15,7 @@ namespace Test
         //Return a short string describing the purpose of this GHA library.
         public override string Description => "";
 
-        public override Guid Id => new Guid("6B69FC59-9E52-4E23-879C-2ACFA80F2FFA");
+        public override Guid Id => new Guid("9452306A-7D5C-484A-8135-C05214473E06");
 
         //Return a string identifying you or your company.
         public override string AuthorName => "";
