@@ -39,7 +39,8 @@ namespace InfoGlasses
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            LanguageHelper.CreateLanguageXml(Grasshopper.Instances.ComponentServer.ObjectProxies, new System.Globalization.CultureInfo(1033));
+            GH_ObjectDescriptionTable.WriteXml( new System.Globalization.CultureInfo(1033));
+            GH_ObjectDescriptionTable.WriteXml(new System.Globalization.CultureInfo("zh_CN"));
         }
 
         /// <summary>

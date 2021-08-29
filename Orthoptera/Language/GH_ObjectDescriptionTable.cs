@@ -7,8 +7,9 @@
 
 using Grasshopper.Kernel;
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,51 +17,61 @@ using System.Xml;
 
 namespace Orthoptera.Language
 {
-    public class GH_ObjectDescriptionTable : Xmlable
+    public class GH_ObjectDescriptionTable
     {
-        private List<GH_ObjectDescription> _descriptions = new List<GH_ObjectDescription>();
+        private CultureInfo Info;
+        private static string Path => Grasshopper.Folders.AppDataFolder + "Language\\";
 
-        protected override string XmlName => "DocumentObjects";
+        public List<GH_ObjectDescriptionList> DescSet { get; } = new List<GH_ObjectDescriptionList>();
 
-        public GH_ObjectDescription this[int i] => _descriptions[i];
+        public GH_ObjectDescriptionTable(CultureInfo info)
+        {
+            //Directory.g
+        }
 
-        public GH_ObjectDescription this[string objectFullName] {
-            get
+        #region WriteXml to translate.
+        public static void WriteXml(CultureInfo info)
+        {
+            string pathWithCulture = Path + info.Name + '\\';
+            Directory.CreateDirectory(pathWithCulture);
+
+            List<IGH_ObjectProxy> compiledProxies = new List<IGH_ObjectProxy>();
+            List<IGH_ObjectProxy> userobjectProxies = new List<IGH_ObjectProxy>();
+            foreach (var proxy in Grasshopper.Instances.ComponentServer.ObjectProxies)
             {
-                foreach (var item in _descriptions)
+                if (proxy.Kind == GH_ObjectType.CompiledObject)
                 {
-                    if (item.ObjectFullName == objectFullName)
-                        return item;
+                    compiledProxies.Add(proxy);
                 }
-                return null;
+                else if (proxy.Kind == GH_ObjectType.UserObject)
+                {
+                    userobjectProxies.Add(proxy);
+                }
             }
-        }
 
-        public GH_ObjectDescriptionTable(IList<IGH_ObjectProxy> proxies)
-        {
-            foreach (var proxy in proxies)
+            List<GH_ObjectDescriptionList> descSet = new List<GH_ObjectDescriptionList>();
+
+            //Group the CompiledProxies with their libraries.
+            foreach (var group in compiledProxies.GroupBy((proxy) => {
+                foreach (GH_AssemblyInfo lib in Grasshopper.Instances.ComponentServer.Libraries)
+                {
+                    if (lib.Assembly == proxy.Type.Assembly)
+                    {
+                        return lib.Name;
+                    }
+                }
+                return "NullLibrary";
+            }))
             {
-                _descriptions.Add(GH_ObjectDescription.CreateFromProxy(proxy));
+                new GH_ObjectDescriptionList(group.ToList(), group.Key).WriteXml(pathWithCulture + info.Name + "_");
             }
-        }
 
-
-        public override void ChangeFromXml(XmlElement element)
-        {
-            _descriptions.Clear();
-            foreach (var obj in element.ChildNodes)
+            //Group the UserProxies with their categories.
+            foreach (var group in userobjectProxies.GroupBy((proxy) => proxy.Desc.Category))
             {
-                XmlNode node = (XmlNode)obj;
-                _descriptions.Add(new GH_ObjectDescription((XmlElement)node));
+                new GH_ObjectDescriptionList(group.ToList(), group.Key).WriteXml(pathWithCulture + info.Name + "_");
             }
         }
-
-        protected override void ToXml(ref XmlElement element, XmlDocument doc)
-        {
-            foreach (var desc in _descriptions)
-            {
-                element.AppendChild(desc.WriteXml(doc));
-            }
-        }
+        #endregion
     }
 }

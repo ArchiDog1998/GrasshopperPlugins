@@ -62,9 +62,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Language\GH_ObjectDescription.cs" />
+    <Compile Include="Language\GH_ObjectDescriptionList.cs" />
     <Compile Include="Language\GH_ObjectDescriptionTable.cs" />
-    <Compile Include="Language\Xmlable.cs" />
-    <Compile Include="Language\LanguageHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
