@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using Grasshopper.Kernel;
 using Rhino.Geometry;
-using Orthoptera.Language;
-
+using System.Reflection;
 namespace InfoGlasses
 {
     public class MyComponent1 : GH_Component
@@ -13,7 +12,7 @@ namespace InfoGlasses
         /// Initializes a new instance of the MyComponent1 class.
         /// </summary>
         public MyComponent1()
-          : base("MyComponent1", "Nickname",
+          : base("OverrideTest", "Nickname",
               "Description",
               "Category", "Subcategory")
         {
@@ -39,10 +38,10 @@ namespace InfoGlasses
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            GH_DescriptionTable.Culture = new System.Globalization.CultureInfo("zh_CN");
-            GH_DescriptionTable.StartTranslate();
-            //GH_DescriptionTable.WriteXml(new System.Globalization.CultureInfo(1033));
-            //GH_DescriptionTable.WriteXml(new System.Globalization.CultureInfo("zh_CN"));
+            MethodInfo info1 = typeof(Test).GetMethods().Where((method) => method.Name.Contains("Show")).First();
+            MethodInfo info2 = typeof(Another).GetMethods().Where((method) => method.Name.Contains("ShowNEw")).First();
+            ArchiTed_Grasshopper.Unsafe.UnsafeHelper.ExchangeMethod(info1, info2);
+            System.Windows.Forms.MessageBox.Show(new Test().Show());
         }
 
         /// <summary>
@@ -63,7 +62,24 @@ namespace InfoGlasses
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("12702A51-2750-431F-8688-5CA122AC0BB2"); }
+            get { return new Guid("2EBCC201-2EF7-4855-A9D9-EED5EF36DFB6"); }
+        }
+    }
+
+    public class Test
+    {
+        public string MyProperty { get; set; } = "What?";
+        public string Show()
+        {
+            return MyProperty + "Hello";
+        }
+    }
+
+    public class Another : Test
+    {
+        public string ShowNEw()
+        {
+            return MyProperty + "成功了";
         }
     }
 }

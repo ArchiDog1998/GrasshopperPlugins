@@ -15,8 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orthoptera", "Orthoptera\Or
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{61F10366-7F14-428A-8A38-ADCFA0F6124B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary1", "ClassLibrary1\ClassLibrary1.csproj", "{92C1DC6B-0D9C-44B6-839C-F166C34EB818}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -151,26 +149,6 @@ Global
 		{61F10366-7F14-428A-8A38-ADCFA0F6124B}.Release|x64.Build.0 = Release|Any CPU
 		{61F10366-7F14-428A-8A38-ADCFA0F6124B}.Release|x86.ActiveCfg = Release|Any CPU
 		{61F10366-7F14-428A-8A38-ADCFA0F6124B}.Release|x86.Build.0 = Release|Any CPU
-		{92C1DC6B-0D9C-44B6-839C-F166C34EB818}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{92C1DC6B-0D9C-44B6-839C-F166C34EB818}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{92C1DC6B-0D9C-44B6-839C-F166C34EB818}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{92C1DC6B-0D9C-44B6-839C-F166C34EB818}.Debug|ARM.Build.0 = Debug|Any CPU
-		{92C1DC6B-0D9C-44B6-839C-F166C34EB818}.Debug|ARM64.ActiveCfg = Debug|Any CPU
-		{92C1DC6B-0D9C-44B6-839C-F166C34EB818}.Debug|ARM64.Build.0 = Debug|Any CPU
-		{92C1DC6B-0D9C-44B6-839C-F166C34EB818}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{92C1DC6B-0D9C-44B6-839C-F166C34EB818}.Debug|x64.Build.0 = Debug|Any CPU
-		{92C1DC6B-0D9C-44B6-839C-F166C34EB818}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{92C1DC6B-0D9C-44B6-839C-F166C34EB818}.Debug|x86.Build.0 = Debug|Any CPU
-		{92C1DC6B-0D9C-44B6-839C-F166C34EB818}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{92C1DC6B-0D9C-44B6-839C-F166C34EB818}.Release|Any CPU.Build.0 = Release|Any CPU
-		{92C1DC6B-0D9C-44B6-839C-F166C34EB818}.Release|ARM.ActiveCfg = Release|Any CPU
-		{92C1DC6B-0D9C-44B6-839C-F166C34EB818}.Release|ARM.Build.0 = Release|Any CPU
-		{92C1DC6B-0D9C-44B6-839C-F166C34EB818}.Release|ARM64.ActiveCfg = Release|Any CPU
-		{92C1DC6B-0D9C-44B6-839C-F166C34EB818}.Release|ARM64.Build.0 = Release|Any CPU
-		{92C1DC6B-0D9C-44B6-839C-F166C34EB818}.Release|x64.ActiveCfg = Release|Any CPU
-		{92C1DC6B-0D9C-44B6-839C-F166C34EB818}.Release|x64.Build.0 = Release|Any CPU
-		{92C1DC6B-0D9C-44B6-839C-F166C34EB818}.Release|x86.ActiveCfg = Release|Any CPU
-		{92C1DC6B-0D9C-44B6-839C-F166C34EB818}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

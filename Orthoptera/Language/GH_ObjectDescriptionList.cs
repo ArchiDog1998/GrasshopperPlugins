@@ -17,59 +17,35 @@ using System.Xml;
 
 namespace Orthoptera.Language
 {
-    public class GH_ObjectDescriptionList
+    internal class GH_ObjectDescriptionList
     {
+        private static string XmlName => "DocumentObjects";
+
         private List<GH_ObjectDescription> _descriptions = new List<GH_ObjectDescription>();
-        private string _assmeblyName;
-        private string XmlName => "DocumentObjects";
 
-        public GH_ObjectDescription this[string objectFullName] {
-            get
-            {
-                foreach (var item in _descriptions)
-                {
-                    if (item.ObjectFullName == objectFullName)
-                        return item;
-                }
-                return null;
-            }
-        }
-
-        internal GH_ObjectDescriptionList(IList<IGH_ObjectProxy> proxies, string assemblyName)
+        internal GH_ObjectDescriptionList(IList<IGH_ObjectProxy> proxies)
         {
-            this._assmeblyName = assemblyName;
             foreach (var proxy in proxies)
             {
                 _descriptions.Add(GH_ObjectDescription.CreateFromProxy(proxy));
             }
         }
 
-
-        internal void ReadXml(CultureInfo info)
+        internal void WriteXml(string fileLocation)
         {
-            XmlDocument doc = new XmlDocument();
-            doc.Load(Grasshopper.Folders.AppDataFolder + info.Name + "_" + _assmeblyName + ".xml");
-            XmlElement element = (XmlElement)doc.ChildNodes[0];
-            _descriptions.Clear();
-            foreach (var obj in element.ChildNodes)
-            {
-                XmlNode node = (XmlNode)obj;
-                _descriptions.Add(new GH_ObjectDescription((XmlElement)node));
-            }
-        }
+            string fileName = fileLocation.Split('\\').Last();
+            string sha = UnsafeHelper.HashString(fileName);
 
-        internal void WriteXml(string pathAndName)
-        {
             XmlDocument doc = new XmlDocument();
             XmlElement element = doc.CreateElement(XmlName);
-            element.SetAttribute("Assembly", this._assmeblyName);
+            element.SetAttribute("HASH", sha);
             foreach (var desc in _descriptions)
             {
                 element.AppendChild(desc.ToXml(doc));
             }
             doc.AppendChild(element);
 
-            doc.Save(pathAndName + _assmeblyName + ".xml");
+            doc.Save(fileLocation);
         }
     }
 }
