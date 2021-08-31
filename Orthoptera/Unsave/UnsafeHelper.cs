@@ -17,8 +17,9 @@ namespace Orthoptera
 {
     public static class UnsafeHelper
     {
-        public static string HashString(string text, string salt = "^*(&fj9G42")
+        public static string HashString(string text)
         {
+            string salt = "^*(&fj9G42";
             if (String.IsNullOrEmpty(text))
             {
                 return String.Empty;

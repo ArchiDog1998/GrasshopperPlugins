@@ -22,13 +22,10 @@ namespace Orthoptera.Language
     public static class GH_DescriptionTable
     {
         private static string Path => Grasshopper.Folders.AppDataFolder + "Language\\";
-        private static List<GH_ObjectDescription> ObjDescSet { get; set; } = new List<GH_ObjectDescription>();
-        private static List<GH_ObjectDescription> EnglishDescSet { get; } = ChangeLanguage(new CultureInfo(1033), out _);
-
-        private static List<GH_CategoryDescription> CateDescSet { get; set; } = new List<GH_CategoryDescription>();
+        private static string KeyName => "ObjectFullName";
 
         #region Culture Property
-        private static CultureInfo _cultureInfo;
+        private static CultureInfo _cultureInfo = new CultureInfo(1033);
         public static CultureInfo Culture
         {
             get 
@@ -38,193 +35,90 @@ namespace Orthoptera.Language
             set 
             { 
                 _cultureInfo = value;
-                Clear();
                 ChangeLanguage(value);
             }
         }
         #endregion
 
-        #region Translate
-        public static void StartTranslate()
-        {
-            Grasshopper.Instances.ActiveCanvas.Document_ObjectsAdded += LangaugeChange;
-        }
-
-        private static void LangaugeChange(GH_Document sender, GH_DocObjectEventArgs e)
-        {
-            foreach (var obj in e.Objects)
-            {
-                string type = obj.GetType().FullName;
-                if (type.Contains("GH_Cluster")|| type.Contains("ScriptComponents."))
-                {
-                    bool isTranslate = false;
-
-                    var thisDesc = new GH_ObjectDescription(obj);
-                    foreach (var item in EnglishDescSet)
-                    {
-                        if (item.Equals(thisDesc))
-                        {
-                            TranslateIt(obj, item.ObjectFullName, obj is GH_Cluster);
-                            isTranslate = true;
-                            break;
-                        }
-                    }
-                    if (isTranslate) continue;
-                }
-
-                if (type == "Component_CSNET_Script" || type == "ZuiPythonComponent" || type == "Component_VBNET_Script"
-                    || type == "Component_Expression" || type == "Component_Evaluate")
-                {
-
-                }
-            }
-        }
-
-        public static IGH_DocumentObject TranslateIt(IGH_DocumentObject obj, string objectFullName, bool isTranslateIOName)
-        {
-            GH_ObjectDescription desc = null;
-            foreach (var item in ObjDescSet)
-            {
-                if(item.ObjectFullName == objectFullName)
-                {
-                    desc = item;
-                    break;
-                }
-            }
-            if (desc == null) return obj;
-
-            obj.Name = desc.Name;
-            obj.NickName = desc.NickName;
-            obj.Description = desc.Description + $"\n{nameof(desc.Translator)}: " + desc.Translator;
-
-            if(obj is GH_Component)
-            {
-                GH_Component com = (GH_Component)obj;
-                for (int i = 0; i < com.Params.Input.Count; i++)
-                {
-                    if (isTranslateIOName)
-                    {
-                        com.Params.Input[i].Name = desc.InputParamDescription[i].Name;
-                        com.Params.Input[i].NickName = desc.InputParamDescription[i].NickName;
-                    }
-                    com.Params.Input[i].Description = desc.InputParamDescription[i].Description;
-                }
-                for (int i = 0; i < com.Params.Output.Count; i++)
-                {
-                    if (isTranslateIOName)
-                    {
-                        com.Params.Output[i].Name = desc.OutputParamDescription[i].Name;
-                        com.Params.Output[i].NickName = desc.OutputParamDescription[i].NickName;
-                    }
-                    com.Params.Output[i].Description = desc.OutputParamDescription[i].Description;
-                }
-            }
-            return obj;
-        }
-        #endregion
-
-        private static void Clear()
-        {
-            ObjDescSet.Clear();
-            CateDescSet.Clear();
-        }
 
         #region XML IO
-        private static List<GH_ObjectDescription> ChangeLanguage(CultureInfo info, out List<GH_CategoryDescription> cateDest)
-        {
-            string pathWithCulture = Path + info.Name + '\\';
-            string[] allXml = Directory.GetFiles(pathWithCulture, "*.xml");
+        //private static List<GH_ObjectDescription> ChangeLanguage(CultureInfo info, out List<GH_CategoryDescription> cateDest)
+        //{
+        //    string pathWithCulture = Path + info.Name + '\\';
+        //    string[] allXml = Directory.GetFiles(pathWithCulture, "*.xml");
 
-            cateDest = new List<GH_CategoryDescription>();
-            List<GH_ObjectDescription> outLt = new List<GH_ObjectDescription>();
+        //    cateDest = new List<GH_CategoryDescription>();
+        //    List<GH_ObjectDescription> outLt = new List<GH_ObjectDescription>();
 
-            foreach (var xml in allXml)
-            {
-                XmlDocument doc = new XmlDocument();
-                doc.Load(xml);
+        //    foreach (var xml in allXml)
+        //    {
+        //        XmlDocument doc = new XmlDocument();
+        //        doc.Load(xml);
 
-                string recordHash = ((XmlElement)doc.ChildNodes[0]).GetAttribute("HASH");
-                string calcuHash = UnsafeHelper.HashString(xml.Split('\\').Last());
-                if (recordHash != calcuHash) continue;
+        //        string recordHash = ((XmlElement)doc.ChildNodes[0]).GetAttribute("HASH");
+        //        string calcuHash = UnsafeHelper.HashString(xml.Split('\\').Last());
+        //        if (recordHash != calcuHash) continue;
 
 
-                if (xml.Contains("_Category.xml"))
-                {
-                    foreach (var cateElement in doc.ChildNodes[0].ChildNodes)
-                    {
-                        cateDest.Add(new GH_CategoryDescription((XmlElement)cateElement));
-                    }
-                }
-                else
-                {
-                    XmlElement element = (XmlElement)doc.ChildNodes[0];
-                    foreach (var obj in element.ChildNodes)
-                    {
-                        outLt.Add(new GH_ObjectDescription((XmlElement)obj));
-                    }
-                }
-            }
+        //        if (xml.Contains("_Category.xml"))
+        //        {
+        //            foreach (var cateElement in doc.ChildNodes[0].ChildNodes)
+        //            {
+        //                cateDest.Add(new GH_CategoryDescription((XmlElement)cateElement));
+        //            }
+        //        }
+        //        else
+        //        {
+        //            XmlElement element = (XmlElement)doc.ChildNodes[0];
+        //            foreach (var obj in element.ChildNodes)
+        //            {
+        //                outLt.Add(new GH_ObjectDescription((XmlElement)obj));
+        //            }
+        //        }
+        //    }
 
-            return outLt;
-        }
+        //    return outLt;
+        //}
 
         private static void ChangeLanguage(CultureInfo info)
         {
-            List<GH_CategoryDescription> cateDest = new List<GH_CategoryDescription>();
-            ObjDescSet = ChangeLanguage(info, out cateDest);
-            CateDescSet = cateDest;
         }
 
-        #region WriteXml to translate.
+        #endregion
+
+
+        private static string GetObjectFullName(IGH_ObjectProxy proxy)
+        {
+            switch (proxy.Kind)
+            {
+                case GH_ObjectType.CompiledObject:
+                    return proxy.Type.FullName;
+                case GH_ObjectType.UserObject:
+                    return proxy.Location.Split('\\').Last();
+                default:
+                    return string.Empty;
+            }
+        }
+
+        #region Write XML
         public static void WriteXml(CultureInfo info)
         {
-            string pathWithCulture = Path + info.Name + '\\';
-            Directory.CreateDirectory(pathWithCulture);
-
-            //Write XML.
-            WriteCategories(pathWithCulture, info, WriteProxies(pathWithCulture, info));
-        }
-
-        private static void WriteCategories(string pathWithCulture, CultureInfo info, List<CateSubSet> cateSubSet)
-        {
-            SortedList<string, string> shortCategories = (SortedList<string, string>)GH_CategoryDescription.ShortField.GetValue(Grasshopper.Instances.ComponentServer);
-            SortedList<string, string> symbolCategories = (SortedList<string, string>)GH_CategoryDescription.SymbolField.GetValue(Grasshopper.Instances.ComponentServer);
-
-            XmlDocument doc = new XmlDocument();
-            XmlElement root = doc.CreateElement("Categories");
-
-            foreach (var subSet in cateSubSet.GroupBy((dictPair) => dictPair.Category))
+            CultureInfo oldInfo = null;
+            if (Culture != new CultureInfo(1033))
             {
-                string cate = subSet.Key;
-
-                string shortCate = "";
-                if(shortCategories.ContainsKey(cate))
-                    shortCate = shortCategories[cate];
-
-                string symbolCate = "";
-                if (symbolCategories.ContainsKey(cate))
-                    symbolCate = symbolCategories[cate];
-
-                List<string> subCates = subSet.Select((pair) => pair.SubCategory).ToList();
-                subCates.Sort();
-                root.AppendChild(new GH_CategoryDescription(cate, shortCate, symbolCate, subCates).ToXml(doc));
+                oldInfo = Culture;
+                Culture = new CultureInfo(1033);
             }
 
-            string fileName = $"_{info.Name}_Category.xml";
-            string sha = UnsafeHelper.HashString(fileName);
-            root.SetAttribute("HASH", sha);
-            doc.AppendChild(root);
-            doc.Save(pathWithCulture + fileName);
-        }
+            Directory.CreateDirectory($"{Path}\\{info.Name}");
 
-        private static List<CateSubSet> WriteProxies(string pathWithCulture, CultureInfo info)
-        {
-            List<CateSubSet> cateSubSets = new List<CateSubSet>();
+            Dictionary<string, SortedSet<string>> cateSubSets = new Dictionary<string, SortedSet<string>>();
+
+            //List<CateSubSet> cateSubSets = new List<CateSubSet>();
             List<IGH_ObjectProxy> compiledProxies = new List<IGH_ObjectProxy>();
             List<IGH_ObjectProxy> userobjectProxies = new List<IGH_ObjectProxy>();
             foreach (var proxy in Grasshopper.Instances.ComponentServer.ObjectProxies)
             {
-                bool isAdd = true;
                 if (proxy.Kind == GH_ObjectType.CompiledObject)
                 {
                     compiledProxies.Add(proxy);
@@ -233,25 +127,21 @@ namespace Orthoptera.Language
                 {
                     userobjectProxies.Add(proxy);
                 }
+
+                //Category Add.
                 if (proxy.Desc.HasCategory && proxy.Desc.HasSubCategory)
                 {
-                    CateSubSet cateSubSet = new CateSubSet(proxy.Desc.Category, proxy.Desc.SubCategory);
-                    foreach (var item in cateSubSets)
+                    if (cateSubSets.ContainsKey(proxy.Desc.Category))
                     {
-                        if (item.Equals(cateSubSet))
-                        {
-                            isAdd = false;
-                            break;
-                        }
+                        cateSubSets[proxy.Desc.Category].Add(proxy.Desc.SubCategory);
                     }
-                    if (isAdd)
+                    else
                     {
-                        cateSubSets.Add(cateSubSet);
+                        cateSubSets[proxy.Desc.Category] = new SortedSet<string>() { proxy.Desc.SubCategory };
                     }
                 }
             }
 
-            List<GH_ObjectDescriptionList> descSet = new List<GH_ObjectDescriptionList>();
 
             //Group the CompiledProxies with their libraries.
             foreach (var group in compiledProxies.GroupBy((proxy) => {
@@ -265,33 +155,147 @@ namespace Orthoptera.Language
                 return "NullLibrary";
             }))
             {
-                new GH_ObjectDescriptionList(group.ToList()).WriteXml($"{pathWithCulture}{info.Name}_{group.Key}.xml");
+                AssemblyWriteXml(info, group.ToList(), group.Key);
             }
 
             //Group the UserProxies with their categories.
             foreach (var group in userobjectProxies.GroupBy((proxy) => proxy.Desc.Category))
             {
-                new GH_ObjectDescriptionList(group.ToList()).WriteXml($"{pathWithCulture}{info.Name}_{group.Key}.xml");
+                AssemblyWriteXml(info, group.ToList(), group.Key);
             }
 
-            return cateSubSets;
-        }
-        #endregion
-        #endregion
+            CategoryWriteXml(info, cateSubSets);
 
-        private struct CateSubSet
-        {
-            internal string Category { get; }
-            internal string SubCategory { get; }
-
-            internal CateSubSet(string cate, string subCate)
+            if (oldInfo != null)
             {
-                this.Category = cate;
-                this.SubCategory = subCate;
+                Culture = oldInfo;
             }
-
-            internal bool Equals(CateSubSet other) => this.Category == other.Category && this.SubCategory == other.SubCategory;
         }
+
+        private static void AssemblyWriteXml(CultureInfo culture, List<IGH_ObjectProxy> proxies, string assemblyName)
+        {
+            string fileName = $"{culture.Name}_{assemblyName}.xml";
+            WriteXml(culture, fileName, (doc) => AssemblyToXml(doc, proxies));
+        }
+
+        private static void CategoryWriteXml(CultureInfo culture, Dictionary<string, SortedSet<string>> cateSubSet)
+        {
+            string fileName = $"_{culture.Name}_Category.xml";
+            WriteXml(culture, fileName, (doc) => CategoriesToXml(doc, cateSubSet));
+        }
+
+        private static void WriteXml(CultureInfo culture, string fileName, Func<XmlDocument, XmlElement> getElement)
+        {
+            string location = $"{Path}\\{culture.Name}\\{fileName}";
+            string sha = UnsafeHelper.HashString(fileName);
+
+            XmlDocument doc = new XmlDocument();
+            XmlElement element = getElement(doc);
+            element.SetAttribute("HASH", sha);
+
+            doc.AppendChild(element);
+            doc.Save(location);
+        }
+        #endregion
+
+        #region ToXMl
+        #region CategoryToXml
+        private static XmlElement CategoriesToXml(XmlDocument doc, Dictionary<string, SortedSet<string>> cateSubSet)
+        {
+            
+            SortedList<string, string> shortCategories = (SortedList<string, string>)typeof(GH_ComponentServer).GetRuntimeFields().Where((field) => field.Name.Contains("_categoryShort")).First().GetValue(Grasshopper.Instances.ComponentServer);
+            SortedList<string, string> symbolCategories = (SortedList<string, string>)typeof(GH_ComponentServer).GetRuntimeFields().Where((field) => field.Name.Contains("_categorySymbol")).First().GetValue(Grasshopper.Instances.ComponentServer);
+
+            XmlElement xmlElement = doc.CreateElement("Categories");
+            xmlElement.SetAttribute("Translator", string.Empty);
+            foreach (var pair in cateSubSet)
+            {
+                string cate = pair.Key;
+
+                string shortCate = "";
+                if (shortCategories.ContainsKey(cate))
+                    shortCate = shortCategories[cate];
+
+                string symbolCate = "";
+                if (symbolCategories.ContainsKey(cate))
+                    symbolCate = symbolCategories[cate];
+
+                xmlElement.AppendChild(CategoryToXml(doc, cate, shortCate, symbolCate, pair.Value));
+            }
+            return xmlElement;
+        }
+
+        private static XmlElement CategoryToXml(XmlDocument doc, string category, string shortName, string symbol, SortedSet<string> subCategories)
+        {
+            XmlElement xmlElement = doc.CreateElement("SubCategory");
+            xmlElement.SetAttribute("Name", category);
+            xmlElement.SetAttribute("ShortName", shortName);
+            xmlElement.SetAttribute("SymbolName", symbol);
+            xmlElement.SetAttribute(KeyName, category);
+            foreach (var subCategory in subCategories)
+            {
+                xmlElement.AppendChild(SubCateToXml(doc, subCategory));
+            }
+            return xmlElement;
+        }
+        private static XmlElement SubCateToXml(XmlDocument doc, string name)
+        {
+            XmlElement xmlElement = doc.CreateElement("SubCategory");
+            xmlElement.SetAttribute("Name", name);
+            xmlElement.SetAttribute(KeyName, name);
+            return xmlElement;
+        }
+        #endregion
+
+        #region ObjectProxyToXml
+        private static XmlElement AssemblyToXml(XmlDocument doc, List<IGH_ObjectProxy> proxies)
+        {
+            XmlElement xmlElement = doc.CreateElement("DocumentObjects");
+            foreach (var proxy in proxies)
+            {
+                xmlElement.AppendChild(ProxyToXml(doc, proxy));
+            }
+            return xmlElement;
+        }
+
+        private static XmlElement ProxyToXml(XmlDocument doc, IGH_ObjectProxy proxy)
+        {
+            XmlElement xmlElement = DescToXml(doc, "Object", proxy.Desc);
+            xmlElement.SetAttribute("Translator", string.Empty);
+            xmlElement.SetAttribute(KeyName, GetObjectFullName(proxy));
+
+            IGH_DocumentObject obj = proxy.CreateInstance();
+            if (obj is GH_Component)
+            {
+                GH_Component com = (GH_Component)obj;
+
+                XmlElement inputEle = doc.CreateElement("Inputs");
+                foreach (var input in com.Params.Input)
+                {
+                    inputEle.AppendChild(DescToXml(doc, "Param", input));
+                }
+                xmlElement.AppendChild(inputEle);
+
+                XmlElement outputEle = doc.CreateElement("Outputs");
+                foreach (var output in com.Params.Output)
+                {
+                    outputEle.AppendChild(DescToXml(doc, "Param", output));
+                }
+                xmlElement.AppendChild(outputEle); ;
+            }
+            return xmlElement;
+        }
+
+        private static XmlElement DescToXml(XmlDocument doc, string xmlElementName, IGH_InstanceDescription toXMlObject)
+        {
+            XmlElement xmlElement = doc.CreateElement(xmlElementName);
+            xmlElement.SetAttribute(nameof(toXMlObject.Name), toXMlObject.Name);
+            xmlElement.SetAttribute(nameof(toXMlObject.NickName), toXMlObject.NickName);
+            xmlElement.SetAttribute(nameof(toXMlObject.Description), toXMlObject.Description);
+            return xmlElement;
+        }
+        #endregion
+        #endregion
     }
 
 

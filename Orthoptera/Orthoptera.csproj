@@ -65,11 +65,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Language\GH_CategoryDescription.cs" />
-    <Compile Include="Language\GH_ObjectDescription.cs" />
-    <Compile Include="Language\GH_ObjectDescriptionList.cs" />
     <Compile Include="Language\GH_DescriptionTable.cs" />
-    <Compile Include="Language\GH_ParamDescription.cs" />
+    <Compile Include="Language\GH_LanguageCompiledProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Unsave\UnsafeHelper.cs" />
   </ItemGroup>

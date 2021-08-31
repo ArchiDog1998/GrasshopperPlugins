@@ -39,8 +39,9 @@ namespace InfoGlasses
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            GH_DescriptionTable.Culture = new System.Globalization.CultureInfo("zh_CN");
-            GH_DescriptionTable.StartTranslate();
+            //GH_DescriptionTable.WriteXml(new System.Globalization.CultureInfo("zh_CN"));
+
+            //GH_DescriptionTable.WriteXml(new System.Globalization.CultureInfo(1033));
             //GH_DescriptionTable.WriteXml(new System.Globalization.CultureInfo(1033));
             //GH_DescriptionTable.WriteXml(new System.Globalization.CultureInfo("zh_CN"));
         }

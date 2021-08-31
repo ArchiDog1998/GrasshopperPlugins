@@ -95,7 +95,6 @@ namespace InfoGlasses
                 Grasshopper.Instances.ActiveCanvas.DocumentChanged += ActiveCanvas_DocumentChanged;
                 return;
             }
-
             editor.MainMenuStrip.Items.Add(new ShowcaseToolsMenu());
         }
 
