@@ -5,6 +5,7 @@
     See file LICENSE for detail or copy at http://opensource.org/licenses/MIT
 */
 
+using Grasshopper;
 using Grasshopper.Kernel;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,8 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Reflection;
 using Grasshopper.Kernel.Special;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace Orthoptera.Language
 {
@@ -23,6 +26,16 @@ namespace Orthoptera.Language
     {
         private static string Path => Grasshopper.Folders.AppDataFolder + "Language\\";
         private static string KeyName => "ObjectFullName";
+
+        private static readonly FieldInfo _cateIcon = typeof(GH_ComponentServer).GetRuntimeFields().Where((field) => field.Name.Contains("_categoryIcons")).First();
+        private static readonly FieldInfo _cateShort = typeof(GH_ComponentServer).GetRuntimeFields().Where((field) => field.Name.Contains("_categoryShort")).First();
+        private static readonly FieldInfo _cateSymbol = typeof(GH_ComponentServer).GetRuntimeFields().Where((field) => field.Name.Contains("_categorySymbol")).First();
+        private static readonly FieldInfo _proxies = typeof(GH_ComponentServer).GetRuntimeFields().Where((field) => field.Name.Contains("_proxies")).First();
+
+        private static readonly  SortedList<string, Bitmap> _oldCateIcons = (SortedList<string, Bitmap>)_cateIcon.GetValue(Instances.ComponentServer);
+        private static readonly SortedList<string, string> _oldCateShort = (SortedList<string, string>)_cateShort.GetValue(Instances.ComponentServer);
+        private static readonly SortedList<string, string> _oldCateSymbol = (SortedList<string, string>)_cateSymbol.GetValue(Instances.ComponentServer);
+        private static readonly SortedList<Guid, IGH_ObjectProxy> _oldProxies = (SortedList<Guid, IGH_ObjectProxy>)_proxies.GetValue(Instances.ComponentServer);
 
         #region Culture Property
         private static CultureInfo _cultureInfo = new CultureInfo(1033);
@@ -33,61 +46,211 @@ namespace Orthoptera.Language
                 return _cultureInfo; 
             }
             set 
-            { 
-                _cultureInfo = value;
-                ChangeLanguage(value);
+            {
+                if(value.Name != _cultureInfo.Name)
+                {
+                    _cultureInfo = value;
+                    ChangeLanguage(value);
+                }
             }
         }
         #endregion
 
 
         #region XML IO
-        //private static List<GH_ObjectDescription> ChangeLanguage(CultureInfo info, out List<GH_CategoryDescription> cateDest)
-        //{
-        //    string pathWithCulture = Path + info.Name + '\\';
-        //    string[] allXml = Directory.GetFiles(pathWithCulture, "*.xml");
-
-        //    cateDest = new List<GH_CategoryDescription>();
-        //    List<GH_ObjectDescription> outLt = new List<GH_ObjectDescription>();
-
-        //    foreach (var xml in allXml)
-        //    {
-        //        XmlDocument doc = new XmlDocument();
-        //        doc.Load(xml);
-
-        //        string recordHash = ((XmlElement)doc.ChildNodes[0]).GetAttribute("HASH");
-        //        string calcuHash = UnsafeHelper.HashString(xml.Split('\\').Last());
-        //        if (recordHash != calcuHash) continue;
-
-
-        //        if (xml.Contains("_Category.xml"))
-        //        {
-        //            foreach (var cateElement in doc.ChildNodes[0].ChildNodes)
-        //            {
-        //                cateDest.Add(new GH_CategoryDescription((XmlElement)cateElement));
-        //            }
-        //        }
-        //        else
-        //        {
-        //            XmlElement element = (XmlElement)doc.ChildNodes[0];
-        //            foreach (var obj in element.ChildNodes)
-        //            {
-        //                outLt.Add(new GH_ObjectDescription((XmlElement)obj));
-        //            }
-        //        }
-        //    }
-
-        //    return outLt;
-        //}
-
         private static void ChangeLanguage(CultureInfo info)
         {
+
+            string path = Path + info.Name + '\\';
+            string[] allXml = Directory.GetFiles(path, "*.xml");
+
+            Dictionary<string, string[]> categoryDict = new Dictionary<string, string[]>();
+            Dictionary<string, Dictionary<string, string>> subcateDict = new Dictionary<string, Dictionary<string, string>>();
+            Dictionary<string, string[]> objectDescDict = new Dictionary<string, string[]>();
+            Dictionary<string, List<string[]>> componentInputsDict = new Dictionary<string, List<string[]>>();
+            Dictionary<string, List<string[]>> componentOutputsDict = new Dictionary<string, List<string[]>>();
+
+            //Read XML to Dictionary.
+            foreach (string xml in allXml)
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.Load(xml);
+
+                string recordHash = ((XmlElement)doc.ChildNodes[0]).GetAttribute("HASH");
+                string calcuHash = UnsafeHelper.HashString(xml.Split('\\').Last());
+                if (recordHash != calcuHash) continue;
+
+                if (xml.Contains($"_{info.Name}_Category.xml"))
+                {
+                    foreach (var cateElement in doc.ChildNodes[0].ChildNodes)
+                    {
+                        var ele = (XmlElement)cateElement;
+
+                        //Get Category infos.
+                        string cateFullName = ele.GetAttribute(KeyName);
+                        string[] cateInfo = new string[] { ele.GetAttribute("Name"), ele.GetAttribute("ShortName"), ele.GetAttribute("SymbolName") };
+                        categoryDict[cateFullName] = cateInfo;
+
+
+                        Dictionary<string, string> subDict = new Dictionary<string, string>();
+                        foreach (var subElement in ele.ChildNodes)
+                        {
+                            var subEle = (XmlElement)subElement;
+
+                            //Get Subcategory infos.
+                            string subFullName = subEle.GetAttribute(KeyName);
+                            string subName = subEle.GetAttribute("Name");
+                            subDict[subFullName] = subName;
+                        }
+                        subcateDict[cateFullName] = subDict;
+                    }
+                }
+                else
+                {
+                    XmlElement element = (XmlElement)doc.ChildNodes[0];
+                    foreach (var obj in element.ChildNodes)
+                    {
+                        var objEle = (XmlElement)obj;
+
+                        //Get Proxy Description.
+                        string objFullName = objEle.GetAttribute(KeyName);
+                        string[] objDesc = new string[] { objEle.GetAttribute("Name"), objEle.GetAttribute("NickName"), objEle.GetAttribute("Description")};
+                        objectDescDict[objFullName] = objDesc;
+
+                        foreach (var param in objEle.ChildNodes)
+                        {
+                            var paramEle = (XmlElement)param;
+                            if( paramEle.Name == "Inputs")
+                            {
+                                List<string[]> inputsDesc = new List<string[]>();
+                                foreach (var input in paramEle.ChildNodes)
+                                {
+                                    var inputEle = (XmlElement)input;
+                                    string[] inputDesc = new string[] { inputEle.GetAttribute("Name"), inputEle.GetAttribute("NickName"), inputEle.GetAttribute("Description") };
+                                    inputsDesc.Add(inputDesc);
+                                }
+                                componentInputsDict[objFullName] = inputsDesc;
+                            }
+                            else if(paramEle.Name == "Outputs")
+                            {
+                                List<string[]> outputsDesc = new List<string[]>();
+                                foreach (var output in paramEle.ChildNodes)
+                                {
+                                    var outputEle = (XmlElement)output;
+                                    string[] inputDesc = new string[] { outputEle.GetAttribute("Name"), outputEle.GetAttribute("NickName"), outputEle.GetAttribute("Description") };
+                                    outputsDesc.Add(inputDesc);
+                                }
+                                componentOutputsDict[objFullName] = outputsDesc;
+                            }
+                        }
+                    }
+                }
+            }
+
+            ChangeCategoriesLanguage(categoryDict);
+            ChangeProxiesLanguage(categoryDict, subcateDict, objectDescDict, componentInputsDict, componentOutputsDict);
+
+            //Update Ribbon.
+            ((Grasshopper.GUI.Ribbon.GH_Ribbon)Instances.DocumentEditor.Controls[3]).PopulateRibbon();
         }
+
+        private static void ChangeProxiesLanguage(Dictionary<string, string[]> categoryDict, Dictionary<string, Dictionary<string, string>> cateSubCateDict,
+            Dictionary<string, string[]> ObjDescDict, Dictionary<string, List<string[]>> componentInputsDict, Dictionary<string, List<string[]>> componentOutputsDict)
+        {
+
+            var newProxies = new SortedList<Guid, IGH_ObjectProxy>();
+
+            foreach (var oldProxy in _oldProxies)
+            {
+                //Get Category and Subcategory Translate.
+
+                string category = string.Empty;
+                string subCategory = string.Empty;
+                if (oldProxy.Value.Desc.HasCategory)
+                {
+                    category = oldProxy.Value.Desc.Category;
+
+                    if (categoryDict.ContainsKey(oldProxy.Value.Desc.Category))
+                        category = categoryDict[oldProxy.Value.Desc.Category][0];
+
+                    if (oldProxy.Value.Desc.HasSubCategory)
+                    {
+                        subCategory = oldProxy.Value.Desc.SubCategory;
+                        if (cateSubCateDict.ContainsKey(oldProxy.Value.Desc.Category))
+                        {
+                            var subCateDict = cateSubCateDict[oldProxy.Value.Desc.Category];
+                            if (subCateDict.ContainsKey(oldProxy.Value.Desc.SubCategory))
+                            {
+                                subCategory = subCateDict[oldProxy.Value.Desc.SubCategory];
+                            }
+                        }
+                    }
+                }
+
+                string objFullName = GetObjectFullName(oldProxy.Value);
+
+                //Get Base Information.
+                string[] descBase = new string[] { oldProxy.Value.Desc.Name, oldProxy.Value.Desc.NickName, oldProxy.Value.Desc.Description };
+                if (ObjDescDict.ContainsKey(objFullName))
+                {
+                    descBase = ObjDescDict[objFullName];
+                }
+
+                //Set base Infomation
+                string[] whole = new string[] { descBase[0], descBase[1], descBase[2], category, subCategory };
+                var newProxy = new GH_LanguageObjectProxy(oldProxy.Value, whole);
+
+                //Change Params.
+                if (componentInputsDict.ContainsKey(objFullName))
+                    newProxy.InputParams = componentInputsDict[objFullName];
+                if (componentOutputsDict.ContainsKey(objFullName))
+                    newProxy.OutputParams = componentOutputsDict[objFullName];
+
+                //Add to List.
+                newProxies[oldProxy.Key] = newProxy;
+            }
+
+            _proxies.SetValue(Instances.ComponentServer, newProxies);
+        }
+
+        private static void ChangeCategoriesLanguage(Dictionary<string, string[]> newCateInfos)
+        {
+            var newCateIcons = new SortedList<string, Bitmap>();
+            var newCateShort = new SortedList<string, string>();
+            var newCateSymbol = new SortedList<string, string>();
+
+            foreach (var oldIcon in _oldCateIcons)
+            {
+                if (newCateInfos.ContainsKey(oldIcon.Key))
+                {
+                    newCateIcons[newCateInfos[oldIcon.Key][0]] = oldIcon.Value;
+                }
+            }
+            foreach (var oldShort in _oldCateShort)
+            {
+                if (newCateInfos.ContainsKey(oldShort.Key))
+                {
+                    newCateShort[newCateInfos[oldShort.Key][0]] = newCateInfos[oldShort.Key][1];
+                }
+            }
+            foreach (var oldSymbol in _oldCateSymbol)
+            {
+                if (newCateInfos.ContainsKey(oldSymbol.Key))
+                {
+                    newCateSymbol[newCateInfos[oldSymbol.Key][0]] = newCateInfos[oldSymbol.Key][2];
+                }
+            }
+
+            _cateIcon.SetValue(Instances.ComponentServer, newCateIcons);
+            _cateShort.SetValue(Instances.ComponentServer, newCateShort);
+            _cateSymbol.SetValue(Instances.ComponentServer, newCateSymbol);
+        }
+
 
         #endregion
 
 
-        private static string GetObjectFullName(IGH_ObjectProxy proxy)
+        internal static string GetObjectFullName(IGH_ObjectProxy proxy)
         {
             switch (proxy.Kind)
             {
@@ -227,7 +390,7 @@ namespace Orthoptera.Language
 
         private static XmlElement CategoryToXml(XmlDocument doc, string category, string shortName, string symbol, SortedSet<string> subCategories)
         {
-            XmlElement xmlElement = doc.CreateElement("SubCategory");
+            XmlElement xmlElement = doc.CreateElement("Category");
             xmlElement.SetAttribute("Name", category);
             xmlElement.SetAttribute("ShortName", shortName);
             xmlElement.SetAttribute("SymbolName", symbol);

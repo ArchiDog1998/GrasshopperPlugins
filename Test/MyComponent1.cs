@@ -4,6 +4,13 @@ using System.Collections.Generic;
 using Grasshopper.Kernel;
 using Rhino.Geometry;
 using Orthoptera.Language;
+using Grasshopper.Kernel.Attributes;
+using System.Drawing;
+using Grasshopper.GUI;
+using System.Reflection;
+using Grasshopper.GUI.Ribbon;
+using Orthoptera;
+using System.Linq;
 
 namespace InfoGlasses
 {
@@ -17,6 +24,11 @@ namespace InfoGlasses
               "Description",
               "Category", "Subcategory")
         {
+        }
+
+        public override void CreateAttributes()
+        {
+            m_attributes = new TestAttr(this);
         }
 
         /// <summary>
@@ -42,8 +54,11 @@ namespace InfoGlasses
             //GH_DescriptionTable.WriteXml(new System.Globalization.CultureInfo("zh_CN"));
 
             //GH_DescriptionTable.WriteXml(new System.Globalization.CultureInfo(1033));
-            //GH_DescriptionTable.WriteXml(new System.Globalization.CultureInfo(1033));
-            //GH_DescriptionTable.WriteXml(new System.Globalization.CultureInfo("zh_CN"));
+            //GH_LanguageRibbon.ChangePopulateRibbon();
+            MethodInfo oldMethod = typeof(GH_Ribbon).GetRuntimeMethods().Where((method) => method.Name.Contains("PopulateRibbon")).First();
+            MethodInfo newMethod = typeof(GH_LanguageRibbon).GetRuntimeMethods().Where((method) => method.Name.Contains("NewPopulateRibbon")).First();
+            UnsafeHelper.ExchangeMethod(oldMethod, newMethod);
+            GH_DescriptionTable.Culture = new System.Globalization.CultureInfo("zh_CN");
         }
 
         /// <summary>
@@ -65,6 +80,21 @@ namespace InfoGlasses
         public override Guid ComponentGuid
         {
             get { return new Guid("12702A51-2750-431F-8688-5CA122AC0BB2"); }
+        }
+    }
+
+    public class TestAttr : GH_ComponentAttributes
+    {
+        public override void SetupTooltip(PointF canvasPoint, GH_TooltipDisplayEventArgs e)
+        {
+            e.Title = "Hello";
+            e.Description = "To Hard";
+            e.Diagram = Owner.Icon_24x24;
+        }
+
+        public TestAttr(MyComponent1 owner):base(owner)
+        {
+
         }
     }
 }

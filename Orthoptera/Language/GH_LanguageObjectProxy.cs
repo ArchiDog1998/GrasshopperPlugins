@@ -19,7 +19,7 @@ using Rhino;
 
 namespace Orthoptera.Language
 {
-    internal class GH_LanguageCompiledProxy : IGH_ObjectProxy
+    internal class GH_LanguageObjectProxy : IGH_ObjectProxy
     {
 
         public string Location { get; }
@@ -42,11 +42,23 @@ namespace Orthoptera.Language
 
         public GH_Exposure Exposure { get; set; }
 
-        public List<string[]> InputParams { get; set; }
-        public List<string[]> OutputParams { get; set; }
+        public List<string[]> InputParams { get; internal set; }
+        public List<string[]> OutputParams { get; internal set; }
 
 
-        internal GH_LanguageCompiledProxy(IGH_ObjectProxy proxy, IGH_InstanceDescription desc)
+        internal GH_LanguageObjectProxy(IGH_ObjectProxy proxy, string[] nameSet)
+            :this(proxy)
+        {
+            if (nameSet.Length != 5) throw new ArgumentOutOfRangeException($"{nameof(nameSet)}'s length should be 5.");
+            this.Desc.Name = nameSet[0];
+            this.Desc.NickName = nameSet[1];
+            this.Desc.Description = nameSet[2];
+            this.Desc.Category = nameSet[3];
+            this.Desc.SubCategory = nameSet[4];
+
+        }
+
+        private GH_LanguageObjectProxy(IGH_ObjectProxy proxy)
         {
             this.Location = proxy.Location;
             this.LibraryGuid = proxy.Guid;
@@ -56,7 +68,7 @@ namespace Orthoptera.Language
             this.Kind = proxy.Kind;
             this.Guid = proxy.Guid;
             this.Icon = proxy.Icon;
-            this.Desc = desc;
+            this.Desc = proxy.Desc;
             this.Exposure = proxy.Exposure;
         }
 
@@ -73,23 +85,38 @@ namespace Orthoptera.Language
             if(obj is GH_Component)
             {
                 GH_Component com = obj as GH_Component;
-                for (int i = 0; i < com.Params.Input.Count; i++)
+                if(com.Params.Input.Count == InputParams.Count)
                 {
-                    com.Params.Input[i].Description = InputParams[i][2];
-                    if (isTranslateParamNameAndNick)
+                    for (int i = 0; i < com.Params.Input.Count; i++)
                     {
-                        com.Params.Input[i].Name = InputParams[i][0];
-                        com.Params.Input[i].NickName = InputParams[i][1];
+                        com.Params.Input[i].Description = InputParams[i][2];
+                        if (isTranslateParamNameAndNick)
+                        {
+                            com.Params.Input[i].Name = InputParams[i][0];
+                            com.Params.Input[i].NickName = InputParams[i][1];
+                        }
                     }
                 }
-                for (int i = 0; i < com.Params.Output.Count; i++)
+                else
                 {
-                    com.Params.Output[i].Description = OutputParams[i][2];
-                    if (isTranslateParamNameAndNick)
+                    com.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, $"XML language file's record has a different count of inputs with this components'. Please check it.");
+                }
+
+                if(com.Params.Output.Count == OutputParams.Count)
+                {
+                    for (int i = 0; i < com.Params.Output.Count; i++)
                     {
-                        com.Params.Output[i].Name = OutputParams[i][0];
-                        com.Params.Output[i].NickName = OutputParams[i][1];
+                        com.Params.Output[i].Description = OutputParams[i][2];
+                        if (isTranslateParamNameAndNick)
+                        {
+                            com.Params.Output[i].Name = OutputParams[i][0];
+                            com.Params.Output[i].NickName = OutputParams[i][1];
+                        }
                     }
+                }
+                else
+                {
+                    com.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, $"XML language file's record has a different count of outputs with this components'. Please check it.");
                 }
             }
         }
@@ -134,6 +161,11 @@ namespace Orthoptera.Language
             }
         }
 
-        public IGH_ObjectProxy DuplicateProxy() => new GH_LanguageCompiledProxy(this, this.Desc);
+        public IGH_ObjectProxy DuplicateProxy() => new GH_LanguageObjectProxy(this);
+
+        public override string ToString()
+        {
+            return base.ToString() + this.Desc.Name + $"({this.Desc.NickName})";
+        }
     }
 }

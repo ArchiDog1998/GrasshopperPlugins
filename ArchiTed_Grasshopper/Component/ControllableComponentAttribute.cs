@@ -59,7 +59,6 @@ namespace ArchiTed_Grasshopper
         }
 
         #endregion
-
         protected sealed override void Render(GH_Canvas canvas, Graphics graphics, GH_CanvasChannel channel)
         {
             Owner.BeforeRender(canvas, graphics, channel);
