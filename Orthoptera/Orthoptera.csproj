@@ -66,11 +66,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AfterLoadGrasshopper.cs" />
     <Compile Include="Language\GH_DescriptionTable.cs" />
     <Compile Include="Language\GH_LanguageObjectProxy.cs" />
-    <Compile Include="Language\GH_LanguageRibbon.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Unsave\UnsafeHelper.cs" />
   </ItemGroup>

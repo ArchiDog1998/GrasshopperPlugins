@@ -68,7 +68,7 @@ namespace Orthoptera.Language
             this.Kind = proxy.Kind;
             this.Guid = proxy.Guid;
             this.Icon = proxy.Icon;
-            this.Desc = proxy.Desc;
+            this.Desc = new GH_InstanceDescription(proxy.Desc);
             this.Exposure = proxy.Exposure;
         }
 

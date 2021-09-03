@@ -19,12 +19,14 @@ using System.Reflection;
 using Grasshopper.Kernel.Special;
 using System.Drawing;
 using System.Windows.Forms;
+using Grasshopper.GUI.Ribbon;
 
 namespace Orthoptera.Language
 {
     public static class GH_DescriptionTable
     {
-        private static string Path => Grasshopper.Folders.AppDataFolder + "Language\\";
+        private static string Path => Folders.AppDataFolder + "Language\\";
+        public static CultureInfo[] Languages => Directory.GetDirectories(Path).Select((fullPath) => new CultureInfo(fullPath.Split('\\').Last())).ToArray();
         private static string KeyName => "ObjectFullName";
 
         private static readonly FieldInfo _cateIcon = typeof(GH_ComponentServer).GetRuntimeFields().Where((field) => field.Name.Contains("_categoryIcons")).First();
@@ -32,14 +34,15 @@ namespace Orthoptera.Language
         private static readonly FieldInfo _cateSymbol = typeof(GH_ComponentServer).GetRuntimeFields().Where((field) => field.Name.Contains("_categorySymbol")).First();
         private static readonly FieldInfo _proxies = typeof(GH_ComponentServer).GetRuntimeFields().Where((field) => field.Name.Contains("_proxies")).First();
 
-        private static readonly  SortedList<string, Bitmap> _oldCateIcons = (SortedList<string, Bitmap>)_cateIcon.GetValue(Instances.ComponentServer);
+        private static readonly SortedList<string, Bitmap> _oldCateIcons = (SortedList<string, Bitmap>)_cateIcon.GetValue(Instances.ComponentServer);
         private static readonly SortedList<string, string> _oldCateShort = (SortedList<string, string>)_cateShort.GetValue(Instances.ComponentServer);
         private static readonly SortedList<string, string> _oldCateSymbol = (SortedList<string, string>)_cateSymbol.GetValue(Instances.ComponentServer);
         private static readonly SortedList<Guid, IGH_ObjectProxy> _oldProxies = (SortedList<Guid, IGH_ObjectProxy>)_proxies.GetValue(Instances.ComponentServer);
 
+
         #region Culture Property
         private static CultureInfo _cultureInfo = new CultureInfo(1033);
-        public static CultureInfo Culture
+        public static CultureInfo Language
         {
             get 
             { 
@@ -47,11 +50,8 @@ namespace Orthoptera.Language
             }
             set 
             {
-                if(value.Name != _cultureInfo.Name)
-                {
-                    _cultureInfo = value;
-                    ChangeLanguage(value);
-                }
+                _cultureInfo = value;
+                ChangeLanguage(value);
             }
         }
         #endregion
@@ -114,7 +114,7 @@ namespace Orthoptera.Language
 
                         //Get Proxy Description.
                         string objFullName = objEle.GetAttribute(KeyName);
-                        string[] objDesc = new string[] { objEle.GetAttribute("Name"), objEle.GetAttribute("NickName"), objEle.GetAttribute("Description")};
+                        string[] objDesc = new string[] { objEle.GetAttribute("Name"), objEle.GetAttribute("NickName"), objEle.GetAttribute("Description") + "\n----" + objEle.GetAttribute("Translator") };
                         objectDescDict[objFullName] = objDesc;
 
                         foreach (var param in objEle.ChildNodes)
@@ -151,9 +151,10 @@ namespace Orthoptera.Language
             ChangeProxiesLanguage(categoryDict, subcateDict, objectDescDict, componentInputsDict, componentOutputsDict);
 
             //Update Ribbon.
-            ((Grasshopper.GUI.Ribbon.GH_Ribbon)Instances.DocumentEditor.Controls[3]).PopulateRibbon();
+            UpdateGHRibbon(categoryDict);
         }
 
+        #region Change Language
         private static void ChangeProxiesLanguage(Dictionary<string, string[]> categoryDict, Dictionary<string, Dictionary<string, string>> cateSubCateDict,
             Dictionary<string, string[]> ObjDescDict, Dictionary<string, List<string[]>> componentInputsDict, Dictionary<string, List<string[]>> componentOutputsDict)
         {
@@ -169,10 +170,8 @@ namespace Orthoptera.Language
                 if (oldProxy.Value.Desc.HasCategory)
                 {
                     category = oldProxy.Value.Desc.Category;
-
                     if (categoryDict.ContainsKey(oldProxy.Value.Desc.Category))
                         category = categoryDict[oldProxy.Value.Desc.Category][0];
-
                     if (oldProxy.Value.Desc.HasSubCategory)
                     {
                         subCategory = oldProxy.Value.Desc.SubCategory;
@@ -246,6 +245,100 @@ namespace Orthoptera.Language
             _cateSymbol.SetValue(Instances.ComponentServer, newCateSymbol);
         }
 
+        #endregion
+
+        #region UpdateRibbon
+        private static void UpdateGHRibbon(Dictionary<string, string[]> categoryDict)
+        {
+            GH_Ribbon ribbon = (GH_Ribbon)Instances.DocumentEditor.Controls[3];
+
+            MethodInfo EnsureTabInfo = typeof(GH_Ribbon).GetRuntimeMethods().Where((method) => method.Name.Contains("EnsureTab")).First();
+
+            string activeTabName = ribbon.ActiveTabName;
+            if (categoryDict.ContainsKey(activeTabName))
+                activeTabName = categoryDict[activeTabName][0];
+
+            ribbon.Tabs.Clear();
+            List<GH_Layout> list = new List<GH_Layout>();
+            list.Add(GetLayout(categoryDict));
+            foreach (GH_Layout item in list)
+            {
+                foreach (GH_LayoutTab tab in item.Tabs)
+                {
+                    GH_RibbonTab gH_RibbonTab = (GH_RibbonTab)EnsureTabInfo.Invoke(ribbon, new object[] { tab.Name });
+                    foreach (GH_LayoutPanel panel in tab.Panels)
+                    {
+                        GH_RibbonPanel gH_RibbonPanel = gH_RibbonTab.EnsurePanel(panel.Name);
+                        foreach (GH_LayoutItem item2 in panel.Items)
+                        {
+                            if (!gH_RibbonPanel.Contains(item2.Id, item2.Exposure))
+                            {
+                                IGH_ObjectProxy iGH_ObjectProxy = Instances.ComponentServer.EmitObjectProxy(item2.Id);
+                                if (iGH_ObjectProxy != null)
+                                {
+                                    iGH_ObjectProxy = iGH_ObjectProxy.DuplicateProxy();
+                                    iGH_ObjectProxy.Exposure = item2.Exposure;
+                                    iGH_ObjectProxy.Desc.Category = tab.Name;
+                                    iGH_ObjectProxy.Desc.SubCategory = panel.Name;
+                                    gH_RibbonPanel.AddItem(new GH_RibbonItem(iGH_ObjectProxy));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            ribbon.Tabs[0].Visible = true;
+            foreach (GH_RibbonTab tab2 in ribbon.Tabs)
+            {
+                foreach (GH_RibbonPanel panel2 in tab2.Panels)
+                {
+                    panel2.Sort();
+                }
+            }
+            ribbon.ActiveTabName = activeTabName;
+            ribbon.LayoutRibbon();
+            ribbon.Refresh();
+        }
+
+        private static GH_Layout GetLayout(Dictionary<string, string[]> categoryDict)
+        {
+            GH_Layout gH_Layout = new GH_Layout();
+            gH_Layout.FilePath = "Default";
+            gH_Layout.AddTab(categoryDict["Params"][0]);
+            gH_Layout.AddTab(categoryDict["Maths"][0]);
+            gH_Layout.AddTab(categoryDict["Sets"][0]);
+            gH_Layout.AddTab(categoryDict["Vector"][0]);
+            gH_Layout.AddTab(categoryDict["Curve"][0]);
+            gH_Layout.AddTab(categoryDict["Surface"][0]);
+            gH_Layout.AddTab(categoryDict["Mesh"][0]);
+            gH_Layout.AddTab(categoryDict["Intersect"][0]);
+            gH_Layout.AddTab(categoryDict["Transform"][0]);
+            gH_Layout.AddTab(categoryDict["Display"][0]);
+            foreach (IGH_ObjectProxy objectProxy in Instances.ComponentServer.ObjectProxies)
+            {
+                GH_Exposure gH_Exposure = objectProxy.Exposure;
+                if (gH_Exposure != GH_Exposure.hidden)
+                {
+                    if (gH_Exposure == GH_Exposure.obscure)
+                    {
+                        gH_Exposure = GH_Exposure.septenary | GH_Exposure.obscure;
+                    }
+                    gH_Layout.AddItem(objectProxy.Desc.Category, objectProxy.Desc.SubCategory, objectProxy.Guid, gH_Exposure);
+                }
+            }
+            foreach (GH_LayoutTab tab in gH_Layout.Tabs)
+            {
+                tab.Panels.Sort();
+                foreach (GH_LayoutPanel panel in tab.Panels)
+                {
+                    panel.Sort();
+                }
+            }
+            //gH_Layout.FindTab("Params")?.SortPanels("Geometry", "Primitive", "Input", "Util");
+            return gH_Layout;
+        }
+        #endregion
+
 
         #endregion
 
@@ -267,10 +360,10 @@ namespace Orthoptera.Language
         public static void WriteXml(CultureInfo info)
         {
             CultureInfo oldInfo = null;
-            if (Culture != new CultureInfo(1033))
+            if (Language != new CultureInfo(1033))
             {
-                oldInfo = Culture;
-                Culture = new CultureInfo(1033);
+                oldInfo = Language;
+                Language = new CultureInfo(1033);
             }
 
             Directory.CreateDirectory($"{Path}\\{info.Name}");
@@ -331,7 +424,7 @@ namespace Orthoptera.Language
 
             if (oldInfo != null)
             {
-                Culture = oldInfo;
+                Language = oldInfo;
             }
         }
 

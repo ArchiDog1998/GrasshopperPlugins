@@ -55,10 +55,11 @@ namespace InfoGlasses
 
             //GH_DescriptionTable.WriteXml(new System.Globalization.CultureInfo(1033));
             //GH_LanguageRibbon.ChangePopulateRibbon();
-            MethodInfo oldMethod = typeof(GH_Ribbon).GetRuntimeMethods().Where((method) => method.Name.Contains("PopulateRibbon")).First();
-            MethodInfo newMethod = typeof(GH_LanguageRibbon).GetRuntimeMethods().Where((method) => method.Name.Contains("NewPopulateRibbon")).First();
-            UnsafeHelper.ExchangeMethod(oldMethod, newMethod);
-            GH_DescriptionTable.Culture = new System.Globalization.CultureInfo("zh_CN");
+
+            //MethodInfo oldMethod = typeof(GH_Ribbon).GetRuntimeMethods().Where((method) => method.Name.Contains("PopulateRibbon")).First();
+            //MethodInfo newMethod = typeof(GH_LanguageRibbon).GetRuntimeMethods().Where((method) => method.Name.Contains("NewPopulateRibbon")).First();
+            //UnsafeHelper.ExchangeMethod(oldMethod, newMethod);
+            GH_DescriptionTable.Language = new System.Globalization.CultureInfo("zh_CN");
         }
 
         /// <summary>
