@@ -45,17 +45,24 @@ namespace Orthoptera.Language
         public List<string[]> InputParams { get; internal set; }
         public List<string[]> OutputParams { get; internal set; }
 
+        public string Translator { get; private set; }
+
 
         internal GH_LanguageObjectProxy(IGH_ObjectProxy proxy, string[] nameSet)
             :this(proxy)
         {
-            if (nameSet.Length != 5) throw new ArgumentOutOfRangeException($"{nameof(nameSet)}'s length should be 5.");
+            if (nameSet.Length != 6) throw new ArgumentOutOfRangeException($"{nameof(nameSet)}'s length should be 5.");
             this.Desc.Name = nameSet[0];
             this.Desc.NickName = nameSet[1];
             this.Desc.Description = nameSet[2];
             this.Desc.Category = nameSet[3];
             this.Desc.SubCategory = nameSet[4];
+            this.Translator = nameSet[5];
 
+            if (string.IsNullOrEmpty(Translator))
+            {
+                this.Desc.Description += "\n----" + this.Translator;
+            }
         }
 
         private GH_LanguageObjectProxy(IGH_ObjectProxy proxy)

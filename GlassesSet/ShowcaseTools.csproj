@@ -84,7 +84,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MyComponent1.cs" />
     <Compile Include="WinformControls\AssemblyRenderSet.cs" />
     <Compile Include="WinformControls\NameBoxRenderSet.cs" />
     <Compile Include="WinformControls\NickNameOrNameTextBox.cs" />

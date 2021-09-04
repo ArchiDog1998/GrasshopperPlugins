@@ -114,7 +114,7 @@ namespace Orthoptera.Language
 
                         //Get Proxy Description.
                         string objFullName = objEle.GetAttribute(KeyName);
-                        string[] objDesc = new string[] { objEle.GetAttribute("Name"), objEle.GetAttribute("NickName"), objEle.GetAttribute("Description") + "\n----" + objEle.GetAttribute("Translator") };
+                        string[] objDesc = new string[] { objEle.GetAttribute("Name"), objEle.GetAttribute("NickName"), objEle.GetAttribute("Description"), objEle.GetAttribute("Translator") };
                         objectDescDict[objFullName] = objDesc;
 
                         foreach (var param in objEle.ChildNodes)
@@ -196,7 +196,7 @@ namespace Orthoptera.Language
                 }
 
                 //Set base Infomation
-                string[] whole = new string[] { descBase[0], descBase[1], descBase[2], category, subCategory };
+                string[] whole = new string[] { descBase[0], descBase[1], descBase[2], category, subCategory, descBase[3] };
                 var newProxy = new GH_LanguageObjectProxy(oldProxy.Value, whole);
 
                 //Change Params.

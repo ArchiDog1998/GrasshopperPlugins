@@ -56,10 +56,15 @@ namespace InfoGlasses
             //GH_DescriptionTable.WriteXml(new System.Globalization.CultureInfo(1033));
             //GH_LanguageRibbon.ChangePopulateRibbon();
 
-            //MethodInfo oldMethod = typeof(GH_Ribbon).GetRuntimeMethods().Where((method) => method.Name.Contains("PopulateRibbon")).First();
-            //MethodInfo newMethod = typeof(GH_LanguageRibbon).GetRuntimeMethods().Where((method) => method.Name.Contains("NewPopulateRibbon")).First();
+            MethodInfo oldMethod = typeof(GH_RibbonItem).GetRuntimeMethods().Where((method) => method.Name.Contains("Menu_ComponentInfoClicked")).First();
+            MethodInfo newMethod = typeof(GH_LanguageRibbon).GetRuntimeMethods().Where((method) => method.Name.Contains("GH_RibbonControl_MouseDown")).First();
+            UnsafeHelper.ExchangeMethod(newMethod, oldMethod);
+
+            //MethodInfo oldMethod = typeof(Father).GetRuntimeMethods().Where((method) => method.Name.Contains("Hello")).First();
+            //MethodInfo newMethod = typeof(Son).GetRuntimeMethods().Where((method) => method.Name.Contains("F__k")).First();
             //UnsafeHelper.ExchangeMethod(oldMethod, newMethod);
-            GH_DescriptionTable.Language = new System.Globalization.CultureInfo("zh_CN");
+
+            Message = new Father().Word;
         }
 
         /// <summary>
@@ -81,6 +86,23 @@ namespace InfoGlasses
         public override Guid ComponentGuid
         {
             get { return new Guid("12702A51-2750-431F-8688-5CA122AC0BB2"); }
+        }
+    }
+
+    class Father
+    {
+        public string Word => Hello();
+        private string Hello()
+        {
+            return "Hello";
+        }
+    }
+
+    class Son : Father
+    {
+        private string F__k()
+        {
+            return "S__t!";
         }
     }
 
