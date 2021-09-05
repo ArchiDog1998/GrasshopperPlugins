@@ -16,7 +16,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using Grasshopper.Kernel;
 
-namespace Orthoptera.Language
+namespace OrthopteraUI.Language
 {
     public class GH_LanguageRibbon
     {

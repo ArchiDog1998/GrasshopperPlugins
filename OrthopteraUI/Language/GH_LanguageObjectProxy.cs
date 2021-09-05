@@ -17,7 +17,7 @@ using Grasshopper.Kernel;
 using Microsoft.VisualBasic.CompilerServices;
 using Rhino;
 
-namespace Orthoptera.Language
+namespace OrthopteraUI.Language
 {
     internal class GH_LanguageObjectProxy : IGH_ObjectProxy
     {

@@ -20,8 +20,9 @@ using Grasshopper.Kernel.Special;
 using System.Drawing;
 using System.Windows.Forms;
 using Grasshopper.GUI.Ribbon;
+using Orthoptera;
 
-namespace Orthoptera.Language
+namespace OrthopteraUI.Language
 {
     public static class GH_DescriptionTable
     {
