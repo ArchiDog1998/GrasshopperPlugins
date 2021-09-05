@@ -205,7 +205,7 @@
 
                             <StackPanel Orientation="Vertical">
 
-                                <CheckBox Style="{StaticResource MaterialDesignFilterChipPrimaryCheckBox}" 
+                                <!--<CheckBox Style="{StaticResource MaterialDesignFilterChipPrimaryCheckBox}" 
                                               IsChecked="True" Margin="5" Click="CategoryCheckbox_Click" HorizontalAlignment="Center"
                                               Content="{Binding ElementName=CategoryColumn, Path=Header}"/>
 
@@ -219,7 +219,7 @@
 
                                 <CheckBox Style="{StaticResource MaterialDesignFilterChipPrimaryCheckBox}" HorizontalAlignment="Center"
                                               IsChecked="False" Margin="5" Click="GuidCheckBox_Click"
-                                              Content="{Binding ElementName=GuidColumn, Path=Header}"/>
+                                              Content="{Binding ElementName=GuidColumn, Path=Header}"/>-->
                             </StackPanel>
                         </materialDesign:PopupBox>
 

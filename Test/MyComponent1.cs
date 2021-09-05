@@ -56,9 +56,7 @@ namespace InfoGlasses
             //GH_DescriptionTable.WriteXml(new System.Globalization.CultureInfo(1033));
             //GH_LanguageRibbon.ChangePopulateRibbon();
 
-            MethodInfo oldMethod = typeof(GH_RibbonItem).GetRuntimeMethods().Where((method) => method.Name.Contains("Menu_ComponentInfoClicked")).First();
-            MethodInfo newMethod = typeof(GH_LanguageRibbon).GetRuntimeMethods().Where((method) => method.Name.Contains("GH_RibbonControl_MouseDown")).First();
-            UnsafeHelper.ExchangeMethod(newMethod, oldMethod);
+
 
             //MethodInfo oldMethod = typeof(Father).GetRuntimeMethods().Where((method) => method.Name.Contains("Hello")).First();
             //MethodInfo newMethod = typeof(Son).GetRuntimeMethods().Where((method) => method.Name.Contains("F__k")).First();

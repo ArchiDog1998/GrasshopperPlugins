@@ -17,6 +17,11 @@ namespace Orthoptera
 {
     public static class UnsafeHelper
     {
+        /// <summary>
+        /// It has salt called ^*(&fj9G42
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         public static string HashString(string text)
         {
             string salt = "^*(&fj9G42";
@@ -29,7 +34,7 @@ namespace Orthoptera
             using (var sha = new System.Security.Cryptography.SHA256Managed())
             {
                 // Convert the string to a byte array first, to be processed
-                byte[] textBytes = System.Text.Encoding.UTF8.GetBytes(text + salt);
+                byte[] textBytes = Encoding.UTF8.GetBytes(text + salt);
                 byte[] hashBytes = sha.ComputeHash(textBytes);
 
                 // Convert back to a string, removing the '-' that BitConverter adds

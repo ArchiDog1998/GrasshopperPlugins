@@ -15,13 +15,22 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 using Grasshopper.Kernel;
+using System.Reflection;
+using Orthoptera;
 
 namespace OrthopteraUI.Language
 {
-    public class GH_LanguageRibbon
+    public class GH_LanguageRibbonItem
     {
+        public static void SwitchMethod()
+        {
+            MethodInfo oldMethod = typeof(GH_RibbonItem).GetRuntimeMethods().Where((method) => method.Name.Contains("Menu_ComponentInfoClicked")).First();
+            MethodInfo newMethod = typeof(GH_LanguageRibbonItem).GetRuntimeMethods().Where((method) => method.Name.Contains(nameof(Menu_ComponentInfoClickedNew))).First();
+            UnsafeHelper.ExchangeMethod(newMethod, oldMethod);
+        }
 
-        private void GH_RibbonControl_MouseDown(object sender, MouseEventArgs e)
+
+        private void Menu_ComponentInfoClickedNew(object sender, MouseEventArgs e)
 		{
 
             GH_Ribbon ribbon = (GH_Ribbon)Instances.DocumentEditor.Controls[3];
@@ -32,6 +41,10 @@ namespace OrthopteraUI.Language
             GH_RibbonItem ribbonItem = null;
             foreach (GH_RibbonTab tab in ribbon.Tabs)
             {
+                if (!tab.Visible)
+                {
+                    continue;
+                }
                 foreach (GH_RibbonPanel panel in tab.Panels)
                 {
                     foreach (GH_RibbonItem allItem in panel.AllItems)
@@ -58,7 +71,8 @@ namespace OrthopteraUI.Language
             {
                 MessageBox.Show("Failed to find proxy.");
             }
-            MessageBox.Show(ribbonItem.Proxy.GetType().Name);
+
+            GH_LanguageObjectProxy proxy = (GH_LanguageObjectProxy)ribbonItem.Proxy;
         }
     }
 }
