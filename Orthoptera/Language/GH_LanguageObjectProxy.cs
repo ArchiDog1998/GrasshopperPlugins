@@ -59,7 +59,7 @@ namespace Orthoptera.Language
             this.Desc.SubCategory = nameSet[4];
             this.Translator = nameSet[5];
 
-            if (string.IsNullOrEmpty(Translator))
+            if (!string.IsNullOrEmpty(Translator))
             {
                 this.Desc.Description += "\n----" + this.Translator;
             }
