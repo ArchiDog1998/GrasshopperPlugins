@@ -117,19 +117,6 @@ namespace Orthoptera.Wpf
 
 
 
-
-        public Action OKClicked
-        {
-            get { return (Action)GetValue(OKClickedProperty); }
-            set { SetValue(OKClickedProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for OKClicked.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty OKClickedProperty =
-            DependencyProperty.Register("OKClicked", typeof(Action), typeof(OrthopteraBaseWindowControl), new PropertyMetadata(null));
-
-
-
         public Action RefreshClicked
         {
             get { return (Action)GetValue(RefreshClickedProperty); }
@@ -142,42 +129,52 @@ namespace Orthoptera.Wpf
 
 
 
-        public Action CancelClicked
+
+        public Window Owner
         {
-            get { return (Action)GetValue(CancelClickedProperty); }
-            set { SetValue(CancelClickedProperty, value); }
+            get { return (Window)GetValue(OwnerProperty); }
+            set { SetValue(OwnerProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for CancelClicked.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty CancelClickedProperty =
-            DependencyProperty.Register("CancelClicked", typeof(Action), typeof(OrthopteraBaseWindowControl), new PropertyMetadata(null));
-
-
-
-        public Action TittleZoneMove
-        {
-            get { return (Action)GetValue(TittleZoneMoveProperty); }
-            set { SetValue(TittleZoneMoveProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for TittleZoneMove.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty TittleZoneMoveProperty =
-            DependencyProperty.Register("TittleZoneMove", typeof(Action), typeof(OrthopteraBaseWindowControl), new PropertyMetadata(null));
+        // Using a DependencyProperty as the backing store for Owner.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty OwnerProperty =
+            DependencyProperty.Register("Owner", typeof(Window), typeof(OrthopteraBaseWindowControl), new PropertyMetadata(null));
 
 
 
 
         public OrthopteraBaseWindowControl()
         {
+            this.DataContext = this;
             InitializeComponent();
         }
 
-        private void OKButton_Click(object sender, RoutedEventArgs e) => OKClicked();
+        private void OKButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (Owner != null)
+            {
+                RefreshClicked();
+                Owner.Close();
+            }
 
-        private void RefreshButton_Click(object sender, RoutedEventArgs e) => RefreshClicked();
+        }
 
-        private void CancelButton_Click(object sender, RoutedEventArgs e) => CancelClicked();
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (Owner != null)
+                RefreshClicked();
+        }
 
-        private void ColorZone_MouseMove(object sender, MouseEventArgs e) => TittleZoneMove();
+        private void CancelButton_Click(object sender, RoutedEventArgs e) 
+        {
+            if (Owner != null)
+                Owner.Close();
+        }
+
+        private void ColorZone_MouseMove(object sender, MouseEventArgs e) 
+        {
+            if (e.LeftButton == MouseButtonState.Pressed  && Owner != null)
+                Owner.DragMove();
+        }
     }
 }

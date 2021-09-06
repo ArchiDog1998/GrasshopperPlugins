@@ -28,7 +28,7 @@ namespace OrthopteraUI.Language
     {
         private static string Path => Folders.AppDataFolder + "Language\\";
         public static CultureInfo[] Languages => Directory.GetDirectories(Path).Select((fullPath) => new CultureInfo(fullPath.Split('\\').Last())).ToArray();
-        private static string KeyName => "ObjectFullName";
+        internal static string KeyName => "ObjectFullName";
 
         private static readonly FieldInfo _cateIcon = typeof(GH_ComponentServer).GetRuntimeFields().Where((field) => field.Name.Contains("_categoryIcons")).First();
         private static readonly FieldInfo _cateShort = typeof(GH_ComponentServer).GetRuntimeFields().Where((field) => field.Name.Contains("_categoryShort")).First();
@@ -38,8 +38,10 @@ namespace OrthopteraUI.Language
         private static readonly SortedList<string, Bitmap> _oldCateIcons = (SortedList<string, Bitmap>)_cateIcon.GetValue(Instances.ComponentServer);
         private static readonly SortedList<string, string> _oldCateShort = (SortedList<string, string>)_cateShort.GetValue(Instances.ComponentServer);
         private static readonly SortedList<string, string> _oldCateSymbol = (SortedList<string, string>)_cateSymbol.GetValue(Instances.ComponentServer);
-        private static readonly SortedList<Guid, IGH_ObjectProxy> _oldProxies = (SortedList<Guid, IGH_ObjectProxy>)_proxies.GetValue(Instances.ComponentServer);
+        //private static readonly SortedList<Guid, IGH_ObjectProxy> _oldProxies = (SortedList<Guid, IGH_ObjectProxy>)_proxies.GetValue(Instances.ComponentServer);
 
+        public static Dictionary<string, string> CategoryDict { get; private set; } = new Dictionary<string, string>();
+        public static Dictionary<string, Dictionary<string, string>> SubcateDictionary { get; private set; } = new Dictionary<string, Dictionary<string, string>>();
 
         #region Culture Property
         private static CultureInfo _cultureInfo = new CultureInfo(1033);
@@ -66,10 +68,11 @@ namespace OrthopteraUI.Language
             string[] allXml = Directory.GetFiles(path, "*.xml");
 
             Dictionary<string, string[]> categoryDict = new Dictionary<string, string[]>();
-            Dictionary<string, Dictionary<string, string>> subcateDict = new Dictionary<string, Dictionary<string, string>>();
-            Dictionary<string, string[]> objectDescDict = new Dictionary<string, string[]>();
-            Dictionary<string, List<string[]>> componentInputsDict = new Dictionary<string, List<string[]>>();
-            Dictionary<string, List<string[]>> componentOutputsDict = new Dictionary<string, List<string[]>>();
+
+            SortedList<Guid, IGH_ObjectProxy> proxies = (SortedList<Guid, IGH_ObjectProxy>)_proxies.GetValue(Instances.ComponentServer);
+
+            CategoryDict.Clear();
+            SubcateDictionary.Clear();
 
             //Read XML to Dictionary.
             foreach (string xml in allXml)
@@ -91,7 +94,7 @@ namespace OrthopteraUI.Language
                         string cateFullName = ele.GetAttribute(KeyName);
                         string[] cateInfo = new string[] { ele.GetAttribute("Name"), ele.GetAttribute("ShortName"), ele.GetAttribute("SymbolName") };
                         categoryDict[cateFullName] = cateInfo;
-
+                        CategoryDict[cateFullName] = cateInfo[0];
 
                         Dictionary<string, string> subDict = new Dictionary<string, string>();
                         foreach (var subElement in ele.ChildNodes)
@@ -103,7 +106,7 @@ namespace OrthopteraUI.Language
                             string subName = subEle.GetAttribute("Name");
                             subDict[subFullName] = subName;
                         }
-                        subcateDict[cateFullName] = subDict;
+                        SubcateDictionary[cateFullName] = subDict;
                     }
                 }
                 else
@@ -115,104 +118,42 @@ namespace OrthopteraUI.Language
 
                         //Get Proxy Description.
                         string objFullName = objEle.GetAttribute(KeyName);
-                        string[] objDesc = new string[] { objEle.GetAttribute("Name"), objEle.GetAttribute("NickName"), objEle.GetAttribute("Description"), objEle.GetAttribute("Translator") };
-                        objectDescDict[objFullName] = objDesc;
 
-                        foreach (var param in objEle.ChildNodes)
-                        {
-                            var paramEle = (XmlElement)param;
-                            if( paramEle.Name == "Inputs")
-                            {
-                                List<string[]> inputsDesc = new List<string[]>();
-                                foreach (var input in paramEle.ChildNodes)
-                                {
-                                    var inputEle = (XmlElement)input;
-                                    string[] inputDesc = new string[] { inputEle.GetAttribute("Name"), inputEle.GetAttribute("NickName"), inputEle.GetAttribute("Description") };
-                                    inputsDesc.Add(inputDesc);
-                                }
-                                componentInputsDict[objFullName] = inputsDesc;
-                            }
-                            else if(paramEle.Name == "Outputs")
-                            {
-                                List<string[]> outputsDesc = new List<string[]>();
-                                foreach (var output in paramEle.ChildNodes)
-                                {
-                                    var outputEle = (XmlElement)output;
-                                    string[] inputDesc = new string[] { outputEle.GetAttribute("Name"), outputEle.GetAttribute("NickName"), outputEle.GetAttribute("Description") };
-                                    outputsDesc.Add(inputDesc);
-                                }
-                                componentOutputsDict[objFullName] = outputsDesc;
-                            }
-                        }
+                        ChangeProxy(objFullName, ref proxies, objEle);
                     }
                 }
             }
 
             ChangeCategoriesLanguage(categoryDict);
-            ChangeProxiesLanguage(categoryDict, subcateDict, objectDescDict, componentInputsDict, componentOutputsDict);
+            _proxies.SetValue(Instances.ComponentServer, proxies);
 
             //Update Ribbon.
             UpdateGHRibbon(categoryDict);
         }
 
         #region Change Language
-        private static void ChangeProxiesLanguage(Dictionary<string, string[]> categoryDict, Dictionary<string, Dictionary<string, string>> cateSubCateDict,
-            Dictionary<string, string[]> ObjDescDict, Dictionary<string, List<string[]>> componentInputsDict, Dictionary<string, List<string[]>> componentOutputsDict)
+        private static void ChangeProxy(string keyName,ref SortedList<Guid, IGH_ObjectProxy> proxies, XmlElement element)
         {
-
-            var newProxies = new SortedList<Guid, IGH_ObjectProxy>();
-
-            foreach (var oldProxy in _oldProxies)
+            foreach (var proxy in proxies)
             {
-                //Get Category and Subcategory Translate.
-
-                string category = string.Empty;
-                string subCategory = string.Empty;
-                if (oldProxy.Value.Desc.HasCategory)
+                if (GH_LanguageObjectProxy.GetObjectFullName(proxy.Value) == keyName)
                 {
-                    category = oldProxy.Value.Desc.Category;
-                    if (categoryDict.ContainsKey(oldProxy.Value.Desc.Category))
-                        category = categoryDict[oldProxy.Value.Desc.Category][0];
-                    if (oldProxy.Value.Desc.HasSubCategory)
+                    GH_LanguageObjectProxy langProxy;
+                    if (proxy.Value is GH_LanguageObjectProxy)
                     {
-                        subCategory = oldProxy.Value.Desc.SubCategory;
-                        if (cateSubCateDict.ContainsKey(oldProxy.Value.Desc.Category))
-                        {
-                            var subCateDict = cateSubCateDict[oldProxy.Value.Desc.Category];
-                            if (subCateDict.ContainsKey(oldProxy.Value.Desc.SubCategory))
-                            {
-                                subCategory = subCateDict[oldProxy.Value.Desc.SubCategory];
-                            }
-                        }
+                        langProxy = (GH_LanguageObjectProxy)proxy.Value;
+
                     }
+                    else
+                    {
+                        langProxy = new GH_LanguageObjectProxy(proxy.Value);
+                    }
+                    langProxy.Refresh(element);
+                    proxies[proxy.Key] = langProxy;
+                    return;
                 }
-
-                string objFullName = GetObjectFullName(oldProxy.Value);
-
-                //Get Base Information.
-                string[] descBase = new string[] { oldProxy.Value.Desc.Name, oldProxy.Value.Desc.NickName, oldProxy.Value.Desc.Description };
-                if (ObjDescDict.ContainsKey(objFullName))
-                {
-                    descBase = ObjDescDict[objFullName];
-                }
-
-                //Set base Infomation
-                string[] whole = new string[] { descBase[0], descBase[1], descBase[2], category, subCategory, descBase[3] };
-                var newProxy = new GH_LanguageObjectProxy(oldProxy.Value, whole);
-
-                //Change Params.
-                if (componentInputsDict.ContainsKey(objFullName))
-                    newProxy.InputParams = componentInputsDict[objFullName];
-                if (componentOutputsDict.ContainsKey(objFullName))
-                    newProxy.OutputParams = componentOutputsDict[objFullName];
-
-                //Add to List.
-                newProxies[oldProxy.Key] = newProxy;
             }
-
-            _proxies.SetValue(Instances.ComponentServer, newProxies);
         }
-
         private static void ChangeCategoriesLanguage(Dictionary<string, string[]> newCateInfos)
         {
             var newCateIcons = new SortedList<string, Bitmap>();
