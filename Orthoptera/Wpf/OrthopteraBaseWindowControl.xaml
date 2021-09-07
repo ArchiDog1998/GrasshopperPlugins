@@ -63,7 +63,7 @@
                     </Grid>
                 </materialDesign:ColorZone>
 
-                <ContentPresenter Grid.Row="1" Content="{Binding ElementName=Father, Path=BodyContent}"/>
+                <ContentPresenter Grid.Row="1" Content="{Binding ElementName=Father, Path=Content}"/>
 
 
                 <Grid Grid.Row="2" Margin="10 0 10 10">

@@ -105,16 +105,6 @@ namespace Orthoptera.Wpf
 
 
 
-        public object BodyContent
-        {
-            get { return (object)GetValue(BodyContentProperty); }
-            set { SetValue(BodyContentProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for BodyContent.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty BodyContentProperty =
-            DependencyProperty.Register("BodyContent", typeof(object), typeof(OrthopteraBaseWindowControl), new PropertyMetadata(null));
-
 
 
         public Action RefreshClicked

@@ -26,7 +26,7 @@ namespace OrthopteraUI.Language
 {
     public static class GH_DescriptionTable
     {
-        private static string Path => Folders.AppDataFolder + "Language\\";
+        public static string Path => Folders.AppDataFolder + "Language\\";
         public static CultureInfo[] Languages => Directory.GetDirectories(Path).Select((fullPath) => new CultureInfo(fullPath.Split('\\').Last())).ToArray();
         internal static string KeyName => "ObjectFullName";
 
@@ -59,6 +59,15 @@ namespace OrthopteraUI.Language
         }
         #endregion
 
+        public static void Init()
+        {
+            SortedList<Guid, IGH_ObjectProxy> proxies = (SortedList<Guid, IGH_ObjectProxy>)_proxies.GetValue(Instances.ComponentServer);
+            foreach (var item in proxies)
+            {
+                proxies[item.Key] = new GH_LanguageObjectProxy(item.Value);
+            }
+            _proxies.SetValue(Instances.ComponentServer, proxies);
+        }
 
         #region XML IO
         private static void ChangeLanguage(CultureInfo info)
@@ -119,7 +128,7 @@ namespace OrthopteraUI.Language
                         //Get Proxy Description.
                         string objFullName = objEle.GetAttribute(KeyName);
 
-                        ChangeProxy(objFullName, ref proxies, objEle);
+                        ChangeProxies(objFullName, ref proxies, objEle);
                     }
                 }
             }
@@ -132,7 +141,7 @@ namespace OrthopteraUI.Language
         }
 
         #region Change Language
-        private static void ChangeProxy(string keyName,ref SortedList<Guid, IGH_ObjectProxy> proxies, XmlElement element)
+        private static void ChangeProxies(string keyName,ref SortedList<Guid, IGH_ObjectProxy> proxies, XmlElement element)
         {
             foreach (var proxy in proxies)
             {
@@ -284,19 +293,6 @@ namespace OrthopteraUI.Language
 
         #endregion
 
-
-        internal static string GetObjectFullName(IGH_ObjectProxy proxy)
-        {
-            switch (proxy.Kind)
-            {
-                case GH_ObjectType.CompiledObject:
-                    return proxy.Type.FullName;
-                case GH_ObjectType.UserObject:
-                    return proxy.Location.Split('\\').Last();
-                default:
-                    return string.Empty;
-            }
-        }
 
         #region Write XML
         public static void WriteXml(CultureInfo info)

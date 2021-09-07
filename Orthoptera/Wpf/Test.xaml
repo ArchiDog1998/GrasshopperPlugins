@@ -11,8 +11,8 @@
         Background="Transparent"
         AllowsTransparency="True"
         Title="Test" Height="450" Width="800">
-    <!--<local:OrthopteraBaseWindowControl>
-    </local:OrthopteraBaseWindowControl>-->
+    <local:OrthopteraBaseWindowControl Owner="{Binding ElementName=YourFather}">
+    </local:OrthopteraBaseWindowControl>
 
 
 </Window>
