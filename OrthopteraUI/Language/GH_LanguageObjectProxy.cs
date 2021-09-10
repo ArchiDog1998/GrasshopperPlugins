@@ -326,6 +326,7 @@ namespace OrthopteraUI.Language
                         }
                     }
 
+                    //Append a new Language Item.
                     if (!isFindEle)
                     {
                         doc.ChildNodes[0].AppendChild(ToXml(doc, info));
@@ -337,6 +338,7 @@ namespace OrthopteraUI.Language
 
             if (!isHaveXmlAndValid)
             {
+                //Create a brand new XmlDocument and save it.
                 GH_DescriptionTable.CreateXmlDocumentAndSave(path, fileName, (doc) =>
                 {
                     XmlElement xmlElement = doc.CreateElement("DocumentObjects");
