@@ -291,21 +291,22 @@ namespace OrthopteraUI.Language
             CultureInfo info = GH_DescriptionTable.Language;
             string path = GH_DescriptionTable.Path + info.Name + '\\';
             string fileName = $"{info.Name}_ObjectSet_{ClassifyKey}.xml";
+            string location = path + fileName;
 
             Directory.CreateDirectory(path);
-            string[] allXml = Directory.GetFiles(path,"*"+ fileName);
+            
 
-            bool isXmlValid = false;
-            if(allXml.Length > 0)
+            bool isHaveXmlAndValid = false;
+            if(File.Exists(location))
             {
                 XmlDocument doc = new XmlDocument();
-                doc.Load(allXml[0]);
+                doc.Load(location);
 
                 string recordHash = ((XmlElement)doc.ChildNodes[0]).GetAttribute("HASH");
                 string calcuHash = UnsafeHelper.HashString(fileName);
                 if (recordHash == calcuHash)
                 {
-                    isXmlValid = true;
+                    isHaveXmlAndValid = true;
                     XmlElement element = (XmlElement)doc.ChildNodes[0];
 
                     bool isFindEle = false;
@@ -318,6 +319,7 @@ namespace OrthopteraUI.Language
 
                         if (objFullName == GetObjectFullName(this))
                         {
+                            //Change Reference.
                             objEle = ToXml(doc, info);
                             isFindEle = true;
                             break;
@@ -329,21 +331,18 @@ namespace OrthopteraUI.Language
                         doc.ChildNodes[0].AppendChild(ToXml(doc, info));
                     }
 
-                    doc.Save(allXml[0]);
+                    doc.Save(location);
                 }
             }
 
-            if (!isXmlValid)
+            if (!isHaveXmlAndValid)
             {
-                string sha = UnsafeHelper.HashString(fileName);
-
-                XmlDocument doc = new XmlDocument();
-                XmlElement xmlElement = doc.CreateElement("DocumentObjects");
-                xmlElement.SetAttribute("HASH", sha);
-
-                xmlElement.AppendChild(ToXml(doc, info));
-
-                doc.AppendChild(xmlElement);
+                GH_DescriptionTable.CreateXmlDocumentAndSave(path, fileName, (doc) =>
+                {
+                    XmlElement xmlElement = doc.CreateElement("DocumentObjects");
+                    xmlElement.AppendChild(ToXml(doc, info));
+                    return xmlElement;
+                });
             }
         }
 
